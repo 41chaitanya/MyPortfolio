@@ -4,6 +4,9 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FlowerMenu from './components/FlowerMenu';
 import MusicToggleButton from './components/MusicToggleButton';
+import ScrollToTop from './components/ScrollToTop';
+import CustomCursor from './components/CustomCursor';
+import MusicTooltip from './components/MusicTooltip';
 import Loading from './pages/Loading';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -13,6 +16,7 @@ import Contact from './pages/Contact';
 import { AiOutlineHome } from 'react-icons/ai';
 import { MdOutlineInfo, MdEmojiEvents, MdOutlineWorkspaces, MdOutlineMailOutline } from 'react-icons/md';
 import './App.css';
+import './mobile-optimizations.css';
 
 function App() {
   const [showLoading, setShowLoading] = useState(true);
@@ -38,6 +42,9 @@ function App() {
             <source src="https://www.youtube.com/watch?v=aJOTlE1K90k&list=RDRgKAFK5djSk&index=5" type="video/mp4" />
           </video>
           <Router>
+            <ScrollToTop />
+            <CustomCursor />
+            <MusicTooltip />
             <Navbar />
             <MusicToggleButton />
             <FlowerMenu

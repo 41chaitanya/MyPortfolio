@@ -1,8 +1,17 @@
 import { useState } from 'react';
+import ProjectDetailModal from '../../components/ProjectDetailModal';
 import './Projects.css';
 
 export default function Projects() {
   const [visibleProjects, setVisibleProjects] = useState(6);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleProjectClick = (project) => {
+    console.log('Project clicked:', project);
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
 
   const projects = [
     {
@@ -105,7 +114,11 @@ export default function Projects() {
 
         <div className="projects-grid">
           {projects.slice(0, visibleProjects).map((project) => (
-            <div key={project.id} className="project-card">
+            <div 
+              key={project.id} 
+              className="project-card"
+              onClick={() => handleProjectClick(project)}
+            >
               <div className="project-image-wrapper">
                 <img src={project.image} alt={project.title} className="project-image" />
               </div>
@@ -130,6 +143,12 @@ export default function Projects() {
           </div>
         )}
       </div>
+
+      <ProjectDetailModal 
+        isOpen={isModalOpen}
+        project={selectedProject}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

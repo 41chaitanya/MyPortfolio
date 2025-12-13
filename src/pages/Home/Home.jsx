@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextRoll } from '../../components/TextRoll';
 import { AnimatedDock } from '../../components/AnimatedDock';
 import HackathonDetailModal from '../../components/HackathonDetailModal';
+import ProjectDetailModal from '../../components/ProjectDetailModal';
 import { FaGithub, FaInstagram, FaTwitter, FaDownload, FaLinkedin, FaJava, FaDocker } from 'react-icons/fa';
 import { SiSpringboot, SiPostgresql, SiMongodb, SiRedis, SiApachekafka, SiKubernetes } from 'react-icons/si';
 import './Home.css';
@@ -11,47 +12,83 @@ export default function Home() {
   const navigate = useNavigate();
   const [selectedHackathon, setSelectedHackathon] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
 
   const handleHackathonClick = (hackathon) => {
     setSelectedHackathon(hackathon);
     setIsModalOpen(true);
   };
 
-  const homeHackathons = [
+  const handleProjectClick = (project) => {
+    setSelectedProject(project);
+    setIsProjectModalOpen(true);
+  };
+
+  const homeProjects = [
     {
       id: 1,
-      image: '/image/IITG.jpeg',
-      title: 'Ethos Hackathon - IIT Guwahati',
-      date: 'January 2025',
-      description: 'Top 5 Position - Developed campus security platform with ML-powered entity resolution achieving 99.2% accuracy and predictive analytics with 94.3% location prediction accuracy.',
-      achievements: 'Successfully implemented a comprehensive security solution using advanced machine learning algorithms. The platform demonstrated exceptional accuracy in entity resolution and predictive analytics, making it a standout project among all participants.',
-      gallery: [
-        { src: '/image/IITG.jpeg', caption: 'Opening Ceremony - IIT Guwahati Campus' },
-        { src: '/image/IITG.jpeg', caption: 'Team Presentation - Campus Security Platform' },
-        { src: '/image/IITG.jpeg', caption: 'Award Ceremony - Top 5 Winners' },
-      ],
-      teamMembers: [
-        { name: 'Chaitanya Sharma', role: 'Backend Developer', image: '/image/myImage.jpg', linkedin: 'https://www.linkedin.com/in/chaitanya-sharma-799041301' },
-        { name: 'Team Member 2', role: 'Frontend Developer', image: '/image/myImage.jpg', linkedin: 'https://www.linkedin.com/in/' },
-        { name: 'Team Member 3', role: 'ML Engineer', image: '/image/myImage.jpg', linkedin: 'https://www.linkedin.com/in/' },
-      ]
+      title: 'Campus Entity Resolution & Security Monitoring',
+      description: 'ML-powered security platform with 99.2% entity resolution accuracy and predictive analytics (94.3% location, 91.8% activity prediction) using Fellegi-Sunter algorithm, XGBoost, and LSTM.',
+      image: '/image/project1.jpg',
+      tech: ['Python', 'FastAPI', 'XGBoost', 'LSTM', 'Neo4j']
     },
     {
       id: 2,
-      image: '/image/codeUrja.jpeg',
-      title: 'Code Urja - Indore',
-      date: 'February 2025',
-      description: '2nd Position - Built innovative solution leveraging Spring Boot microservices, real-time data processing with Kafka, and advanced analytics.',
-      achievements: 'Achieved 2nd position with a robust microservices architecture. The solution showcased excellent scalability and real-time processing capabilities, impressing the judges with its technical depth and practical implementation.',
+      title: 'Online Banking Portal',
+      description: 'Full-stack banking platform with account management, fund transfers, bill payments, and real-time notifications with secure authentication.',
+      image: '/image/project2.jpg',
+      tech: ['Java', 'Spring Boot', 'PostgreSQL', 'Redis', 'Kafka']
+    }
+  ];
+
+  const homeHackathons = [
+    {
+      id: 1,
+      image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662013/portfolio-images/vjrrsg26b8lxjeekc3gc.jpg',
+      title: 'Smart India Hackathon - SIH 2025',
+      date: 'Grand Finale 2025',
+      description: 'Grand Finalist at Smart India Hackathon 2025, NIT Durgapur - AI-Driven Train Induction Planning & Scheduling for Kochi Metro Rail Ltd (KMRL). Among thousands of teams nationwide, Team Haste competed on a national stage representing Oriental Institute of Science & Technology.',
+      achievements: 'Grand Finalist Recognition - After weeks of intensive preparation and a grueling 36-hour finale, Team Haste delivered an innovative AI-driven solution for train induction planning at KMRL. The journey was marked by late-night coding marathons, debugging challenges, and unbreakable teamwork. While we didn\'t secure the trophy, we gained invaluable national-level exposure, real-world problem-solving experience, and proved our technical prowess. This wasn\'t a loss—it was our launchpad. Special thanks to our judges Dr. Amitava Akuli, Rajdeep Bhattacharya, and Amit Sarkar for their insightful guidance, and our mentors Dr. Abhishek Sharma and Dr. Prabhat Sharma for their unwavering support throughout the journey.',
       gallery: [
-        { src: '/image/codeUrja.jpeg', caption: 'Code Urja Event - Indore' },
-        { src: '/image/codeUrja.jpeg', caption: 'Team Working Session' },
-        { src: '/image/codeUrja.jpeg', caption: 'Prize Distribution - 2nd Position' },
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662013/portfolio-images/vjrrsg26b8lxjeekc3gc.jpg', caption: 'Team Assembled' },
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662013/portfolio-images/veqofodjqs1gfr5jaeqq.jpg', caption: 'Team Presentation' },
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662013/portfolio-images/oos7jp9q8yypoaqruobv.jpg', caption: 'Certificate Distribution' },
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/owywzopys0mwv1lgas2r.jpg', caption: 'Deployed App QR Code' },
       ],
       teamMembers: [
-        { name: 'Chaitanya Sharma', role: 'Lead Developer', image: '/image/myImage.jpg', linkedin: 'https://www.linkedin.com/in/chaitanya-sharma-799041301' },
-        { name: 'Team Member 2', role: 'DevOps Engineer', image: '/image/myImage.jpg', linkedin: 'https://www.linkedin.com/in/' },
-      ]
+        { name: 'Aditya Giri', role: 'React Developer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/ms8sxxzi011polvwfgqh.png', linkedin: 'https://www.linkedin.com/in/adityagiri14/' },
+        { name: 'Chaitanya Sharma', role: 'Android Developer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg', linkedin: 'https://www.linkedin.com/in/chaitanya-sharma-799041301' },
+        { name: 'Ansh Mishra', role: 'Backend Developer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662077/portfolio-images/ksa1nwlkvkwmni5fxtea.jpg', linkedin: 'https://www.linkedin.com/in/ansh-mishraa/' },
+        { name: 'Shrey Shrivastava', role: 'ML Engineer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662011/portfolio-images/mesisgunr5y6x7pd5gcy.jpg', linkedin: 'https://www.linkedin.com/in/shrey1184/' },
+        { name: 'Harshawardhan Shrivastava', role: 'AI Agents & Tools Master', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662012/portfolio-images/rd8k4wmidqdfi16jxyei.jpg', linkedin: 'https://www.linkedin.com/in/connect-harshawardhanshrivastava/' },
+        { name: 'Sanju Kumari', role: 'UI/UX & Project Management', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662012/portfolio-images/etihtjvroehvdxdxxu8m.jpg', linkedin: 'https://www.linkedin.com/in/sanju-kumari-42ba60285/' },
+      ],
+      projectLinks: {
+        github: 'https://github.com/41chaitanya/KMRL-SIH-2025-finalsol'
+      }
+    },
+    {
+      id: 2,
+      image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/yeivmtj2xeewts7nrjjk.jpg',
+      title: 'Ethos Hackathon - IIT Guwahati',
+      date: 'January 2025',
+      description: 'Top 5 Position - Campus Entity Resolution & Security Monitoring System with ML-powered entity resolution achieving 99.2% accuracy and predictive analytics with 94.3% location prediction accuracy.',
+      achievements: 'Developed a comprehensive campus security platform using the Fellegi-Sunter algorithm, XGBoost, and LSTM models with real-time anomaly detection. Built with MERN stack, Python FastAPI, Redis, and Neo4j, achieving sub-200ms response times and processing over 1000 records per minute. The system includes GDPR-compliant privacy features and reached 91.8% accuracy for activity prediction, making it a standout project among all participants.',
+      gallery: [
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/yeivmtj2xeewts7nrjjk.jpg', caption: 'Me in IIT Guwahati front of lake' },
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/vbhanlh2ed0pjeg1c8ai.jpg', caption: 'Team Presentation - Campus Security Platform' },
+        { src: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/qsqkgjtczjtq4bb3y5ew.jpg', caption: 'Certificate Distribution - Top 5 Winners' },
+      ],
+      teamMembers: [
+        { name: 'Chaitanya Sharma', role: 'ML Engineer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/zb6eerukzyxjuyapi5bu.jpg', linkedin: 'https://www.linkedin.com/in/chaitanya-sharma-799041301' },
+        { name: 'Aadarsh Dangi', role: 'Frontend Developer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662011/portfolio-images/ztrfs1qjhpf7ha6ram4d.jpg', linkedin: 'https://www.linkedin.com/in/aadarshdangi/' },
+        { name: 'Aditya Giri', role: 'Backend Developer', image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662014/portfolio-images/ms8sxxzi011polvwfgqh.png', linkedin: 'https://www.linkedin.com/in/adityagiri14/' },
+      ],
+      projectLinks: {
+        github: 'https://github.com/41chaitanya/campus-security-system',
+        demo: 'https://campus-security-system-six.vercel.app/loginpase'
+      }
     }
   ];
 
@@ -60,11 +97,11 @@ export default function Home() {
       <div className="profile-section">
         <div 
           className="profile-circle"
-          onClick={() => window.open('/image/myImage.jpg', '_blank')}
+          onClick={() => window.open('https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg', '_blank')}
           style={{ cursor: 'pointer' }}
         >
           <img 
-            src="/image/myImage.jpg" 
+            src='https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg' 
             alt="Profile" 
             className="profile-image"
           />
@@ -91,8 +128,9 @@ export default function Home() {
           </p>
           <p>
             I'm eager to explore microservices, database design, and RESTful APIs. With dedication and continuous 
-            learning, I'm committed to growing my skills and contributing to meaningful projects. Let's build 
-            something great together!
+            learning, I'm committed to growing my skills and contributing to meaningful projects. Recently, I was honored 
+            to compete as a <strong>Grand Finalist at Smart India Hackathon 2025</strong>, a prestigious national-level innovation 
+            platform. Let's build something great together!
           </p>
         </div>
 
@@ -158,65 +196,26 @@ export default function Home() {
       <div style={{ marginTop: '60px', maxWidth: '800px' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '40px', marginTop: '40px', textAlign: 'left', position: 'relative', paddingBottom: '15px' }} className="home-section-title">Featured Projects</h2>
         <div className="home-projects-grid">
-          <div className="home-project-card">
-            <div className="home-project-image-wrapper">
-              <img src="/image/project1.jpg" alt="Campus Security Platform" className="home-project-image" />
-            </div>
-            <div className="home-project-content">
-              <h3 className="home-project-title">Campus Entity Resolution & Security</h3>
-              <p className="home-project-desc">ML-powered security platform with 99.2% entity resolution accuracy and predictive analytics using XGBoost and LSTM.</p>
-              <div className="home-project-tech">
-                <span className="home-tech-tag">Python</span>
-                <span className="home-tech-tag">FastAPI</span>
-                <span className="home-tech-tag">Neo4j</span>
+          {homeProjects.map((project) => (
+            <div 
+              key={project.id} 
+              className="home-project-card"
+              onClick={() => handleProjectClick(project)}
+            >
+              <div className="home-project-image-wrapper">
+                <img src={project.image} alt={project.title} className="home-project-image" />
+              </div>
+              <div className="home-project-content">
+                <h3 className="home-project-title">{project.title}</h3>
+                <p className="home-project-desc">{project.description}</p>
+                <div className="home-project-tech">
+                  {project.tech.map((tech, index) => (
+                    <span key={index} className="home-tech-tag">{tech}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="home-project-card">
-            <div className="home-project-image-wrapper">
-              <img src="/image/project2.jpg" alt="Online Banking Portal" className="home-project-image" />
-            </div>
-            <div className="home-project-content">
-              <h3 className="home-project-title">Online Banking Portal</h3>
-              <p className="home-project-desc">Full-stack banking platform with account management, fund transfers, and real-time notifications using Spring Boot and Kafka.</p>
-              <div className="home-project-tech">
-                <span className="home-tech-tag">Spring Boot</span>
-                <span className="home-tech-tag">PostgreSQL</span>
-                <span className="home-tech-tag">Kafka</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="home-project-card">
-            <div className="home-project-image-wrapper">
-              <img src="/image/project3.jpg" alt="Trading Dashboard" className="home-project-image" />
-            </div>
-            <div className="home-project-content">
-              <h3 className="home-project-title">Real-Time Trading Dashboard</h3>
-              <p className="home-project-desc">Trading analytics dashboard for live stock, derivatives, and FX markets with real-time price updates and interactive charts.</p>
-              <div className="home-project-tech">
-                <span className="home-tech-tag">React</span>
-                <span className="home-tech-tag">Spring Boot</span>
-                <span className="home-tech-tag">Kafka</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="home-project-card">
-            <div className="home-project-image-wrapper">
-              <img src="/image/project4.jpg" alt="Workflow Automation" className="home-project-image" />
-            </div>
-            <div className="home-project-content">
-              <h3 className="home-project-title">Workflow Automation Portal</h3>
-              <p className="home-project-desc">Automation platform enabling multi-step workflows with event-driven execution and visual workflow design using Spring Boot and MongoDB.</p>
-              <div className="home-project-tech">
-                <span className="home-tech-tag">Spring Boot</span>
-                <span className="home-tech-tag">MongoDB</span>
-                <span className="home-tech-tag">React</span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
         <button className="see-all-projects-button" onClick={() => navigate('/projects')}>
           See All Projects
@@ -245,6 +244,12 @@ export default function Home() {
         isOpen={isModalOpen}
         hackathon={selectedHackathon}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      <ProjectDetailModal 
+        isOpen={isProjectModalOpen}
+        project={selectedProject}
+        onClose={() => setIsProjectModalOpen(false)}
       />
     </div>
   );

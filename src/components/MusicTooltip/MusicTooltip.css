@@ -1,0 +1,99 @@
+.music-tooltip {
+  position: fixed;
+  z-index: 9998;
+  animation: fadeInBounce 0.5s ease-out, pulse 2s ease-in-out infinite 0.5s;
+  pointer-events: none;
+  transform: translate(20px, 20px);
+  transition: left 0.1s ease-out, top 0.1s ease-out;
+}
+
+.music-tooltip-arrow {
+  position: absolute;
+  top: -30px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 30px solid rgba(168, 85, 247, 0.9);
+  transform: rotate(-45deg);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.music-tooltip-content {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.music-tooltip-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(5px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Fade out animation when hiding */
+.music-tooltip.hiding {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+}
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+  .music-tooltip {
+    top: 70px;
+    left: 70px;
+  }
+  
+  .music-tooltip-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .music-tooltip {
+    display: none;
+  }
+}

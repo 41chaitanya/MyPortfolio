@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaLinkedin } from 'react-icons/fa';
+import { FaTimes, FaLinkedin, FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
 import './HackathonDetailModal.css';
 
 export default function HackathonDetailModal({ isOpen, hackathon, onClose }) {
@@ -117,6 +117,37 @@ export default function HackathonDetailModal({ isOpen, hackathon, onClose }) {
                 <div className="hackathon-modal-section">
                   <h2 className="hackathon-modal-section-title">Achievements</h2>
                   <p className="hackathon-modal-achievements">{hackathon.achievements}</p>
+                </div>
+              )}
+
+              {/* Project Links Section */}
+              {hackathon.projectLinks && (
+                <div className="hackathon-modal-section">
+                  <h2 className="hackathon-modal-section-title">Project Links</h2>
+                  <div className="hackathon-project-links">
+                    {hackathon.projectLinks.github && (
+                      <a 
+                        href={hackathon.projectLinks.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hackathon-project-link"
+                      >
+                        <FaGithub size={20} />
+                        <span>View on GitHub</span>
+                      </a>
+                    )}
+                    {hackathon.projectLinks.demo && (
+                      <a 
+                        href={hackathon.projectLinks.demo} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hackathon-project-link"
+                      >
+                        <FaExternalLinkAlt size={18} />
+                        <span>Live Demo</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

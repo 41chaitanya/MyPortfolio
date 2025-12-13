@@ -1,0 +1,177 @@
+/* Mobile Touch Optimizations */
+
+/* Remove tap highlight and improve touch response */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection for readable content */
+p, span, h1, h2, h3, h4, h5, h6, li {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Smooth scrolling for mobile */
+html {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Better touch targets - minimum 44x44px */
+button, a, [role="button"], .achievement-card, .project-card, .event-card {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* Active states for touch feedback */
+button:active, 
+a:active, 
+[role="button"]:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* Card touch feedback */
+.achievement-card:active,
+.project-card:active,
+.event-card:active,
+.home-achievement-card:active,
+.home-project-card:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  button, a[role="button"] {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  /* Better spacing for cards */
+  .achievement-card,
+  .project-card,
+  .event-card {
+    margin-bottom: 16px;
+  }
+
+  /* Optimize modal for mobile */
+  .hackathon-modal-backdrop,
+  .project-modal-backdrop {
+    backdrop-filter: blur(8px);
+  }
+
+  /* Prevent body scroll when modal is open */
+  body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  /* Better image loading */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* Optimize animations for mobile */
+  * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
+  }
+
+  /* Reduce motion for better performance */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  /* Even larger touch targets */
+  button, a[role="button"] {
+    padding: 14px 24px;
+    font-size: 1.05rem;
+  }
+
+  /* Full-width buttons on small screens */
+  .contact-button,
+  .cv-button,
+  .see-more-button,
+  .see-all-projects-button,
+  .see-all-hackathons-button,
+  .load-more-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Stack social icons vertically if needed */
+  .social-icons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Better modal spacing */
+  .hackathon-modal-content,
+  .project-modal-content {
+    padding: 16px;
+  }
+
+  /* Optimize grid layouts */
+  .achievements-grid,
+  .projects-grid,
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 896px) and (orientation: landscape) {
+  .page-container {
+    padding: 16px;
+  }
+
+  .hackathon-modal-content,
+  .project-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for iOS Safari bottom bar */
+  .page-container {
+    min-height: -webkit-fill-available;
+  }
+
+  /* Prevent zoom on input focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Android specific fixes */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .achievement-card:hover,
+  .project-card:hover,
+  .event-card:hover {
+    transform: none;
+  }
+
+  /* Use active state instead */
+  .achievement-card:active,
+  .project-card:active,
+  .event-card:active {
+    transform: scale(0.97);
+    box-shadow: 0 5px 15px rgba(250, 250, 250, 0.08);
+  }
+}

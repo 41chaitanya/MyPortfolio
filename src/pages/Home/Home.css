@@ -35,12 +35,6 @@
   image-rendering: crisp-edges;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  filter: grayscale(100%);
-  transition: filter 0.3s ease;
-}
-
-.profile-circle:hover .profile-image {
-  filter: grayscale(0%);
 }
 
 .greeting {

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import './Loading.css';
 
 export default function Loading({ onLoadComplete }) {
-  const [countdown, setCountdown] = useState(8);
+  const [countdown, setCountdown] = useState(3);
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
@@ -108,14 +108,14 @@ export default function Loading({ onLoadComplete }) {
           <div className="progress-bar">
             <motion.div
               className="progress-fill"
-              animate={{ width: `${((8 - countdown) / 8) * 100}%` }}
+              animate={{ width: `${((3 - countdown) / 3) * 100}%` }}
               transition={{
                 duration: 0.5,
                 ease: 'easeInOut',
               }}
             ></motion.div>
           </div>
-          <p className="progress-text">{Math.round(((8 - countdown) / 8) * 100)}%</p>
+          <p className="progress-text">{Math.round(((3 - countdown) / 3) * 100)}%</p>
         </motion.div>
       </motion.div>
 
