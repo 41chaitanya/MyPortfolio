@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { FaArrowLeft, FaGithub, FaEnvelope, FaStar, FaCodeBranch } from 'react-icons/fa';
+import { useState, useEffect, useRef } from 'react';
+import { FaArrowLeft, FaGithub, FaEnvelope, FaStar, FaCodeBranch, FaDiscord, FaGlobe, FaUsers, FaUserPlus, FaTimes, FaCheckCircle, FaLinkedin, FaPhone } from 'react-icons/fa';
 import './CommunityDetail.css';
 
 export default function CommunityDetail() {
@@ -8,26 +8,82 @@ export default function CommunityDetail() {
   const navigate = useNavigate();
   const [githubRepos, setGithubRepos] = useState([]);
   const [loadingRepos, setLoadingRepos] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(slug === 'com.the-boys-dev');
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [joinFormData, setJoinFormData] = useState({
+    email: '',
+    githubUrl: '',
+    linkedinUrl: '',
+    contactNumber: ''
+  });
+  const [joinLoading, setJoinLoading] = useState(false);
+  const videoRef = useRef(null);
 
   const communityData = {
     'debug-oist': {
-      name: 'Debug OIST',
-      logo: '🐛',
+      name: 'OIST PROGRAMMING CLUB',
+      logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg',
       color: '#ef4444',
-      description: 'A community of passionate developers at OIST focused on debugging, problem-solving, and collaborative coding.',
-      members: [],
-      githubOrgName: null,
-      githubOrgUrl: null,
-      ownerEmail: null
+      description: 'think. build. deploy.',
+      wallpaper: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg',
+      followers: 12,
+      website: 'https://debugoist.nevernever.me/',
+      discordUrl: 'https://discord.gg/JHGbXMsg43',
+      discordJoinUrl: 'https://discord.gg/JHGbXMsg43',
+      discordChannelUrl: 'https://discord.gg/JHGbXMsg43',
+      githubOrgName: 'Nev-Labs',
+      githubOrgUrl: 'https://github.com/orgs/Nev-Labs',
+      ownerEmail: null,
+      members: [
+        {
+          name: 'Ashish Baghel',
+          role: 'Owner',
+          github: 'nevernever69',
+          image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png'
+        },
+        {
+          name: 'Chaitanya Sharma',
+          role: 'Member',
+          github: '41chaitanya',
+          image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg'
+        },
+        {
+          name: 'Aryan Kumar',
+          role: 'Member',
+          github: 'AryanKumarOfficial',
+          image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png'
+        },
+        {
+          name: 'Devashish',
+          role: 'Member',
+          github: 'devashish2006',
+          image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png'
+        },
+        {
+          name: 'Dhruv Bhardwaj',
+          role: 'Member',
+          github: 'LogicIsPlantingBomb',
+          image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png'
+        },
+        {
+          name: 'Nalin Dalal',
+          role: 'Member',
+          github: 'NalinDalal',
+          image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png'
+        }
+      ]
     },
     'com.the-boys-dev': {
       name: 'com.the-boys-dev',
-      logo: 'https://wallpapers.com/images/featured/the-boys-1fe3hnl120ch1bc6.jpg',
+      logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704388/portfolio-images/zw2ml9hamyshiieznbwz.jpg',
       color: '#a855f7',
       description: 'Helping fellow devs level up — no corporate fluff',
       wallpaper: 'https://wallpapers.com/images/featured/the-boys-1fe3hnl120ch1bc6.jpg',
       githubOrgName: 'com-the-boys-dev',
       githubOrgUrl: 'https://github.com/com-the-boys-dev',
+      discordJoinUrl: 'https://discord.gg/T2ySxBxRzP',
+      discordChannelUrl: 'https://discord.com/channels/1356022855183237211/1356022856013582579',
       ownerEmail: 'chaitanya4141sharma@gmail.com',
       members: [
         {
@@ -67,20 +123,32 @@ export default function CommunityDetail() {
           image: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662012/portfolio-images/it3ilkcmlz7rtqd4s4hv.jpg'
         }
       ]
-    },
-    'code-crew': {
-      name: 'Code Crew',
-      logo: '🚀',
-      color: '#3b82f6',
-      description: 'Elite coding crew participating in hackathons, building innovative solutions, and pushing boundaries.',
-      members: [],
-      githubOrgName: null,
-      githubOrgUrl: null,
-      ownerEmail: null
     }
   };
 
   const community = communityData[slug];
+
+  // Handle preloader video for The Boys community
+  useEffect(() => {
+    if (slug === 'com.the-boys-dev' && videoRef.current) {
+      const video = videoRef.current;
+      
+      // Start video from beginning
+      video.currentTime = 0;
+      video.play().catch(console.error);
+      
+      // Hide preloader when video ends
+      const handleEnded = () => {
+        setShowPreloader(false);
+      };
+      
+      video.addEventListener('ended', handleEnded);
+      
+      return () => {
+        video.removeEventListener('ended', handleEnded);
+      };
+    }
+  }, [slug]);
 
   // Fetch GitHub organization repositories dynamically
   useEffect(() => {
@@ -101,6 +169,57 @@ export default function CommunityDetail() {
     }
   }, [community?.githubOrgName]);
 
+  // Handle join form input change
+  const handleJoinInputChange = (e) => {
+    const { name, value } = e.target;
+    setJoinFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle join form submit
+  const handleJoinSubmit = async (e) => {
+    e.preventDefault();
+    setJoinLoading(true);
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('subject', `Community Joining Request - ${community.name}`);
+      formDataToSend.append('email', joinFormData.email);
+      formDataToSend.append('message', `
+Community Joining Request
+
+Community: ${community.name}
+Email: ${joinFormData.email}
+GitHub URL: ${joinFormData.githubUrl}
+LinkedIn URL: ${joinFormData.linkedinUrl}
+Contact Number: ${joinFormData.contactNumber}
+      `);
+      formDataToSend.append('access_key', '7c3bbfa0-a611-4ab3-ab54-26e91d98a846');
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setShowJoinModal(false);
+        setShowSuccessModal(true);
+        setJoinFormData({ email: '', githubUrl: '', linkedinUrl: '', contactNumber: '' });
+      } else {
+        alert('Failed to send request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to send request. Please try again.');
+    } finally {
+      setJoinLoading(false);
+    }
+  };
+
   if (!community) {
     return (
       <div className="page-container community-detail-page">
@@ -115,6 +234,22 @@ export default function CommunityDetail() {
   }
 
   const isImageLogo = community.logo && community.logo.startsWith('http');
+
+  // Show preloader for The Boys community
+  if (showPreloader && slug === 'com.the-boys-dev') {
+    return (
+      <div className="preloader-container">
+        <video
+          ref={videoRef}
+          className="preloader-video"
+          muted
+          playsInline
+        >
+          <source src="/gifs/com_The_Boys_Preloader.mp4" type="video/mp4" />
+        </video>
+      </div>
+    );
+  }
 
   return (
     <div className="community-detail-page" style={community.wallpaper ? { 
@@ -146,6 +281,34 @@ export default function CommunityDetail() {
         <p className="community-detail-description">{community.description}</p>
         
         <div className="community-links">
+          {community.followers && (
+            <span className="followers-badge">
+              <FaUsers /> {community.followers} followers
+            </span>
+          )}
+          
+          {community.website && (
+            <a 
+              href={community.website} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="website-link"
+            >
+              <FaGlobe /> Website
+            </a>
+          )}
+          
+          {community.discordUrl && (
+            <a 
+              href={community.discordUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="discord-link"
+            >
+              <FaDiscord /> Discord
+            </a>
+          )}
+          
           {community.githubOrgUrl && (
             <a 
               href={community.githubOrgUrl} 
@@ -157,6 +320,17 @@ export default function CommunityDetail() {
             </a>
           )}
           
+          {community.discordChannelUrl && (
+            <a 
+              href={community.discordChannelUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="discord-channel-link"
+            >
+              <FaDiscord /> Discord Channel
+            </a>
+          )}
+          
           {community.ownerEmail && (
             <a 
               href={`mailto:${community.ownerEmail}`}
@@ -165,6 +339,13 @@ export default function CommunityDetail() {
               <FaEnvelope /> {community.ownerEmail}
             </a>
           )}
+          
+          <button 
+            onClick={() => setShowJoinModal(true)}
+            className="join-community-btn"
+          >
+            <FaUserPlus /> Request to Join
+          </button>
         </div>
       </div>
 
@@ -248,6 +429,125 @@ export default function CommunityDetail() {
           </div>
         )}
       </div>
+
+      {/* Join Community Modal */}
+      {showJoinModal && (
+        <div className="modal-overlay" onClick={() => setShowJoinModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowJoinModal(false)}>
+              <FaTimes />
+            </button>
+            <div className="modal-header">
+              <h2 className="modal-title">Request to Join</h2>
+              <p className="modal-subtitle">Fill in your details to request membership</p>
+            </div>
+            
+            <form className="join-form contact-form" onSubmit={handleJoinSubmit}>
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="your@email.com"
+                  value={joinFormData.email}
+                  onChange={handleJoinInputChange}
+                  required
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">GitHub URL</label>
+                <input
+                  type="url"
+                  name="githubUrl"
+                  placeholder="https://github.com/username"
+                  value={joinFormData.githubUrl}
+                  onChange={handleJoinInputChange}
+                  required
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">LinkedIn URL</label>
+                <input
+                  type="url"
+                  name="linkedinUrl"
+                  placeholder="https://linkedin.com/in/username"
+                  value={joinFormData.linkedinUrl}
+                  onChange={handleJoinInputChange}
+                  className="form-input"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label className="form-label">Contact</label>
+                <input
+                  type="tel"
+                  name="contactNumber"
+                  placeholder="+91 9876543210"
+                  value={joinFormData.contactNumber}
+                  onChange={handleJoinInputChange}
+                  required
+                  className="form-input"
+                />
+              </div>
+              
+              <button type="submit" className="submit-button" disabled={joinLoading}>
+                {joinLoading ? 'Sending...' : 'Submit Request'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="modal-overlay" onClick={() => setShowSuccessModal(false)}>
+          <div className="modal-card success-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setShowSuccessModal(false)}>
+              <FaTimes />
+            </button>
+            <div className="success-icon">
+              <FaCheckCircle />
+            </div>
+            <h2 className="modal-title">Request Sent Successfully!</h2>
+            <p className="modal-subtitle">Your request has been submitted. Join our community channels below:</p>
+            
+            <div className="success-links">
+              <a 
+                href={community.discordJoinUrl || 'https://discord.gg/T2ySxBxRzP'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="success-link discord"
+              >
+                <FaDiscord /> Join Discord Server
+              </a>
+              <a 
+                href={community.discordChannelUrl || 'https://discord.com/channels/1356022855183237211/1356022856013582579'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="success-link discord-channel"
+              >
+                <FaDiscord /> Discord Channel
+              </a>
+              <a 
+                href={community.githubOrgUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="success-link github"
+              >
+                <FaGithub /> GitHub Organization
+              </a>
+            </div>
+            
+            <button className="close-success-btn" onClick={() => setShowSuccessModal(false)}>
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

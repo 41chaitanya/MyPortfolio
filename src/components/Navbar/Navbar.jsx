@@ -22,7 +22,7 @@ export default function Navbar() {
     { path: '/about', icon: MdOutlineInfo, label: 'About' },
     { path: '/achievements', icon: MdEmojiEvents, label: 'Hackathons' },
     { path: '/projects', icon: MdOutlineWorkspaces, label: 'Projects' },
-    { path: '/community/com.the-boys-dev', icon: HiUserGroup, label: 'My Community' },
+    { path: '/community', icon: HiUserGroup, label: 'My Community' },
     { path: '/contact', icon: MdOutlineMailOutline, label: 'Contact' },
   ];
 

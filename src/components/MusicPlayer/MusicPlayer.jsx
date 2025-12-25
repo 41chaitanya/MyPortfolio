@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaPlay, FaPause, FaStepForward, FaStepBackward, 
@@ -12,6 +13,7 @@ const LOCAL_TRACKS = [
   { id: 2, name: 'BGMI Theme', artist: 'PUBG Mobile', file: '/audio/bgmiThemeSong.mp3' },
   { id: 3, name: 'GTA San Andreas Theme', artist: 'Young Maylay', file: '/audio/GTASanAndThemeSong.mp3' },
   { id: 4, name: 'RDR2 Theme', artist: 'Woody Jackson', file: '/audio/rdr2ThemeSong.mp3' },
+  { id: 5, name: 'The Boys BGM', artist: 'The Boys', file: '/audio/the boys bgm.mp3', isTheBoys: true },
 ];
 
 // JioSaavn API endpoints
@@ -21,7 +23,11 @@ const API_ENDPOINTS = [
   'https://jiosaavn-api.vercel.app'
 ];
 
+// The Boys BGM track index
+const THE_BOYS_TRACK_INDEX = 4;
+
 export default function MusicPlayer() {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -34,7 +40,8 @@ export default function MusicPlayer() {
     artist: t.artist,
     url: t.file,
     image: null,
-    isLocal: true
+    isLocal: true,
+    isTheBoys: t.isTheBoys || false
   })));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [volume, setVolume] = useState(0.5);
@@ -44,6 +51,8 @@ export default function MusicPlayer() {
   const [activeTab, setActiveTab] = useState('local');
   const [apiError, setApiError] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
+  const [theBoysModeActive, setTheBoysModeActive] = useState(false);
+  const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
   
   // Waveform animation
   const bars = 5;
@@ -63,6 +72,33 @@ export default function MusicPlayer() {
       setHeights(Array(bars).fill(0.1));
     }
   }, [isPlaying]);
+
+  // Auto-play The Boys BGM when on The Boys community page
+  useEffect(() => {
+    const isTheBoysCommunity = location.pathname === '/community/com.the-boys-dev';
+    
+    if (isTheBoysCommunity && !hasAutoPlayed) {
+      // Small delay to ensure preloader has finished
+      const timer = setTimeout(() => {
+        const theBoysBGM = playlist[THE_BOYS_TRACK_INDEX];
+        if (theBoysBGM) {
+          setCurrentTrack(theBoysBGM);
+          setCurrentIndex(THE_BOYS_TRACK_INDEX);
+          setVolume(0.3); // 30% volume for The Boys BGM
+          setTheBoysModeActive(true);
+          setIsPlaying(true);
+          setHasAutoPlayed(true);
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+    
+    // When leaving The Boys community page
+    if (!isTheBoysCommunity && theBoysModeActive) {
+      setTheBoysModeActive(false);
+    }
+  }, [location.pathname, hasAutoPlayed, playlist, theBoysModeActive]);
 
   // Search songs from JioSaavn
   const searchSongs = async (query) => {
@@ -285,12 +321,26 @@ export default function MusicPlayer() {
       {/* Waveform Music Button */}
       <motion.div className="music-toggle-container">
         <motion.button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            // If music is playing, toggle play/pause
+            if (currentTrack) {
+              setIsPlaying(!isPlaying);
+            } else {
+              // If no track, open the modal
+              setIsOpen(true);
+            }
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setIsOpen(true); // Right-click opens modal
+          }}
+          onDoubleClick={() => setIsOpen(true)} // Double-click opens modal
           initial={{ padding: '14px 14px' }}
           whileHover={{ padding: '18px 22px' }}
           whileTap={{ padding: '18px 22px' }}
           transition={{ duration: 1, bounce: 0.6, type: 'spring' }}
           className="music-waveform-btn"
+          title={currentTrack ? (isPlaying ? 'Click to pause' : 'Click to play') : 'Click to open music player'}
         >
           <motion.div className="waveform-bars">
             {heights.map((height, index) => (
@@ -303,7 +353,7 @@ export default function MusicPlayer() {
             ))}
           </motion.div>
         </motion.button>
-        <span className="music-label">🎵 Music</span>
+        <span className="music-label" onClick={() => setIsOpen(true)}>🎵 Music</span>
       </motion.div>
 
       {/* Music Player Modal */}

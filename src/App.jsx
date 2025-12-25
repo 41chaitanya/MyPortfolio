@@ -14,7 +14,6 @@ import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 import Community from './pages/Community';
 import CommunityDetail from './pages/CommunityDetail';
-import CommunityButton from './components/CommunityButton';
 import { AiOutlineHome } from 'react-icons/ai';
 import { MdOutlineInfo, MdEmojiEvents, MdOutlineWorkspaces, MdOutlineMailOutline } from 'react-icons/md';
 import { HiUserGroup } from 'react-icons/hi';
@@ -60,14 +59,13 @@ function App() {
             <CustomCursor />
             <Navbar />
             <MusicPlayer />
-            <CommunityButton />
             <FlowerMenu
               menuItems={[
                 { icon: AiOutlineHome, href: '/' },
                 { icon: MdOutlineInfo, href: '/about' },
                 { icon: MdEmojiEvents, href: '/achievements' },
                 { icon: MdOutlineWorkspaces, href: '/projects' },
-                { icon: HiUserGroup, href: '/community/com.the-boys-dev' },
+                { icon: HiUserGroup, href: '/community' },
                 { icon: MdOutlineMailOutline, href: '/contact' },
               ]}
               backgroundColor="rgba(39, 39, 42, 0.95)"

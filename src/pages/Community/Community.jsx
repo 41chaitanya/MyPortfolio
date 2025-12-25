@@ -7,9 +7,9 @@ export default function Community() {
   const communities = [
     {
       id: 1,
-      name: 'Debug OIST',
-      description: 'A community of passionate developers at OIST focused on debugging, problem-solving, and collaborative coding.',
-      members: '50+',
+      name: 'OIST PROGRAMMING CLUB',
+      description: 'think. build. deploy.',
+      members: '12',
       route: '/community/debug-oist',
       icon: '🐛',
       color: '#ef4444'
@@ -22,15 +22,6 @@ export default function Community() {
       route: '/community/com.the-boys-dev',
       icon: '👨‍💻',
       color: '#a855f7'
-    },
-    {
-      id: 3,
-      name: 'Code Crew',
-      description: 'Elite coding crew participating in hackathons, building innovative solutions, and pushing boundaries.',
-      members: '15+',
-      route: '/community/code-crew',
-      icon: '🚀',
-      color: '#3b82f6'
     }
   ];
 
