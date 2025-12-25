@@ -5,16 +5,24 @@ import { MdOutlineInfo } from 'react-icons/md';
 import { MdEmojiEvents } from 'react-icons/md';
 import { MdOutlineWorkspaces } from 'react-icons/md';
 import { MdOutlineMailOutline } from 'react-icons/md';
+import { HiUserGroup } from 'react-icons/hi';
 import './Navbar.css';
 
 export default function Navbar() {
   const location = useLocation();
+
+  // Hide navbar on individual community pages (but show on /community)
+  const isCommunityDetailPage = location.pathname.startsWith('/community/');
+  if (isCommunityDetailPage) {
+    return null;
+  }
 
   const navItems = [
     { path: '/', icon: AiOutlineHome, label: 'Home' },
     { path: '/about', icon: MdOutlineInfo, label: 'About' },
     { path: '/achievements', icon: MdEmojiEvents, label: 'Hackathons' },
     { path: '/projects', icon: MdOutlineWorkspaces, label: 'Projects' },
+    { path: '/community/com.the-boys-dev', icon: HiUserGroup, label: 'My Community' },
     { path: '/contact', icon: MdOutlineMailOutline, label: 'Contact' },
   ];
 

@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FlowerMenu from './components/FlowerMenu';
-import MusicToggleButton from './components/MusicToggleButton';
+import MusicPlayer from './components/MusicPlayer';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
-import MusicTooltip from './components/MusicTooltip';
 import Loading from './pages/Loading';
 import Home from './pages/Home';
 import About from './pages/About';
 import Achievements from './pages/Achievements';
 import Projects from './pages/Projects';
 import Contact from './pages/Contact';
+import Community from './pages/Community';
+import CommunityDetail from './pages/CommunityDetail';
+import CommunityButton from './components/CommunityButton';
 import { AiOutlineHome } from 'react-icons/ai';
 import { MdOutlineInfo, MdEmojiEvents, MdOutlineWorkspaces, MdOutlineMailOutline } from 'react-icons/md';
+import { HiUserGroup } from 'react-icons/hi';
 import './App.css';
 import './mobile-optimizations.css';
+
+// Wrapper component to conditionally render Footer
+function ConditionalFooter() {
+  const location = useLocation();
+  const isCommunityDetailPage = location.pathname.startsWith('/community/');
+  
+  if (isCommunityDetailPage) {
+    return null;
+  }
+  return <Footer />;
+}
 
 function App() {
   const [showLoading, setShowLoading] = useState(true);
@@ -44,15 +58,16 @@ function App() {
           <Router>
             <ScrollToTop />
             <CustomCursor />
-            <MusicTooltip />
             <Navbar />
-            <MusicToggleButton />
+            <MusicPlayer />
+            <CommunityButton />
             <FlowerMenu
               menuItems={[
                 { icon: AiOutlineHome, href: '/' },
                 { icon: MdOutlineInfo, href: '/about' },
                 { icon: MdEmojiEvents, href: '/achievements' },
                 { icon: MdOutlineWorkspaces, href: '/projects' },
+                { icon: HiUserGroup, href: '/community/com.the-boys-dev' },
                 { icon: MdOutlineMailOutline, href: '/contact' },
               ]}
               backgroundColor="rgba(39, 39, 42, 0.95)"
@@ -66,6 +81,8 @@ function App() {
               <Route path="/achievements" element={<Achievements />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/community/:slug" element={<CommunityDetail />} />
             </Routes>
             <Footer />
           </Router>
