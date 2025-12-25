@@ -235,29 +235,58 @@ Contact Number: ${joinFormData.contactNumber}
 
   const isImageLogo = community.logo && community.logo.startsWith('http');
 
-  // Show preloader for The Boys community
-  if (showPreloader && slug === 'com.the-boys-dev') {
-    return (
-      <div className="preloader-container">
-        <video
-          ref={videoRef}
-          className="preloader-video"
-          muted
-          playsInline
-        >
-          <source src="/gifs/com_The_Boys_Preloader.mp4" type="video/mp4" />
-        </video>
-      </div>
-    );
-  }
+  // Preload images during video playback
+  useEffect(() => {
+    if (slug === 'com.the-boys-dev' && community) {
+      // Preload wallpaper
+      if (community.wallpaper) {
+        const wallpaperImg = new Image();
+        wallpaperImg.src = community.wallpaper;
+      }
+      // Preload logo
+      if (community.logo) {
+        const logoImg = new Image();
+        logoImg.src = community.logo;
+      }
+      // Preload member images
+      community.members?.forEach(member => {
+        if (member.image) {
+          const memberImg = new Image();
+          memberImg.src = member.image;
+        }
+      });
+    }
+  }, [slug, community]);
 
   return (
-    <div className="community-detail-page" style={community.wallpaper ? { 
-      backgroundImage: `linear-gradient(to bottom, rgba(9, 9, 11, 0.7), rgba(9, 9, 11, 0.95)), url(${community.wallpaper})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    } : {}}>
+    <>
+      {/* Preloader for The Boys community - renders on top */}
+      {showPreloader && slug === 'com.the-boys-dev' && (
+        <div className="preloader-container">
+          <video
+            ref={videoRef}
+            className="preloader-video"
+            muted
+            playsInline
+          >
+            <source src="/gifs/com_The_Boys_Preloader.mp4" type="video/mp4" />
+          </video>
+        </div>
+      )}
+
+      {/* Main content - renders behind preloader to preload images */}
+      <div 
+        className="community-detail-page" 
+        style={{
+          ...(community.wallpaper ? { 
+            backgroundImage: `linear-gradient(to bottom, rgba(9, 9, 11, 0.7), rgba(9, 9, 11, 0.95)), url(${community.wallpaper})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
+          } : {}),
+          visibility: showPreloader ? 'hidden' : 'visible'
+        }}
+      >
       
       <button onClick={() => navigate('/community')} className="back-button">
         <FaArrowLeft /> Back to Communities
@@ -549,6 +578,7 @@ Contact Number: ${joinFormData.contactNumber}
         </div>
       )}
     </div>
+    </>
   );
 }
 

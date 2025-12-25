@@ -11,7 +11,7 @@ export default function Community() {
       description: 'think. build. deploy.',
       members: '12',
       route: '/community/debug-oist',
-      icon: '🐛',
+      logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg',
       color: '#ef4444'
     },
     {
@@ -20,7 +20,7 @@ export default function Community() {
       description: 'Helping fellow devs level up — no corporate fluff',
       members: '6',
       route: '/community/com.the-boys-dev',
-      icon: '👨‍💻',
+      logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704388/portfolio-images/zw2ml9hamyshiieznbwz.jpg',
       color: '#a855f7'
     }
   ];
@@ -43,7 +43,11 @@ export default function Community() {
               className="community-icon" 
               style={{ backgroundColor: `${community.color}20`, borderColor: community.color }}
             >
-              <span>{community.icon}</span>
+              {community.logo ? (
+                <img src={community.logo} alt={community.name} className="community-logo-img" />
+              ) : (
+                <span>{community.icon}</span>
+              )}
             </div>
             <div className="community-content">
               <h3 className="community-name">{community.name}</h3>
