@@ -86,4 +86,45 @@ public class GitHubService {
             return List.of();
         }
     }
+
+    /**
+     * Fetch org members with full details (name, bio, avatar, etc.)
+     */
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> getOrgMembersWithDetails(String orgName) {
+        List<Map<String, Object>> members = getOrgMembers(orgName);
+        List<Map<String, Object>> detailedMembers = new ArrayList<>();
+        
+        for (Map<String, Object> member : members) {
+            String username = (String) member.get("login");
+            Map<String, Object> userDetails = getGitHubUser(username);
+            
+            if (userDetails != null) {
+                Map<String, Object> memberData = new HashMap<>();
+                memberData.put("name", userDetails.get("name") != null ? userDetails.get("name") : username);
+                memberData.put("githubUsername", username);
+                memberData.put("githubUrl", userDetails.get("html_url"));
+                memberData.put("image", userDetails.get("avatar_url"));
+                memberData.put("bio", userDetails.get("bio"));
+                memberData.put("location", userDetails.get("location"));
+                memberData.put("company", userDetails.get("company"));
+                memberData.put("blog", userDetails.get("blog"));
+                memberData.put("twitter", userDetails.get("twitter_username"));
+                memberData.put("publicRepos", userDetails.get("public_repos"));
+                memberData.put("followers", userDetails.get("followers"));
+                memberData.put("role", member.get("role") != null ? member.get("role") : "Member");
+                detailedMembers.add(memberData);
+            }
+        }
+        return detailedMembers;
+    }
+
+    private static final Map<String, String> COMMUNITY_TO_ORG = Map.of(
+        "com.the-boys-dev", "com-the-boys-dev",
+        "debug-oist", "Nev-Labs"
+    );
+
+    public String getOrgNameForCommunity(String communitySlug) {
+        return COMMUNITY_TO_ORG.get(communitySlug);
+    }
 }

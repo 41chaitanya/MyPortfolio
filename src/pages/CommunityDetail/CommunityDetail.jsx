@@ -53,9 +53,34 @@ export default function CommunityDetail() {
 
 
   useEffect(() => { 
-    // Try to fetch members from backend first, fallback to static data
+    // Try to fetch members from GitHub via backend, then DB, then fallback
     const fetchMembers = async () => {
       try {
+        // First try GitHub org members
+        const ghResponse = await fetch(`${API_URL}/api/members/github/${slug}`);
+        if (ghResponse.ok) {
+          const ghData = await ghResponse.json();
+          if (ghData.success && ghData.data?.length > 0) {
+            // Map GitHub data to member format
+            const ghMembers = ghData.data.map(m => ({
+              name: m.name || m.githubUsername,
+              role: m.role === 'admin' ? 'Owner' : 'Member',
+              githubUrl: m.githubUrl,
+              image: m.image,
+              teams: [], // GitHub doesn't have team info
+              bio: m.bio,
+              linkedinUrl: null
+            }));
+            setMembers(ghMembers);
+            return;
+          }
+        }
+      } catch (err) {
+        console.log('GitHub fetch failed, trying DB');
+      }
+      
+      try {
+        // Then try DB members
         const response = await fetch(`${API_URL}/api/members/community/${slug}`);
         if (response.ok) {
           const data = await response.json();

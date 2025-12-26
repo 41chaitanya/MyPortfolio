@@ -3,6 +3,7 @@ package com.chaitanya.portfolio.controller;
 import com.chaitanya.portfolio.dto.ApiResponse;
 import com.chaitanya.portfolio.dto.JoinCommunityRequest;
 import com.chaitanya.portfolio.model.Member;
+import com.chaitanya.portfolio.service.GitHubService;
 import com.chaitanya.portfolio.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/members")
@@ -17,6 +19,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final GitHubService gitHubService;
 
     // Submit join request (creates pending member)
     @PostMapping("/join")
@@ -103,6 +106,23 @@ public class MemberController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                 .body(ApiResponse.error("Failed to delete member: " + e.getMessage()));
+        }
+    }
+
+    // Fetch members directly from GitHub organization
+    @GetMapping("/github/{communitySlug}")
+    public ResponseEntity<ApiResponse> getGitHubOrgMembers(@PathVariable String communitySlug) {
+        try {
+            String orgName = gitHubService.getOrgNameForCommunity(communitySlug);
+            if (orgName == null) {
+                return ResponseEntity.badRequest()
+                    .body(ApiResponse.error("Unknown community: " + communitySlug));
+            }
+            List<Map<String, Object>> members = gitHubService.getOrgMembersWithDetails(orgName);
+            return ResponseEntity.ok(ApiResponse.success("GitHub members fetched", members));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body(ApiResponse.error("Failed to fetch GitHub members: " + e.getMessage()));
         }
     }
 }
