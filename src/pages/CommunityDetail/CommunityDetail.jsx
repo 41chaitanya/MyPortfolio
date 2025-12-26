@@ -53,66 +53,25 @@ export default function CommunityDetail() {
 
 
   useEffect(() => { 
-    // Fetch members directly from GitHub organization API
+    // Fetch members from MongoDB via backend API
     const fetchMembers = async () => {
-      if (!community?.githubOrgName) {
-        setMembers(fallbackMembers[slug] || []);
-        return;
-      }
-
       try {
-        // Fetch org members list
-        const membersRes = await fetch(`https://api.github.com/orgs/${community.githubOrgName}/members?per_page=50`);
-        if (!membersRes.ok) throw new Error('Failed to fetch org members');
-        
-        const orgMembers = await membersRes.json();
-        
-        // Fetch detailed info for each member
-        const detailedMembers = await Promise.all(
-          orgMembers.map(async (member) => {
-            try {
-              const userRes = await fetch(`https://api.github.com/users/${member.login}`);
-              const userData = await userRes.json();
-              
-              return {
-                name: userData.name || userData.login,
-                githubUsername: userData.login,
-                role: member.role === 'admin' ? 'Owner' : 'Member',
-                githubUrl: userData.html_url,
-                image: userData.avatar_url,
-                bio: userData.bio,
-                location: userData.location,
-                company: userData.company,
-                blog: userData.blog,
-                twitter: userData.twitter_username,
-                publicRepos: userData.public_repos,
-                followers: userData.followers,
-                teams: [], // GitHub API doesn't expose team info publicly
-                linkedinUrl: null
-              };
-            } catch {
-              return {
-                name: member.login,
-                githubUsername: member.login,
-                role: 'Member',
-                githubUrl: `https://github.com/${member.login}`,
-                image: member.avatar_url,
-                teams: [],
-                linkedinUrl: null
-              };
-            }
-          })
-        );
-        
-        setMembers(detailedMembers);
+        const response = await fetch(`${API_URL}/api/members/community/${slug}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data?.length > 0) {
+            setMembers(data.data);
+            return;
+          }
+        }
       } catch (err) {
-        console.log('GitHub API failed, using fallback:', err.message);
-        setMembers(fallbackMembers[slug] || []);
+        console.log('Backend not available, using fallback data');
       }
+      // Fallback to static data if backend unavailable
+      setMembers(fallbackMembers[slug] || []);
     };
-    
     fetchMembers();
-  }, [slug, community?.githubOrgName]);
+  }, [slug]);
   useEffect(() => { if (slug === 'com.the-boys-dev' && videoRef.current) { videoRef.current.play().catch(() => {}); videoRef.current.onended = () => setShowPreloader(false); } }, [slug]);
   useEffect(() => { if (community?.githubOrgName) fetch(`https://api.github.com/orgs/${community.githubOrgName}/repos?per_page=20`).then(r => r.json()).then(d => Array.isArray(d) && setRepos(d)).catch(() => {}); }, [community?.githubOrgName]);
 

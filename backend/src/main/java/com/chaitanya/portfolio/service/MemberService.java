@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -18,7 +17,9 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final GitHubService gitHubService;
+
+    // Default avatar images
+    private static final String MALE_AVATAR = "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png";
 
     public Member createMemberFromJoinRequest(JoinCommunityRequest request) {
         Optional<Member> existing = memberRepository.findByEmail(request.getEmail());
@@ -43,25 +44,11 @@ public class MemberService {
             request.getTeams()
         );
         
-        // Fetch GitHub avatar
-        String username = member.getGithubUsername();
-        if (username != null) {
-            Map<String, Object> ghUser = gitHubService.getGitHubUser(username);
-            if (ghUser != null && ghUser.get("avatar_url") != null) {
-                member.setImage((String) ghUser.get("avatar_url"));
-            }
-        }
-        
-        // Create GitHub issue for approval
-        Integer issueNum = gitHubService.createJoinRequestIssue(
-            member.getName(), member.getEmail(), member.getGithubUsername(),
-            member.getGithubUrl(), member.getLinkedinUrl(), member.getContactNumber(),
-            member.getTeams(), request.getCommunityName()
-        );
-        member.setGithubIssueNumber(issueNum);
+        // Set default avatar
+        member.setImage(MALE_AVATAR);
         
         Member saved = memberRepository.save(member);
-        log.info("Member created: {} (issue #{})", saved.getId(), issueNum);
+        log.info("Member created: {}", saved.getId());
         return saved;
     }
 

@@ -30,7 +30,6 @@ public class Member {
     private List<String> communities; // community slugs
     private List<PastWork> pastWork;
     private String status; // PENDING, APPROVED, REJECTED
-    private Integer githubIssueNumber; // GitHub issue number for tracking
     private LocalDateTime joinedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
