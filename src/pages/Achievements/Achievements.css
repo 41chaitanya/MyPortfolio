@@ -122,16 +122,76 @@
 }
 
 @media (max-width: 768px) {
+  .achievements-page {
+    padding: 20px 16px 100px;
+  }
+
+  .achievements-header {
+    margin-bottom: 40px;
+  }
+
   .achievements-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+  }
+
+  .achievements-subtitle {
+    font-size: 0.95rem;
   }
 
   .achievements-grid {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
+    max-width: 100%;
   }
 
   .achievement-image-wrapper {
-    height: 180px;
+    height: 170px;
+  }
+
+  .achievement-content {
+    padding: 16px;
+  }
+
+  .achievement-card-title {
+    font-size: 1.1rem;
+  }
+
+  .achievement-date {
+    font-size: 0.75rem;
+  }
+
+  .achievement-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .achievements-page {
+    padding: 16px 12px 100px;
+  }
+
+  .achievements-title {
+    font-size: 1.5rem;
+  }
+
+  .achievements-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .achievement-image-wrapper {
+    height: 150px;
+  }
+
+  .achievement-content {
+    padding: 14px;
+  }
+
+  .achievement-card-title {
+    font-size: 1rem;
+  }
+
+  .achievement-description {
+    font-size: 0.85rem;
   }
 }

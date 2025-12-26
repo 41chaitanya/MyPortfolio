@@ -1,21 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AiOutlineHome } from 'react-icons/ai';
-import { MdOutlineInfo, MdEmojiEvents, MdOutlineWorkspaces, MdOutlineMailOutline } from 'react-icons/md';
 
 const MenuToggler = ({
   isOpen,
   onChange,
   backgroundColor,
   iconColor,
-  animationDuration,
   togglerSize,
-  iconSize,
 }) => {
-  const lineHeight = iconSize * 0.1;
-  const lineWidth = iconSize * 0.8;
-  const lineSpacing = iconSize * 0.25;
-
   return (
     <>
       <input
@@ -28,40 +20,38 @@ const MenuToggler = ({
       />
       <label
         htmlFor="menu-toggler"
-        className="absolute inset-0 z-20 m-auto flex cursor-pointer items-center justify-center rounded-full transition-all"
+        className="absolute inset-0 z-20 m-auto flex cursor-pointer items-center justify-center"
         style={{
           backgroundColor,
           color: iconColor,
-          transitionDuration: `${animationDuration}ms`,
           width: togglerSize,
           height: togglerSize,
+          borderRadius: '50%',
+          border: '2px solid rgba(113, 113, 122, 0.8)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
         }}
       >
-        <span
-          className="relative flex flex-col items-center justify-center"
-          style={{ width: iconSize, height: iconSize }}
+        <svg 
+          width="22" 
+          height="22" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor"
+          style={{
+            transition: 'transform 0.3s ease',
+            transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+          }}
         >
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              className={`absolute bg-current transition-all ${
-                isOpen && i === 0
-                  ? 'opacity-0'
-                  : isOpen
-                    ? `${i === 1 ? 'rotate-45' : '-rotate-45'}`
-                    : ''
-              }`}
-              style={{
-                transitionDuration: `${animationDuration}ms`,
-                width: lineWidth,
-                height: lineHeight,
-                top: isOpen
-                  ? `calc(50% - ${lineHeight / 2}px)`
-                  : `calc(50% + ${(i - 1) * lineSpacing}px - ${lineHeight / 2}px)`,
-              }}
-            />
-          ))}
-        </span>
+          {isOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+          ) : (
+            <>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 12h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 18h16" />
+            </>
+          )}
+        </svg>
       </label>
     </>
   );
@@ -73,46 +63,45 @@ const MenuItem = ({
   isOpen,
   iconColor,
   backgroundColor,
-  animationDuration,
   itemCount,
   itemSize,
   iconSize,
+  onItemClick,
 }) => {
   const Icon = item.icon;
+  const angle = (360 / itemCount) * index;
+  const radius = itemSize + 35;
+  
   return (
     <li
-      className={`absolute inset-0 m-auto transition-all ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+      className="absolute inset-0 m-auto"
       style={{
         width: itemSize,
         height: itemSize,
+        opacity: isOpen ? 1 : 0,
         transform: isOpen
-          ? `rotate(${(360 / itemCount) * index}deg) translateX(-${itemSize + 30}px)`
-          : 'none',
-        transitionDuration: `${animationDuration}ms`,
+          ? `rotate(${angle}deg) translateX(-${radius}px)`
+          : 'rotate(0deg) translateX(0px)',
+        transition: 'all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        transitionDelay: isOpen ? `${index * 0.05}s` : '0s',
+        pointerEvents: isOpen ? 'auto' : 'none',
       }}
     >
       <Link
         to={item.href}
-        className={`flex h-full w-full items-center justify-center rounded-full opacity-60 transition-all duration-100 ${
-          isOpen ? 'pointer-events-auto' : 'pointer-events-none'
-        } group hover:scale-125 hover:opacity-100`}
+        className="flex h-full w-full items-center justify-center"
         style={{
           backgroundColor,
           color: iconColor,
-          transform: `rotate(-${(360 / itemCount) * index}deg)`,
-          transitionDuration: `${animationDuration}ms`,
+          transform: `rotate(-${angle}deg)`,
+          borderRadius: '50%',
+          border: '2px solid rgba(113, 113, 122, 0.8)',
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4)',
+          transition: 'all 0.2s ease',
         }}
-        onClick={() => {
-          // Close menu after clicking
-          setTimeout(() => {
-            document.getElementById('menu-toggler').checked = false;
-          }, 100);
-        }}
+        onClick={onItemClick}
       >
-        <Icon
-          className="transition-transform duration-200 group-hover:scale-125"
-          style={{ width: iconSize, height: iconSize }}
-        />
+        <Icon style={{ width: iconSize, height: iconSize }} />
       </Link>
     </li>
   );
@@ -122,22 +111,103 @@ export default function FlowerMenu({
   menuItems,
   iconColor = '#fafafa',
   backgroundColor = 'rgba(39, 39, 42, 0.95)',
-  animationDuration = 500,
-  togglerSize = 50,
+  togglerSize = 56,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 20, y: window.innerHeight - 100 });
+  const [position, setPosition] = useState({ x: 20, y: -1 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [showHint, setShowHint] = useState(true);
   const navRef = useRef(null);
 
   const itemCount = menuItems.length;
-  const itemSize = togglerSize * 1.8;
-  const iconSize = Math.max(24, Math.floor(togglerSize * 0.6));
+  const itemSize = 48;
+  const iconSize = 22;
+  const containerSize = togglerSize;
 
-  const handleMouseDown = (e) => {
-    if (isOpen) return; // Don't drag when menu is open
+  // Initialize position on mount
+  useEffect(() => {
+    const savedPosition = localStorage.getItem('flowerMenuPosition');
+    if (savedPosition) {
+      try {
+        const parsed = JSON.parse(savedPosition);
+        const maxX = window.innerWidth - containerSize - 10;
+        const maxY = window.innerHeight - containerSize - 10;
+        setPosition({
+          x: Math.min(Math.max(10, parsed.x), maxX),
+          y: Math.min(Math.max(10, parsed.y), maxY)
+        });
+      } catch (e) {
+        setPosition({ x: 20, y: window.innerHeight - 120 });
+      }
+    } else {
+      setPosition({ x: 20, y: window.innerHeight - 120 });
+    }
+    
+    // Hide hint after 5 seconds
+    const hintTimer = setTimeout(() => setShowHint(false), 5000);
+    return () => clearTimeout(hintTimer);
+  }, [containerSize]);
+
+  // Save position to localStorage
+  useEffect(() => {
+    if (position.y !== -1) {
+      localStorage.setItem('flowerMenuPosition', JSON.stringify(position));
+    }
+  }, [position]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      const maxX = window.innerWidth - containerSize - 10;
+      const maxY = window.innerHeight - containerSize - 10;
+      setPosition(prev => ({
+        x: Math.min(prev.x, maxX),
+        y: Math.min(prev.y, maxY)
+      }));
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [containerSize]);
+
+  // Touch handlers
+  const handleTouchStart = (e) => {
+    if (isOpen) return;
+    const touch = e.touches[0];
     setIsDragging(true);
+    setShowHint(false);
+    setDragOffset({
+      x: touch.clientX - position.x,
+      y: touch.clientY - position.y,
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    
+    let newX = touch.clientX - dragOffset.x;
+    let newY = touch.clientY - dragOffset.y;
+
+    const maxX = window.innerWidth - containerSize - 10;
+    const maxY = window.innerHeight - containerSize - 10;
+
+    setPosition({
+      x: Math.max(10, Math.min(newX, maxX)),
+      y: Math.max(10, Math.min(newY, maxY))
+    });
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Mouse handlers
+  const handleMouseDown = (e) => {
+    if (isOpen) return;
+    setIsDragging(true);
+    setShowHint(false);
     setDragOffset({
       x: e.clientX - position.x,
       y: e.clientY - position.y,
@@ -151,14 +221,13 @@ export default function FlowerMenu({
       let newX = e.clientX - dragOffset.x;
       let newY = e.clientY - dragOffset.y;
 
-      // Keep within screen bounds
-      const maxX = window.innerWidth - togglerSize * 3;
-      const maxY = window.innerHeight - togglerSize * 3;
+      const maxX = window.innerWidth - containerSize - 10;
+      const maxY = window.innerHeight - containerSize - 10;
 
-      newX = Math.max(0, Math.min(newX, maxX));
-      newY = Math.max(0, Math.min(newY, maxY));
-
-      setPosition({ x: newX, y: newY });
+      setPosition({
+        x: Math.max(10, Math.min(newX, maxX)),
+        y: Math.max(10, Math.min(newY, maxY))
+      });
     };
 
     const handleMouseUp = () => {
@@ -174,30 +243,49 @@ export default function FlowerMenu({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset, togglerSize]);
+  }, [isDragging, dragOffset, containerSize]);
+
+  const handleItemClick = () => {
+    setIsOpen(false);
+  };
+
+  // Don't render until position is initialized
+  if (position.y === -1) return null;
 
   return (
     <nav
       ref={navRef}
-      className="fixed md:hidden z-50 cursor-grab active:cursor-grabbing"
+      className="fixed md:hidden"
       style={{
-        width: togglerSize * 3,
-        height: togglerSize * 3,
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        transition: isDragging ? 'none' : 'all 0.3s ease',
+        width: containerSize,
+        height: containerSize,
+        left: position.x,
+        top: position.y,
+        zIndex: 9999,
+        touchAction: 'none',
+        cursor: isDragging ? 'grabbing' : 'grab',
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      <div className="relative w-full h-full">
+      {/* Menu items container - positioned relative to the button */}
+      <div 
+        className="absolute"
+        style={{
+          width: containerSize,
+          height: containerSize,
+          left: 0,
+          top: 0,
+        }}
+      >
         <MenuToggler
           isOpen={isOpen}
           onChange={() => setIsOpen(!isOpen)}
           backgroundColor={backgroundColor}
           iconColor={iconColor}
-          animationDuration={animationDuration}
           togglerSize={togglerSize}
-          iconSize={iconSize}
         />
         <ul className="absolute inset-0 m-0 h-full w-full list-none p-0">
           {menuItems.map((item, index) => (
@@ -208,14 +296,34 @@ export default function FlowerMenu({
               isOpen={isOpen}
               iconColor={iconColor}
               backgroundColor={backgroundColor}
-              animationDuration={animationDuration}
               itemCount={itemCount}
               itemSize={itemSize}
               iconSize={iconSize}
+              onItemClick={handleItemClick}
             />
           ))}
         </ul>
       </div>
+      
+      {/* Drag hint - fixed position relative to button */}
+      {!isOpen && showHint && !isDragging && (
+        <div 
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '100%',
+            transform: 'translateX(-50%)',
+            marginTop: '8px',
+            fontSize: '10px',
+            color: 'rgba(161, 161, 170, 0.8)',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+          }}
+        >
+          drag to move
+        </div>
+      )}
     </nav>
   );
 }

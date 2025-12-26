@@ -27,4 +27,6 @@ public class JoinCommunityRequest {
     private String contactNumber;
     
     private List<String> teams; // Backend, Frontend, Design, DevOps, etc.
+    private List<String> techStack; // JavaScript, React, Node.js, etc.
+    private String image; // Cloudinary URL
 }

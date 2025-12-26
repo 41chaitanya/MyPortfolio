@@ -70,8 +70,8 @@ function App() {
               ]}
               backgroundColor="rgba(39, 39, 42, 0.95)"
               iconColor="#fafafa"
-              animationDuration={400}
-              togglerSize={50}
+              animationDuration={350}
+              togglerSize={54}
             />
             <Routes>
               <Route path="/" element={<Home />} />

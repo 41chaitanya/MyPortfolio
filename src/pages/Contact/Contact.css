@@ -162,31 +162,81 @@
 }
 
 @media (max-width: 768px) {
+  .contact-page {
+    padding: 20px 16px;
+    align-items: flex-start;
+  }
+
+  .contact-wrapper {
+    width: 100%;
+  }
+
+  .contact-header {
+    margin-bottom: 30px;
+  }
+
   .contact-title {
-    font-size: 2rem;
+    font-size: 1.75rem;
+    margin-bottom: 20px;
   }
 
   .contact-subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .contact-form {
-    gap: 15px;
+    gap: 16px;
   }
 
   .form-group {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 8px;
   }
 
   .form-label {
     min-width: auto;
+    font-size: 0.9rem;
   }
 
   .form-input,
   .form-textarea {
     width: 100%;
+    padding: 12px 14px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .form-textarea {
+    min-height: 120px;
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-page {
+    padding: 16px 12px;
+  }
+
+  .contact-title {
+    font-size: 1.5rem;
+  }
+
+  .contact-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 10px 12px;
+  }
+
+  .form-textarea {
+    min-height: 100px;
   }
 }
 

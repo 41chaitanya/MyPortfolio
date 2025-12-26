@@ -1,0 +1,22 @@
+# Render.com Blueprint - Free Tier (No Credit Card Required)
+services:
+  - type: web
+    name: chaitanya-portfolio-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore
+    plan: free
+    healthCheckPath: /api/members
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATA_MONGODB_URI
+        sync: false
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        value: http://localhost:5173,https://chaitanya-dev.netlify.app

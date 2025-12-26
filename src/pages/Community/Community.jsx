@@ -1,15 +1,20 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { FaUsers } from 'react-icons/fa';
 import './Community.css';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 export default function Community() {
   const navigate = useNavigate();
+  const [memberCounts, setMemberCounts] = useState({});
 
   const communities = [
     {
       id: 1,
       name: 'OIST PROGRAMMING CLUB',
+      slug: 'debug-oist',
       description: 'think. build. deploy.',
-      members: '12',
       route: '/community/debug-oist',
       logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg',
       color: '#ef4444'
@@ -17,13 +22,28 @@ export default function Community() {
     {
       id: 2,
       name: 'com.the-boys-dev',
+      slug: 'com.the-boys-dev',
       description: 'Helping fellow devs level up — no corporate fluff',
-      members: '6',
       route: '/community/com.the-boys-dev',
       logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704388/portfolio-images/zw2ml9hamyshiieznbwz.jpg',
       color: '#a855f7'
     }
   ];
+
+  // Fetch member counts for each community
+  useEffect(() => {
+    communities.forEach(async (community) => {
+      try {
+        const res = await fetch(`${API_URL}/api/members/community/${community.slug}`);
+        const data = await res.json();
+        if (data.success) {
+          setMemberCounts(prev => ({ ...prev, [community.slug]: data.data?.length || 0 }));
+        }
+      } catch {
+        setMemberCounts(prev => ({ ...prev, [community.slug]: 0 }));
+      }
+    });
+  }, []);
 
   return (
     <div className="page-container community-page">
@@ -53,7 +73,7 @@ export default function Community() {
               <h3 className="community-name">{community.name}</h3>
               <p className="community-description">{community.description}</p>
               <div className="community-meta">
-                <span className="community-members">{community.members} Members</span>
+                <span className="community-members"><FaUsers /> {memberCounts[community.slug] ?? '...'} Members</span>
               </div>
             </div>
           </div>

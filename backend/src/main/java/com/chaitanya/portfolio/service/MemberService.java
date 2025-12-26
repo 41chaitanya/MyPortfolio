@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,8 +45,13 @@ public class MemberService {
             request.getTeams()
         );
         
-        // Set default avatar
-        member.setImage(MALE_AVATAR);
+        // Set tech stack and image
+        member.setTechStack(request.getTechStack() != null ? request.getTechStack() : new ArrayList<>());
+        // Use provided image or default
+        String imageUrl = request.getImage() != null && !request.getImage().isEmpty() 
+            ? request.getImage() 
+            : MALE_AVATAR;
+        member.setImage(imageUrl);
         
         Member saved = memberRepository.save(member);
         log.info("Member created: {}", saved.getId());

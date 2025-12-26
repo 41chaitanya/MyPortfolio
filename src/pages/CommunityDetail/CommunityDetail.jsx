@@ -1,10 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { FaArrowLeft, FaGithub, FaEnvelope, FaStar, FaCodeBranch, FaDiscord, FaGlobe, FaUsers, FaUserPlus, FaTimes, FaCheckCircle, FaLinkedin, FaChevronRight, FaCode, FaServer, FaPalette, FaCogs, FaSignInAlt, FaSignOutAlt, FaCrown, FaTrash, FaCheck, FaBan, FaKey } from 'react-icons/fa';
+import { FaArrowLeft, FaGithub, FaEnvelope, FaStar, FaCodeBranch, FaDiscord, FaGlobe, FaUsers, FaUserPlus, FaTimes, FaCheckCircle, FaLinkedin, FaChevronRight, FaCode, FaServer, FaPalette, FaCogs, FaSignInAlt, FaSignOutAlt, FaCrown, FaTrash, FaCheck, FaBan, FaCamera, FaEdit, FaSave, FaUser } from 'react-icons/fa';
+import { uploadToCloudinary, DEFAULT_MALE_IMAGE } from '../../utils/cloudinaryUpload';
 import './CommunityDetail.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 const TEAM_OPTIONS = ['Backend', 'Frontend', 'Design', 'DevOps'];
+const TECH_STACK_OPTIONS = ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Java', 'Spring Boot', 'MongoDB', 'PostgreSQL', 'AWS', 'Docker', 'Kubernetes', 'Go', 'Rust', 'C++', 'Flutter', 'React Native', 'Next.js', 'Vue.js', 'Angular'];
 
 const communityData = {
   'debug-oist': { name: 'OIST PROGRAMMING CLUB', logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg', color: '#ef4444', description: 'think. build. deploy.', wallpaper: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg', followers: 12, website: 'https://debugoist.nevernever.me/', discordUrl: 'https://discord.gg/JHGbXMsg43', discordJoinUrl: 'https://discord.gg/JHGbXMsg43', discordChannelUrl: 'https://discord.gg/JHGbXMsg43', githubOrgName: 'Nev-Labs', githubOrgUrl: 'https://github.com/orgs/Nev-Labs' },
@@ -41,20 +43,45 @@ export default function CommunityDetail() {
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileTab, setProfileTab] = useState('details'); // 'details' or 'contributions'
+  const [editMode, setEditMode] = useState(false);
+  const [profileForm, setProfileForm] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
-  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
-  const [forgotForm, setForgotForm] = useState({ email: '', newPassword: '' });
-  const [form, setForm] = useState({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], customTeam: '' });
+  const [loginStep, setLoginStep] = useState('email'); // 'email' or 'otp'
+  const [loginForm, setLoginForm] = useState({ email: '', otp: '' });
+  const [form, setForm] = useState({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], techStack: [], image: null, imagePreview: '' });
   const [showTeamDropdown, setShowTeamDropdown] = useState(false);
+  const [showTechDropdown, setShowTechDropdown] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Check for saved login
+  // Check for saved login (JWT token)
   useEffect(() => {
-    const saved = localStorage.getItem(`user_${slug}`);
-    if (saved) setCurrentUser(JSON.parse(saved));
+    const token = localStorage.getItem(`token_${slug}`);
+    const savedUser = localStorage.getItem(`user_${slug}`);
+    if (token && savedUser) {
+      // Validate token with backend
+      fetch(`${API_URL}/api/auth/validate`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(r => r.json())
+        .then(d => {
+          if (d.success) {
+            setCurrentUser(JSON.parse(savedUser));
+          } else {
+            // Token expired, clear storage
+            localStorage.removeItem(`token_${slug}`);
+            localStorage.removeItem(`user_${slug}`);
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem(`token_${slug}`);
+          localStorage.removeItem(`user_${slug}`);
+        });
+    }
   }, [slug]);
 
   // Fetch members
@@ -85,50 +112,53 @@ export default function CommunityDetail() {
   useEffect(() => { if (slug === 'com.the-boys-dev' && videoRef.current) { videoRef.current.play().catch(() => {}); videoRef.current.onended = () => setShowPreloader(false); } }, [slug]);
   useEffect(() => { if (community?.githubOrgName) fetch(`https://api.github.com/orgs/${community.githubOrgName}/repos?per_page=20`).then(r => r.json()).then(d => Array.isArray(d) && setRepos(d)).catch(() => {}); }, [community?.githubOrgName]);
 
-  // Login handler
-  const handleLogin = async (e) => {
+  // Send OTP handler
+  const handleSendOtp = async (e) => {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await fetch(`${API_URL}/api/members/login`, {
+      const res = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...loginForm, communitySlug: slug })
+        body: JSON.stringify({ email: loginForm.email, communitySlug: slug, communityName: community?.name })
       });
       const data = await res.json();
       if (data.success) {
-        setCurrentUser(data.data);
-        localStorage.setItem(`user_${slug}`, JSON.stringify(data.data));
-        setShowLoginModal(false);
-        setLoginForm({ email: '', password: '' });
-      } else { setError(data.message || 'Invalid credentials'); }
-    } catch { setError('Login failed. Try again.'); }
+        setLoginStep('otp');
+        setError('');
+      } else { setError(data.message || 'Failed to send OTP'); }
+    } catch { setError('Failed to send OTP. Try again.'); }
     finally { setLoading(false); }
   };
 
-  // Forgot password handler
-  const handleForgotPassword = async (e) => {
+  // Verify OTP handler
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await fetch(`${API_URL}/api/members/change-password`, {
+      const res = await fetch(`${API_URL}/api/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(forgotForm)
+        body: JSON.stringify({ email: loginForm.email, otp: loginForm.otp, communitySlug: slug })
       });
       const data = await res.json();
       if (data.success) {
-        setShowForgotPassword(false);
-        setForgotForm({ email: '', newPassword: '' });
-        alert('Password changed! You can now login.');
-      } else { setError(data.message || 'Failed to change password'); }
-    } catch { setError('Failed. Try again.'); }
+        // Save JWT token and user data
+        localStorage.setItem(`token_${slug}`, data.data.token);
+        localStorage.setItem(`user_${slug}`, JSON.stringify(data.data.user));
+        setCurrentUser(data.data.user);
+        setShowLoginModal(false);
+        setLoginForm({ email: '', otp: '' });
+        setLoginStep('email');
+      } else { setError(data.message || 'Invalid OTP'); }
+    } catch { setError('Verification failed. Try again.'); }
     finally { setLoading(false); }
   };
 
   // Logout
   const handleLogout = () => {
     setCurrentUser(null);
+    localStorage.removeItem(`token_${slug}`);
     localStorage.removeItem(`user_${slug}`);
     setShowAdminPanel(false);
   };
@@ -162,37 +192,109 @@ export default function CommunityDetail() {
     } catch { alert('Failed to kick member'); }
   };
 
+  // Handle image selection for join form
+  const handleImageSelect = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm(prev => ({ ...prev, image: file, imagePreview: URL.createObjectURL(file) }));
+    }
+  };
+
   // Join form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const allTeams = [...form.teams];
-    if (form.customTeam.trim()) allTeams.push(form.customTeam.trim());
     try {
+      // Upload image to Cloudinary if selected
+      let imageUrl = DEFAULT_MALE_IMAGE;
+      if (form.image) {
+        setUploading(true);
+        try {
+          imageUrl = await uploadToCloudinary(form.image);
+        } catch {
+          console.log('Image upload failed, using default');
+        }
+        setUploading(false);
+      }
+
       const response = await fetch(`${API_URL}/api/members/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: form.name, communityName: slug, email: form.email, githubUrl: form.githubUrl, linkedinUrl: form.linkedinUrl, contactNumber: form.contactNumber, teams: allTeams })
+        body: JSON.stringify({ name: form.name, communityName: slug, email: form.email, githubUrl: form.githubUrl, linkedinUrl: form.linkedinUrl, contactNumber: form.contactNumber, teams: form.teams, techStack: form.techStack, image: imageUrl })
       });
       if (response.ok) {
         setShowJoinModal(false); setShowSuccessModal(true);
-        setForm({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], customTeam: '' });
+        setForm({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], techStack: [], image: null, imagePreview: '' });
       } else throw new Error('Failed');
     } catch {
       // Fallback to Web3Forms
       const fd = new FormData();
       fd.append('subject', `Join Request - ${community?.name}`);
       fd.append('email', form.email);
-      fd.append('message', `Community: ${community?.name}\nName: ${form.name}\nEmail: ${form.email}\nGitHub: ${form.githubUrl}\nLinkedIn: ${form.linkedinUrl}\nContact: ${form.contactNumber}\nTeams: ${allTeams.join(', ')}`);
+      fd.append('message', `Community: ${community?.name}\nName: ${form.name}\nEmail: ${form.email}\nGitHub: ${form.githubUrl}\nLinkedIn: ${form.linkedinUrl}\nContact: ${form.contactNumber}\nTeams: ${form.teams.join(', ')}\nTech Stack: ${form.techStack.join(', ')}`);
       fd.append('access_key', '7c3bbfa0-a611-4ab3-ab54-26e91d98a846');
       try {
         const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
-        if ((await res.json()).success) { setShowJoinModal(false); setShowSuccessModal(true); setForm({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], customTeam: '' }); }
+        if ((await res.json()).success) { setShowJoinModal(false); setShowSuccessModal(true); setForm({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], techStack: [], image: null, imagePreview: '' }); }
       } catch {}
     } finally { setLoading(false); }
   };
 
+  // Open profile modal
+  const openProfile = () => {
+    setProfileForm({ ...currentUser });
+    setEditMode(false);
+    setProfileTab('details');
+    setShowProfileModal(true);
+  };
+
+  // Handle profile image change
+  const handleProfileImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const imageUrl = await uploadToCloudinary(file);
+        setProfileForm(prev => ({ ...prev, image: imageUrl }));
+      } catch {
+        setError('Failed to upload image');
+      }
+      setUploading(false);
+    }
+  };
+
+  // Save profile changes
+  const saveProfile = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem(`token_${slug}`);
+      const res = await fetch(`${API_URL}/api/members/${currentUser.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(profileForm)
+      });
+      const data = await res.json();
+      if (data.success) {
+        const updatedUser = { ...currentUser, ...profileForm };
+        setCurrentUser(updatedUser);
+        localStorage.setItem(`user_${slug}`, JSON.stringify(updatedUser));
+        setEditMode(false);
+        // Refresh members list
+        const membersRes = await fetch(`${API_URL}/api/members/community/${slug}`);
+        const membersData = await membersRes.json();
+        if (membersData.success) setMembers(membersData.data);
+      } else {
+        setError(data.message || 'Failed to update profile');
+      }
+    } catch {
+      setError('Failed to save changes');
+    }
+    setLoading(false);
+  };
+
   const toggleTeam = (team) => setForm(prev => ({ ...prev, teams: prev.teams.includes(team) ? prev.teams.filter(t => t !== team) : [...prev.teams, team] }));
+  const toggleTech = (tech) => setForm(prev => ({ ...prev, techStack: prev.techStack.includes(tech) ? prev.techStack.filter(t => t !== tech) : [...prev.techStack, tech] }));
+  const toggleProfileTeam = (team) => setProfileForm(prev => ({ ...prev, teams: prev.teams?.includes(team) ? prev.teams.filter(t => t !== team) : [...(prev.teams || []), team] }));
 
   if (!community) return <div className="community-detail-page"><h1>Not Found</h1><button onClick={() => navigate('/community')} className="back-button"><FaArrowLeft /> Back</button></div>;
 
@@ -202,7 +304,22 @@ export default function CommunityDetail() {
 
   return (
     <>
-      {showPreloader && slug === 'com.the-boys-dev' && <div className="preloader-container"><video ref={videoRef} className="preloader-video" muted playsInline><source src="/gifs/com_The_Boys_Preloader.mp4" type="video/mp4" /></video></div>}
+      {showPreloader && slug === 'com.the-boys-dev' && (
+        <div className="preloader-container">
+          <video ref={videoRef} className="preloader-video" muted playsInline>
+            <source src="/gifs/com_The_Boys_Preloader.mp4" type="video/mp4" />
+          </video>
+          <div className="preloader-overlay">
+            <div className="preloader-text">
+              <span className="preloader-loading">Loading</span>
+              <span className="preloader-dots">
+                <span>.</span><span>.</span><span>.</span>
+              </span>
+            </div>
+            <p className="preloader-subtitle">Preparing something diabolical</p>
+          </div>
+        </div>
+      )}
       <div className="community-detail-page" style={{ ...(community.wallpaper ? { backgroundImage: `linear-gradient(to bottom, rgba(9,9,11,0.7), rgba(9,9,11,0.95)), url(${community.wallpaper})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : {}), visibility: showPreloader ? 'hidden' : 'visible' }}>
         
         {/* Top buttons */}
@@ -210,7 +327,11 @@ export default function CommunityDetail() {
           {currentUser ? (
             <>
               {currentUser.role === 'Owner' && <button onClick={() => setShowAdminPanel(true)} className="admin-btn"><FaCrown /> Admin</button>}
-              <button onClick={handleLogout} className="logout-btn"><FaSignOutAlt /> Logout</button>
+              <button onClick={openProfile} className="profile-btn">
+                <img src={currentUser.image || DEFAULT_MALE_IMAGE} alt="" className="profile-btn-img" />
+                <span>{currentUser.name?.split(' ')[0]}</span>
+              </button>
+              <button onClick={handleLogout} className="logout-btn"><FaSignOutAlt /></button>
             </>
           ) : (
             <button onClick={() => setShowLoginModal(true)} className="login-btn"><FaSignInAlt /> Login</button>
@@ -276,37 +397,33 @@ export default function CommunityDetail() {
 
         {/* Login Modal */}
         {showLoginModal && (
-          <div className="modal-overlay" onClick={() => { setShowLoginModal(false); setError(''); }}>
+          <div className="modal-overlay" onClick={() => { setShowLoginModal(false); setError(''); setLoginStep('email'); }}>
             <div className="modal-card" onClick={e => e.stopPropagation()}>
-              <button className="modal-close" onClick={() => { setShowLoginModal(false); setError(''); }}><FaTimes /></button>
-              <div className="modal-header"><h2 className="modal-title">Member Login</h2><p className="modal-subtitle">Login with your email and password</p></div>
+              <button className="modal-close" onClick={() => { setShowLoginModal(false); setError(''); setLoginStep('email'); }}><FaTimes /></button>
+              <div className="modal-header">
+                <h2 className="modal-title">{loginStep === 'email' ? 'Member Login' : 'Enter OTP'}</h2>
+                <p className="modal-subtitle">{loginStep === 'email' ? 'Enter your email to receive OTP' : `OTP sent to ${loginForm.email}`}</p>
+              </div>
               {error && <div className="error-message">{error}</div>}
-              <form className="join-form contact-form" onSubmit={handleLogin}>
-                <div className="form-group"><label className="form-label">Email</label><input type="email" placeholder="your@email.com" value={loginForm.email} onChange={e => setLoginForm({ ...loginForm, email: e.target.value })} required className="form-input" /></div>
-                <div className="form-group"><label className="form-label">Password</label><input type="password" placeholder="Your GitHub username (default)" value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} required className="form-input" /></div>
-                <button type="submit" className="submit-button" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-              </form>
-              <button className="forgot-password-btn" onClick={() => { setShowLoginModal(false); setShowForgotPassword(true); setError(''); }}><FaKey /> Forgot Password?</button>
+              
+              {loginStep === 'email' ? (
+                <form className="join-form contact-form" onSubmit={handleSendOtp}>
+                  <div className="form-group"><label className="form-label">Email</label><input type="email" placeholder="your@email.com" value={loginForm.email} onChange={e => setLoginForm({ ...loginForm, email: e.target.value })} required className="form-input" /></div>
+                  <button type="submit" className="submit-button" disabled={loading}>{loading ? 'Sending OTP...' : 'Send OTP'}</button>
+                </form>
+              ) : (
+                <form className="join-form contact-form" onSubmit={handleVerifyOtp}>
+                  <div className="form-group"><label className="form-label">OTP</label><input type="text" placeholder="Enter 6-digit OTP" value={loginForm.otp} onChange={e => setLoginForm({ ...loginForm, otp: e.target.value })} required maxLength={6} className="form-input otp-input" /></div>
+                  <button type="submit" className="submit-button" disabled={loading}>{loading ? 'Verifying...' : 'Verify & Login'}</button>
+                  <button type="button" className="forgot-password-btn" onClick={() => { setLoginStep('email'); setError(''); }}>← Back to Email</button>
+                  <button type="button" className="forgot-password-btn" onClick={handleSendOtp} disabled={loading}>Resend OTP</button>
+                </form>
+              )}
             </div>
           </div>
         )}
 
-        {/* Forgot Password Modal */}
-        {showForgotPassword && (
-          <div className="modal-overlay" onClick={() => { setShowForgotPassword(false); setError(''); }}>
-            <div className="modal-card" onClick={e => e.stopPropagation()}>
-              <button className="modal-close" onClick={() => { setShowForgotPassword(false); setError(''); }}><FaTimes /></button>
-              <div className="modal-header"><h2 className="modal-title">Reset Password</h2><p className="modal-subtitle">Enter your email and new password</p></div>
-              {error && <div className="error-message">{error}</div>}
-              <form className="join-form contact-form" onSubmit={handleForgotPassword}>
-                <div className="form-group"><label className="form-label">Email</label><input type="email" placeholder="your@email.com" value={forgotForm.email} onChange={e => setForgotForm({ ...forgotForm, email: e.target.value })} required className="form-input" /></div>
-                <div className="form-group"><label className="form-label">New Password</label><input type="password" placeholder="Enter new password" value={forgotForm.newPassword} onChange={e => setForgotForm({ ...forgotForm, newPassword: e.target.value })} required className="form-input" /></div>
-                <button type="submit" className="submit-button" disabled={loading}>{loading ? 'Changing...' : 'Change Password'}</button>
-              </form>
-              <button className="forgot-password-btn" onClick={() => { setShowForgotPassword(false); setShowLoginModal(true); setError(''); }}>Back to Login</button>
-            </div>
-          </div>
-        )}
+        {/* Forgot Password Modal - Removed, using OTP now */}
 
         {/* Admin Panel */}
         {showAdminPanel && currentUser?.role === 'Owner' && (
@@ -402,6 +519,20 @@ export default function CommunityDetail() {
               <button className="modal-close" onClick={() => setShowJoinModal(false)}><FaTimes /></button>
               <div className="modal-header"><h2 className="modal-title">Request to Join</h2><p className="modal-subtitle">Fill in your details</p></div>
               <form className="join-form contact-form" onSubmit={handleSubmit}>
+                {/* Profile Image Upload */}
+                <div className="form-group image-upload-group">
+                  <label className="form-label">Profile Photo</label>
+                  <div className="image-upload-container">
+                    <div className="image-preview">
+                      <img src={form.imagePreview || DEFAULT_MALE_IMAGE} alt="Preview" />
+                      <label className="image-upload-btn">
+                        <FaCamera />
+                        <input type="file" accept="image/*" onChange={handleImageSelect} hidden />
+                      </label>
+                    </div>
+                    <span className="image-hint">Click camera to upload</span>
+                  </div>
+                </div>
                 <div className="form-group"><label className="form-label">Name *</label><input type="text" placeholder="Your full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="form-input" /></div>
                 <div className="form-group"><label className="form-label">Email *</label><input type="email" placeholder="your@email.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required className="form-input" /></div>
                 <div className="form-group"><label className="form-label">GitHub URL *</label><input type="url" placeholder="https://github.com/username" value={form.githubUrl} onChange={e => setForm({ ...form, githubUrl: e.target.value })} required className="form-input" /></div>
@@ -426,8 +557,26 @@ export default function CommunityDetail() {
                     )}
                   </div>
                 </div>
-                <div className="form-group"><label className="form-label">Custom Team</label><input type="text" placeholder="Other team (optional)" value={form.customTeam} onChange={e => setForm({ ...form, customTeam: e.target.value })} className="form-input" /></div>
-                <button type="submit" className="submit-button" disabled={loading || (form.teams.length === 0 && !form.customTeam.trim())}>{loading ? 'Sending...' : 'Submit Request'}</button>
+                <div className="form-group">
+                  <label className="form-label">Tech Stack</label>
+                  <div className="teams-selector">
+                    <div className="teams-dropdown-toggle" onClick={() => setShowTechDropdown(!showTechDropdown)}>
+                      {form.techStack.length > 0 ? form.techStack.join(', ') : 'Select your tech stack'}
+                      <FaChevronRight className={`dropdown-arrow ${showTechDropdown ? 'open' : ''}`} />
+                    </div>
+                    {showTechDropdown && (
+                      <div className="teams-dropdown tech-dropdown">
+                        {TECH_STACK_OPTIONS.map(tech => (
+                          <label key={tech} className="team-checkbox">
+                            <input type="checkbox" checked={form.techStack.includes(tech)} onChange={() => toggleTech(tech)} />
+                            {tech}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <button type="submit" className="submit-button" disabled={loading || uploading || form.teams.length === 0}>{uploading ? 'Uploading image...' : loading ? 'Sending...' : 'Submit Request'}</button>
               </form>
             </div>
           </div>
@@ -446,6 +595,126 @@ export default function CommunityDetail() {
                 <a href={community.githubOrgUrl} target="_blank" rel="noopener noreferrer" className="success-link github"><FaGithub /> GitHub</a>
               </div>
               <button className="close-success-btn" onClick={() => setShowSuccessModal(false)}>Done</button>
+            </div>
+          </div>
+        )}
+
+        {/* Profile Modal */}
+        {showProfileModal && currentUser && (
+          <div className="modal-overlay" onClick={() => setShowProfileModal(false)}>
+            <div className="profile-modal" onClick={e => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowProfileModal(false)}><FaTimes /></button>
+              
+              {/* Profile Header */}
+              <div className="profile-header">
+                <div className="profile-image-container">
+                  <img src={profileForm.image || DEFAULT_MALE_IMAGE} alt="" className="profile-image" />
+                  {editMode && (
+                    <label className="profile-image-edit">
+                      <FaCamera />
+                      <input type="file" accept="image/*" onChange={handleProfileImageChange} hidden />
+                    </label>
+                  )}
+                  {uploading && <div className="upload-overlay">Uploading...</div>}
+                </div>
+                <div className="profile-info">
+                  <h2>{profileForm.name}</h2>
+                  <span className="profile-role" style={{ backgroundColor: `${community.color}30`, color: community.color }}>{profileForm.role}</span>
+                  <p className="profile-email">{profileForm.email}</p>
+                </div>
+                {!editMode ? (
+                  <button className="edit-profile-btn" onClick={() => setEditMode(true)}><FaEdit /> Edit Profile</button>
+                ) : (
+                  <button className="save-profile-btn" onClick={saveProfile} disabled={loading}><FaSave /> {loading ? 'Saving...' : 'Save'}</button>
+                )}
+              </div>
+
+              {/* Profile Tabs */}
+              <div className="profile-tabs">
+                <button className={`profile-tab ${profileTab === 'details' ? 'active' : ''}`} onClick={() => setProfileTab('details')}><FaUser /> Details</button>
+                <button className={`profile-tab ${profileTab === 'contributions' ? 'active' : ''}`} onClick={() => setProfileTab('contributions')}><FaCode /> Contributions</button>
+              </div>
+
+              {/* Tab Content */}
+              {profileTab === 'details' ? (
+                <div className="profile-details">
+                  {error && <div className="error-message">{error}</div>}
+                  
+                  <div className="profile-field">
+                    <label>Name</label>
+                    {editMode ? (
+                      <input type="text" value={profileForm.name || ''} onChange={e => setProfileForm({ ...profileForm, name: e.target.value })} className="profile-input" />
+                    ) : (
+                      <p>{profileForm.name}</p>
+                    )}
+                  </div>
+
+                  <div className="profile-field">
+                    <label>GitHub</label>
+                    {editMode ? (
+                      <input type="url" value={profileForm.githubUrl || ''} onChange={e => setProfileForm({ ...profileForm, githubUrl: e.target.value })} className="profile-input" />
+                    ) : (
+                      <a href={profileForm.githubUrl} target="_blank" rel="noopener noreferrer">{profileForm.githubUrl}</a>
+                    )}
+                  </div>
+
+                  <div className="profile-field">
+                    <label>LinkedIn</label>
+                    {editMode ? (
+                      <input type="url" value={profileForm.linkedinUrl || ''} onChange={e => setProfileForm({ ...profileForm, linkedinUrl: e.target.value })} className="profile-input" />
+                    ) : (
+                      <a href={profileForm.linkedinUrl} target="_blank" rel="noopener noreferrer">{profileForm.linkedinUrl || 'Not set'}</a>
+                    )}
+                  </div>
+
+                  <div className="profile-field">
+                    <label>Teams</label>
+                    {editMode ? (
+                      <div className="profile-teams-edit">
+                        {TEAM_OPTIONS.map(team => (
+                          <label key={team} className="team-checkbox-inline">
+                            <input type="checkbox" checked={profileForm.teams?.includes(team)} onChange={() => toggleProfileTeam(team)} />
+                            {team}
+                          </label>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="profile-teams">
+                        {profileForm.teams?.map((t, i) => <span key={i} className="team-badge">{getTeamIcon(t)} {t}</span>)}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="profile-field">
+                    <label>Tech Stack</label>
+                    <div className="profile-tech">
+                      {profileForm.techStack?.length > 0 ? profileForm.techStack.map((t, i) => <span key={i} className="tech-tag">{t}</span>) : <span className="no-data">Not specified</span>}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="profile-contributions">
+                  <h3>Your Contributions</h3>
+                  {profileForm.pastWork?.length > 0 ? (
+                    <div className="contributions-list">
+                      {profileForm.pastWork.map((work, i) => (
+                        <div key={i} className="contribution-card">
+                          <span className="contribution-type">{work.type}</span>
+                          <h4>{work.title}</h4>
+                          <p>{work.description}</p>
+                          {work.url && <a href={work.url} target="_blank" rel="noopener noreferrer">View →</a>}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="no-contributions">
+                      <FaCode className="no-contrib-icon" />
+                      <p>No contributions yet</p>
+                      <span>Your projects and hackathon participations will appear here</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

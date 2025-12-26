@@ -27,6 +27,7 @@ public class Member {
     private String contactNumber;
     private String role; // Owner, Member, Admin
     private List<String> teams; // Backend, Frontend, DevOps, Design, etc.
+    private List<String> techStack; // JavaScript, React, Node.js, etc.
     private List<String> communities; // community slugs
     private List<PastWork> pastWork;
     private String status; // PENDING, APPROVED, REJECTED
