@@ -207,15 +207,15 @@ export default function CommunityDetail() {
         
         {/* Top buttons */}
         <div className="top-buttons">
-          <button onClick={() => navigate('/community')} className="back-button"><FaArrowLeft /> Back</button>
           {currentUser ? (
-            <div className="user-menu">
+            <>
               {currentUser.role === 'Owner' && <button onClick={() => setShowAdminPanel(true)} className="admin-btn"><FaCrown /> Admin</button>}
               <button onClick={handleLogout} className="logout-btn"><FaSignOutAlt /> Logout</button>
-            </div>
+            </>
           ) : (
             <button onClick={() => setShowLoginModal(true)} className="login-btn"><FaSignInAlt /> Login</button>
           )}
+          <button onClick={() => navigate('/community')} className="back-button"><FaArrowLeft /> Back</button>
         </div>
 
         <div className="community-detail-header">

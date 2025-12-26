@@ -1478,17 +1478,11 @@
 .top-buttons {
   position: fixed;
   top: 20px;
-  left: 20px;
   right: 20px;
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   align-items: center;
   z-index: 100;
-  pointer-events: none;
-}
-
-.top-buttons > * {
-  pointer-events: auto;
 }
 
 .login-btn, .logout-btn, .admin-btn {
@@ -1702,7 +1696,6 @@
 @media (max-width: 768px) {
   .top-buttons {
     top: 10px;
-    left: 10px;
     right: 10px;
   }
   
