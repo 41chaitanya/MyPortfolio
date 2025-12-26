@@ -102,4 +102,32 @@ public class MemberService {
     public void deleteMember(String id) {
         memberRepository.deleteById(id);
     }
+
+    public Member authenticate(String email, String password, String communitySlug) {
+        return memberRepository.findByEmail(email)
+            .filter(m -> m.getPassword() != null && m.getPassword().equals(password))
+            .filter(m -> m.getCommunities().contains(communitySlug))
+            .filter(m -> "APPROVED".equals(m.getStatus()))
+            .orElse(null);
+    }
+
+    public Member changePassword(String email, String newPassword) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Member not found"));
+        member.setPassword(newPassword);
+        member.setUpdatedAt(LocalDateTime.now());
+        return memberRepository.save(member);
+    }
+
+    public void kickFromCommunity(String memberId, String communitySlug) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new RuntimeException("Member not found"));
+        member.getCommunities().remove(communitySlug);
+        if (member.getCommunities().isEmpty()) {
+            memberRepository.deleteById(memberId);
+        } else {
+            member.setUpdatedAt(LocalDateTime.now());
+            memberRepository.save(member);
+        }
+    }
 }

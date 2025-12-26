@@ -63,6 +63,25 @@ public class DataInitializer implements CommandLineRunner {
                 "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662012/portfolio-images/it3ilkcmlz7rtqd4s4hv.jpg",
                 "https://github.com/shrutipanjiyara13a", null,
                 "Member", List.of("Frontend"), List.of("com.the-boys-dev"),
+                List.of()),
+            
+            // New join requests - approved
+            createMember("Aditya Giri", "aditya.2004.giri@gmail.com",
+                "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png",
+                "https://github.com/GiriAditya14", "https://linkedin.com/in/adityagiri14",
+                "Member", List.of("Backend"), List.of("com.the-boys-dev"),
+                List.of()),
+            
+            createMember("Prakhar Bisen", "prakharbisen790@gmail.com",
+                "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png",
+                "https://github.com/prakharbisen-coder", "https://www.linkedin.com/in/prakhar-bisen-34992b314",
+                "Member", List.of("Backend"), List.of("com.the-boys-dev"),
+                List.of()),
+            
+            createMember("Ashish Tiwari", "ashishinrewa@gmail.com",
+                "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png",
+                "https://github.com/0xashishtiwari", "https://www.linkedin.com/in/ashiishtiwarii/",
+                "Member", List.of("Backend"), List.of("com.the-boys-dev"),
                 List.of())
         );
 
@@ -113,12 +132,15 @@ public class DataInitializer implements CommandLineRunner {
         member.setEmail(email);
         member.setImage(image);
         member.setGithubUrl(githubUrl);
+        member.setGithubUsername(githubUrl != null ? githubUrl.replace("https://github.com/", "").replace("/", "") : null);
         member.setLinkedinUrl(linkedinUrl);
         member.setRole(role);
         member.setTeams(teams);
-        member.setCommunities(communities);
+        member.setCommunities(new java.util.ArrayList<>(communities));
         member.setPastWork(pastWork);
         member.setStatus("APPROVED");
+        // Password is GitHub username by default
+        member.setPassword(member.getGithubUsername());
         member.setJoinedAt(LocalDateTime.now());
         member.setCreatedAt(LocalDateTime.now());
         member.setUpdatedAt(LocalDateTime.now());

@@ -20,9 +20,7 @@ public class CommunityService {
 
     private final CommunityRepository communityRepository;
     private final CommunityJoinRequestRepository joinRequestRepository;
-    private final EmailService emailService;
 
-    // Community CRUD
     public List<Community> getAllCommunities() {
         return communityRepository.findAll();
     }
@@ -35,7 +33,6 @@ public class CommunityService {
         return communityRepository.save(community);
     }
 
-    // Join Requests
     public CommunityJoinRequest submitJoinRequest(JoinCommunityRequest request) {
         CommunityJoinRequest joinRequest = new CommunityJoinRequest(
             request.getCommunityName(),
@@ -47,20 +44,6 @@ public class CommunityService {
         
         CommunityJoinRequest saved = joinRequestRepository.save(joinRequest);
         log.info("Join request saved with id: {}", saved.getId());
-        
-        // Send email notification
-        try {
-            emailService.sendJoinRequestEmail(
-                request.getCommunityName(),
-                request.getEmail(),
-                request.getGithubUrl(),
-                request.getLinkedinUrl(),
-                request.getContactNumber()
-            );
-        } catch (Exception e) {
-            log.warn("Email sending failed but request was saved: {}", e.getMessage());
-        }
-        
         return saved;
     }
 

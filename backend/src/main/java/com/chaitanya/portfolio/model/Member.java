@@ -30,6 +30,7 @@ public class Member {
     private List<String> communities; // community slugs
     private List<PastWork> pastWork;
     private String status; // PENDING, APPROVED, REJECTED
+    private String password; // Default is GitHub username, can be changed
     private LocalDateTime joinedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -58,6 +59,7 @@ public class Member {
         this.communities = new ArrayList<>(List.of(communitySlug));
         this.pastWork = new ArrayList<>();
         this.status = "PENDING";
+        this.password = extractGithubUsername(githubUrl); // Default password is GitHub username
         this.image = "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png";
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

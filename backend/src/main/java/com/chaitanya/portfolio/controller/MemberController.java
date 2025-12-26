@@ -1,7 +1,9 @@
 package com.chaitanya.portfolio.controller;
 
 import com.chaitanya.portfolio.dto.ApiResponse;
+import com.chaitanya.portfolio.dto.ChangePasswordRequest;
 import com.chaitanya.portfolio.dto.JoinCommunityRequest;
+import com.chaitanya.portfolio.dto.LoginRequest;
 import com.chaitanya.portfolio.model.Member;
 import com.chaitanya.portfolio.service.MemberService;
 import jakarta.validation.Valid;
@@ -9,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/members")
@@ -103,6 +107,52 @@ public class MemberController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                 .body(ApiResponse.error("Failed to delete member: " + e.getMessage()));
+        }
+    }
+
+    // Login
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody LoginRequest request) {
+        try {
+            Member member = memberService.authenticate(request.getEmail(), request.getPassword(), request.getCommunitySlug());
+            if (member == null) {
+                return ResponseEntity.status(401).body(ApiResponse.error("Invalid email or password"));
+            }
+            // Return member data without password
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("id", member.getId());
+            userData.put("name", member.getName());
+            userData.put("email", member.getEmail());
+            userData.put("role", member.getRole());
+            userData.put("image", member.getImage());
+            userData.put("teams", member.getTeams());
+            userData.put("githubUrl", member.getGithubUrl());
+            userData.put("linkedinUrl", member.getLinkedinUrl());
+            return ResponseEntity.ok(ApiResponse.success("Login successful", userData));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Login failed: " + e.getMessage()));
+        }
+    }
+
+    // Change password
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        try {
+            Member member = memberService.changePassword(request.getEmail(), request.getNewPassword());
+            return ResponseEntity.ok(ApiResponse.success("Password changed successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to change password: " + e.getMessage()));
+        }
+    }
+
+    // Kick member from community - admin only
+    @DeleteMapping("/{id}/kick/{communitySlug}")
+    public ResponseEntity<ApiResponse> kickMember(@PathVariable String id, @PathVariable String communitySlug) {
+        try {
+            memberService.kickFromCommunity(id, communitySlug);
+            return ResponseEntity.ok(ApiResponse.success("Member removed from community"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to kick member: " + e.getMessage()));
         }
     }
 }
