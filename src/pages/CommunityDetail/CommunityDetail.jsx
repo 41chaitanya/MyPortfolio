@@ -53,49 +53,66 @@ export default function CommunityDetail() {
 
 
   useEffect(() => { 
-    // Try to fetch members from GitHub via backend, then DB, then fallback
+    // Fetch members directly from GitHub organization API
     const fetchMembers = async () => {
-      try {
-        // First try GitHub org members
-        const ghResponse = await fetch(`${API_URL}/api/members/github/${slug}`);
-        if (ghResponse.ok) {
-          const ghData = await ghResponse.json();
-          if (ghData.success && ghData.data?.length > 0) {
-            // Map GitHub data to member format
-            const ghMembers = ghData.data.map(m => ({
-              name: m.name || m.githubUsername,
-              role: m.role === 'admin' ? 'Owner' : 'Member',
-              githubUrl: m.githubUrl,
-              image: m.image,
-              teams: [], // GitHub doesn't have team info
-              bio: m.bio,
-              linkedinUrl: null
-            }));
-            setMembers(ghMembers);
-            return;
-          }
-        }
-      } catch (err) {
-        console.log('GitHub fetch failed, trying DB');
+      if (!community?.githubOrgName) {
+        setMembers(fallbackMembers[slug] || []);
+        return;
       }
-      
+
       try {
-        // Then try DB members
-        const response = await fetch(`${API_URL}/api/members/community/${slug}`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.data?.length > 0) {
-            setMembers(data.data);
-            return;
-          }
-        }
+        // Fetch org members list
+        const membersRes = await fetch(`https://api.github.com/orgs/${community.githubOrgName}/members?per_page=50`);
+        if (!membersRes.ok) throw new Error('Failed to fetch org members');
+        
+        const orgMembers = await membersRes.json();
+        
+        // Fetch detailed info for each member
+        const detailedMembers = await Promise.all(
+          orgMembers.map(async (member) => {
+            try {
+              const userRes = await fetch(`https://api.github.com/users/${member.login}`);
+              const userData = await userRes.json();
+              
+              return {
+                name: userData.name || userData.login,
+                githubUsername: userData.login,
+                role: member.role === 'admin' ? 'Owner' : 'Member',
+                githubUrl: userData.html_url,
+                image: userData.avatar_url,
+                bio: userData.bio,
+                location: userData.location,
+                company: userData.company,
+                blog: userData.blog,
+                twitter: userData.twitter_username,
+                publicRepos: userData.public_repos,
+                followers: userData.followers,
+                teams: [], // GitHub API doesn't expose team info publicly
+                linkedinUrl: null
+              };
+            } catch {
+              return {
+                name: member.login,
+                githubUsername: member.login,
+                role: 'Member',
+                githubUrl: `https://github.com/${member.login}`,
+                image: member.avatar_url,
+                teams: [],
+                linkedinUrl: null
+              };
+            }
+          })
+        );
+        
+        setMembers(detailedMembers);
       } catch (err) {
-        console.log('Backend not available, using fallback data');
+        console.log('GitHub API failed, using fallback:', err.message);
+        setMembers(fallbackMembers[slug] || []);
       }
-      setMembers(fallbackMembers[slug] || []);
     };
+    
     fetchMembers();
-  }, [slug]);
+  }, [slug, community?.githubOrgName]);
   useEffect(() => { if (slug === 'com.the-boys-dev' && videoRef.current) { videoRef.current.play().catch(() => {}); videoRef.current.onended = () => setShowPreloader(false); } }, [slug]);
   useEffect(() => { if (community?.githubOrgName) fetch(`https://api.github.com/orgs/${community.githubOrgName}/repos?per_page=20`).then(r => r.json()).then(d => Array.isArray(d) && setRepos(d)).catch(() => {}); }, [community?.githubOrgName]);
 
@@ -249,8 +266,25 @@ export default function CommunityDetail() {
             <div className="member-detail-modal" onClick={e => e.stopPropagation()}>
               <button className="modal-close" onClick={() => setSelectedMember(null)}><FaTimes /></button>
               <div className="member-detail-header"><img src={selectedMember.image} alt="" className="member-detail-image" /><div className="member-detail-info"><h2>{selectedMember.name}</h2><span className="member-detail-role" style={{ backgroundColor: `${community.color}30`, color: community.color }}>{selectedMember.role}</span></div></div>
-              <div className="member-detail-teams"><h4>Teams</h4><div className="teams-list">{selectedMember.teams?.map((t, i) => <span key={i} className="team-badge-large">{getTeamIcon(t)} {t}</span>)}</div></div>
-              <div className="member-detail-links">{selectedMember.githubUrl && <a href={selectedMember.githubUrl} target="_blank" rel="noopener noreferrer" className="detail-link github"><FaGithub /> GitHub</a>}{selectedMember.linkedinUrl && <a href={selectedMember.linkedinUrl} target="_blank" rel="noopener noreferrer" className="detail-link linkedin"><FaLinkedin /> LinkedIn</a>}</div>
+              {selectedMember.bio && <p className="member-bio">{selectedMember.bio}</p>}
+              {(selectedMember.location || selectedMember.company) && (
+                <div className="member-meta">
+                  {selectedMember.location && <span className="meta-item">📍 {selectedMember.location}</span>}
+                  {selectedMember.company && <span className="meta-item">🏢 {selectedMember.company}</span>}
+                </div>
+              )}
+              {(selectedMember.publicRepos || selectedMember.followers) && (
+                <div className="member-stats">
+                  {selectedMember.publicRepos && <span className="stat-item">{selectedMember.publicRepos} repos</span>}
+                  {selectedMember.followers && <span className="stat-item">{selectedMember.followers} followers</span>}
+                </div>
+              )}
+              {selectedMember.teams?.length > 0 && <div className="member-detail-teams"><h4>Teams</h4><div className="teams-list">{selectedMember.teams.map((t, i) => <span key={i} className="team-badge-large">{getTeamIcon(t)} {t}</span>)}</div></div>}
+              <div className="member-detail-links">
+                {selectedMember.githubUrl && <a href={selectedMember.githubUrl} target="_blank" rel="noopener noreferrer" className="detail-link github"><FaGithub /> GitHub</a>}
+                {selectedMember.linkedinUrl && <a href={selectedMember.linkedinUrl} target="_blank" rel="noopener noreferrer" className="detail-link linkedin"><FaLinkedin /> LinkedIn</a>}
+                {selectedMember.blog && <a href={selectedMember.blog.startsWith('http') ? selectedMember.blog : `https://${selectedMember.blog}`} target="_blank" rel="noopener noreferrer" className="detail-link website"><FaGlobe /> Website</a>}
+              </div>
               {selectedMember.pastWork?.length > 0 && <div className="member-detail-work"><h4>Past Work</h4><div className="past-work-list">{selectedMember.pastWork.map((w, i) => <a key={i} href={w.url} target="_blank" rel="noopener noreferrer" className="past-work-item"><span className="work-type">{w.type}</span><h5>{w.title}</h5><p>{w.description}</p></a>)}</div></div>}
             </div>
           </div>
