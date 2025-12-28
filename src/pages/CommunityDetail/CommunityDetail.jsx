@@ -523,14 +523,17 @@ export default function CommunityDetail() {
                 <div className="form-group image-upload-group">
                   <label className="form-label">Profile Photo</label>
                   <div className="image-upload-container">
-                    <div className="image-preview">
-                      <img src={form.imagePreview || DEFAULT_MALE_IMAGE} alt="Preview" />
-                      <label className="image-upload-btn">
-                        <FaCamera />
-                        <input type="file" accept="image/*" onChange={handleImageSelect} hidden />
-                      </label>
-                    </div>
-                    <span className="image-hint">Upload your profile photo</span>
+                    <label className="image-preview-upload">
+                      {form.imagePreview ? (
+                        <img src={form.imagePreview} alt="Preview" className="uploaded-image" />
+                      ) : (
+                        <div className="upload-placeholder">
+                          <FaCamera className="upload-icon" />
+                          <span>Upload Profile Picture</span>
+                        </div>
+                      )}
+                      <input type="file" accept="image/*" onChange={handleImageSelect} hidden />
+                    </label>
                   </div>
                 </div>
                 <div className="form-group"><label className="form-label">Name *</label><input type="text" placeholder="Your full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="form-input" /></div>
