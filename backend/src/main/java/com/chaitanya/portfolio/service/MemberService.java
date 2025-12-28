@@ -101,6 +101,11 @@ public class MemberService {
         if (updated.getRole() != null) member.setRole(updated.getRole());
         if (updated.getTeams() != null) member.setTeams(updated.getTeams());
         if (updated.getPastWork() != null) member.setPastWork(updated.getPastWork());
+        if (updated.getCommunities() != null) member.setCommunities(updated.getCommunities());
+        if (updated.getTechStack() != null) member.setTechStack(updated.getTechStack());
+        if (updated.getGithubUrl() != null) member.setGithubUrl(updated.getGithubUrl());
+        if (updated.getLinkedinUrl() != null) member.setLinkedinUrl(updated.getLinkedinUrl());
+        if (updated.getContactNumber() != null) member.setContactNumber(updated.getContactNumber());
         member.setUpdatedAt(LocalDateTime.now());
         return memberRepository.save(member);
     }
