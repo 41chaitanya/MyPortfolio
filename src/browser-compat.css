@@ -1,0 +1,281 @@
+/* ============================================
+   CROSS-BROWSER COMPATIBILITY FIXES
+   Supports: Chrome, Firefox, Safari, Edge
+   ============================================ */
+
+/* ---- RESET & NORMALIZE ---- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+/* ---- FLEXBOX FIXES (Firefox) ---- */
+.flex-container,
+[class*="flex"],
+[class*="grid"] {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* ---- BACKGROUND CLIP TEXT (Firefox) ---- */
+.gradient-text,
+[class*="gradient"] {
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+
+/* ---- BACKDROP FILTER (Firefox) ---- */
+.backdrop-blur,
+[class*="backdrop"],
+.modal-overlay,
+.top-buttons button,
+.back-button,
+.login-btn,
+.logout-btn,
+.admin-btn,
+.profile-btn {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* Firefox fallback for backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+  }
+  .top-buttons button,
+  .back-button {
+    background-color: rgba(39, 39, 42, 0.98) !important;
+  }
+}
+
+/* ---- SCROLLBAR (Firefox) ---- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #a855f7 #18181b;
+}
+
+/* Webkit scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9333ea;
+}
+
+/* ---- SMOOTH SCROLL ---- */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---- TRANSFORM FIXES ---- */
+.transform-gpu {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* ---- TRANSITION FIXES ---- */
+button, a, input, .card, [class*="btn"] {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+/* ---- ANIMATION FIXES ---- */
+@-webkit-keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@-moz-keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ---- INPUT FIXES (Firefox/Safari) ---- */
+input, textarea, select, button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-family: inherit;
+  font-size: inherit;
+  border-radius: 0;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="tel"],
+textarea {
+  border-radius: 10px;
+}
+
+/* Remove Firefox inner focus ring */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* ---- CHECKBOX FIXES ---- */
+input[type="checkbox"] {
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+  appearance: checkbox;
+  width: 18px;
+  height: 18px;
+  accent-color: #a855f7;
+}
+
+/* ---- IMAGE FIXES ---- */
+img {
+  max-width: 100%;
+  height: auto;
+  -ms-interpolation-mode: bicubic;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ---- BORDER-RADIUS FIXES ---- */
+.rounded, [class*="rounded"], [class*="card"], [class*="btn"], [class*="modal"] {
+  -webkit-border-radius: inherit;
+  -moz-border-radius: inherit;
+  border-radius: inherit;
+}
+
+/* ---- BOX-SHADOW FIXES ---- */
+.shadow, [class*="shadow"] {
+  -webkit-box-shadow: inherit;
+  -moz-box-shadow: inherit;
+  box-shadow: inherit;
+}
+
+/* ---- GRADIENT FIXES (Firefox) ---- */
+.gradient-bg {
+  background: -webkit-linear-gradient(135deg, #a855f7, #3b82f6);
+  background: -moz-linear-gradient(135deg, #a855f7, #3b82f6);
+  background: -o-linear-gradient(135deg, #a855f7, #3b82f6);
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+}
+
+/* ---- POSITION STICKY (Safari) ---- */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* ---- USER SELECT ---- */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ---- TOUCH ACTION ---- */
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* ---- FONT SMOOTHING ---- */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- FIREFOX SPECIFIC FIXES ---- */
+@-moz-document url-prefix() {
+  /* Fix for Firefox flexbox gap */
+  .members-grid,
+  .projects-grid,
+  .communities-grid {
+    gap: 20px;
+  }
+  
+  /* Fix for Firefox button alignment */
+  button {
+    vertical-align: middle;
+  }
+  
+  /* Fix for Firefox input height */
+  input, select {
+    line-height: normal;
+  }
+  
+  /* Fix modal positioning in Firefox */
+  .modal-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Fix backdrop filter fallback */
+  .modal-card,
+  .profile-modal,
+  .admin-panel {
+    background-color: #09090b;
+  }
+}
+
+/* ---- SAFARI SPECIFIC FIXES ---- */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for Safari flexbox */
+  .flex-container {
+    display: -webkit-flex;
+  }
+  
+  /* Fix for Safari position fixed */
+  .fixed {
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* ---- EDGE SPECIFIC FIXES ---- */
+@supports (-ms-ime-align: auto) {
+  /* Fix for Edge flexbox */
+  .flex-container {
+    display: -ms-flexbox;
+  }
+}
+
+/* ---- PRINT STYLES ---- */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

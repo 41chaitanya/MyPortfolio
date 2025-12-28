@@ -1,0 +1,259 @@
+.projects-page {
+  background-color: #09090b;
+  color: #fafafa;
+}
+
+.projects-header {
+  text-align: left;
+  margin-bottom: 60px;
+  max-width: 800px;
+}
+
+.projects-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #fafafa;
+  text-align: left !important;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.projects-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #fafafa, transparent);
+}
+
+.projects-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.project-card {
+  background-color: #18181b;
+  border: 1.5px solid #3f3f46;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project-card:hover {
+  border-color: #a1a1a1;
+  box-shadow: 0 10px 30px rgba(250, 250, 250, 0.1);
+  transform: translateY(-5px);
+}
+
+.project-image-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background-color: #27272a;
+}
+
+.project-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-image {
+  transform: scale(1.05);
+}
+
+.project-content {
+  padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #fafafa;
+  text-align: left;
+}
+
+.project-description {
+  font-size: 0.95rem;
+  color: #d4d4d8;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 15px;
+  flex: 1;
+  text-align: left;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #27272a;
+  border: 1px solid #52525b;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #a1a1a1;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tech-tag:hover {
+  background-color: #3f3f46;
+  border-color: #71717a;
+  color: #fafafa;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.load-more-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 32px;
+  background-color: #27272a;
+  color: #fafafa;
+  border: 2px solid #52525b;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
+}
+
+.load-more-button:hover {
+  background-color: #3f3f46;
+  border-color: #71717a;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.load-more-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .projects-page {
+    padding: 20px 16px 100px;
+  }
+
+  .projects-header {
+    margin-bottom: 40px;
+  }
+
+  .projects-title {
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+  }
+
+  .projects-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .project-image-wrapper {
+    height: 170px;
+  }
+
+  .project-content {
+    padding: 16px;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .project-description {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .project-tech {
+    gap: 6px;
+  }
+
+  .tech-tag {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+
+  .load-more-button {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-page {
+    padding: 16px 12px 100px;
+  }
+
+  .projects-title {
+    font-size: 1.5rem;
+  }
+
+  .projects-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .projects-grid {
+    gap: 14px;
+  }
+
+  .project-image-wrapper {
+    height: 150px;
+  }
+
+  .project-content {
+    padding: 14px;
+  }
+
+  .project-title {
+    font-size: 1rem;
+  }
+
+  .project-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .tech-tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+  }
+}

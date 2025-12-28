@@ -1,0 +1,485 @@
+/* Mobile Touch Optimizations */
+
+/* Remove tap highlight and improve touch response */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection for readable content */
+p, span, h1, h2, h3, h4, h5, h6, li, input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ============================================
+   PROFILE PICTURE FIX FOR MOBILE
+   ============================================ */
+@media (max-width: 768px) {
+  .profile-circle {
+    width: 100px !important;
+    height: 100px !important;
+    margin: 0 auto 24px auto !important;
+    border: 3px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.15) !important;
+    flex-shrink: 0;
+  }
+
+  .profile-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 20% !important;
+  }
+
+  .profile-section {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 20px 16px !important;
+    padding-left: 16px !important;
+  }
+}
+
+/* Smooth scrolling for mobile */
+html {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Better touch targets - minimum 44x44px */
+button, a, [role="button"], .achievement-card, .project-card, .event-card {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* Active states for touch feedback */
+button:active, 
+a:active, 
+[role="button"]:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+/* Card touch feedback */
+.achievement-card:active,
+.project-card:active,
+.event-card:active,
+.home-achievement-card:active,
+.home-project-card:active,
+.community-card:active,
+.member-profile-card:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE - 768px and below
+   ============================================ */
+@media (max-width: 768px) {
+  /* Base page container */
+  .page-container {
+    padding: 20px 16px 100px !important;
+  }
+
+  /* Typography scaling */
+  h1, .page-title, .achievements-title, .projects-title, .contact-title, .community-title {
+    font-size: 1.75rem !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 1.4rem !important;
+  }
+
+  p {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Buttons - full width on mobile */
+  .contact-button,
+  .cv-button,
+  .see-more-button,
+  .see-all-projects-button,
+  .load-more-button,
+  .submit-button {
+    width: 100%;
+    padding: 14px 20px !important;
+    font-size: 0.95rem !important;
+    justify-content: center;
+  }
+
+  /* Action buttons stack */
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px !important;
+  }
+
+  /* Social icons centered */
+  .social-icons {
+    justify-content: center;
+    width: 100%;
+    gap: 12px !important;
+  }
+
+  .social-icon {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 18px !important;
+  }
+
+  /* Grids - single column */
+  .achievements-grid,
+  .projects-grid,
+  .home-achievements-grid,
+  .home-projects-grid,
+  .communities-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Card images */
+  .achievement-image-wrapper,
+  .project-image-wrapper,
+  .home-achievement-image-wrapper,
+  .home-project-image-wrapper {
+    height: 180px !important;
+  }
+
+  /* Card content */
+  .achievement-content,
+  .project-content,
+  .home-achievement-content,
+  .home-project-content {
+    padding: 16px !important;
+  }
+
+  /* Card titles */
+  .achievement-card-title,
+  .project-title,
+  .home-achievement-title,
+  .home-project-title {
+    font-size: 1.1rem !important;
+  }
+
+  /* Card descriptions */
+  .achievement-description,
+  .project-description,
+  .home-achievement-desc,
+  .home-project-desc {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Tech tags */
+  .tech-tag,
+  .home-tech-tag {
+    font-size: 0.75rem !important;
+    padding: 4px 10px !important;
+  }
+
+  /* Contact form */
+  .contact-wrapper {
+    padding: 0 !important;
+  }
+
+  .form-group {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .form-label {
+    min-width: auto !important;
+    font-size: 0.9rem !important;
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+
+  /* Community page */
+  .community-page {
+    padding: 80px 16px 40px !important;
+  }
+
+  .community-card {
+    padding: 20px !important;
+    gap: 16px !important;
+  }
+
+  .community-icon {
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .community-name {
+    font-size: 1.2rem !important;
+  }
+
+  .community-description {
+    font-size: 0.9rem !important;
+  }
+
+  /* Modal optimizations */
+  .modal-overlay {
+    padding: 16px !important;
+  }
+
+  .modal-card,
+  .profile-modal,
+  .admin-panel {
+    padding: 20px !important;
+    max-height: 90vh !important;
+    width: 95% !important;
+  }
+
+  .modal-title {
+    font-size: 1.3rem !important;
+  }
+
+  .modal-subtitle {
+    font-size: 0.9rem !important;
+  }
+
+  /* Prevent body scroll when modal is open */
+  body.modal-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  /* Better image loading */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* Faster animations on mobile */
+  * {
+    animation-duration: 0.25s !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ============================================
+   SMALL MOBILE - 480px and below
+   ============================================ */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 16px 12px 100px !important;
+  }
+
+  h1, .page-title {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Profile section */
+  .profile-section {
+    padding: 16px !important;
+  }
+
+  .profile-circle {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .greeting {
+    font-size: 1.3rem !important;
+  }
+
+  .subheading {
+    font-size: 0.85rem !important;
+  }
+
+  .intro-text p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Cards */
+  .achievement-image-wrapper,
+  .project-image-wrapper,
+  .home-achievement-image-wrapper,
+  .home-project-image-wrapper {
+    height: 150px !important;
+  }
+
+  .achievement-content,
+  .project-content {
+    padding: 14px !important;
+  }
+
+  /* Community detail */
+  .community-detail-page {
+    padding: 70px 12px 30px !important;
+  }
+
+  .community-logo-image {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .community-detail-title {
+    font-size: 1.5rem !important;
+  }
+
+  .community-detail-description {
+    font-size: 0.95rem !important;
+  }
+
+  .community-links {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .community-links a,
+  .community-links button,
+  .join-community-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 16px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Members grid */
+  .members-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .member-card-image {
+    height: 100px !important;
+  }
+
+  .member-card-content {
+    padding: 10px !important;
+  }
+
+  .member-card-name {
+    font-size: 0.85rem !important;
+  }
+
+  .member-card-role {
+    font-size: 0.65rem !important;
+  }
+
+  /* Top buttons */
+  .top-buttons {
+    top: 10px !important;
+    right: 10px !important;
+    gap: 6px !important;
+  }
+
+  .top-buttons button {
+    padding: 8px 12px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .back-button span,
+  .login-btn span,
+  .logout-btn span {
+    display: none;
+  }
+
+  .profile-btn span {
+    display: none;
+  }
+
+  .profile-btn-img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE
+   ============================================ */
+@media (max-width: 896px) and (orientation: landscape) {
+  .page-container {
+    padding: 16px 20px 80px !important;
+  }
+
+  .modal-card,
+  .profile-modal {
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  .members-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* ============================================
+   iOS SPECIFIC FIXES
+   ============================================ */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for iOS Safari bottom bar */
+  .page-container {
+    min-height: -webkit-fill-available;
+    padding-bottom: env(safe-area-inset-bottom, 100px) !important;
+  }
+
+  /* Prevent zoom on input focus - must be 16px */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* Fix position fixed on iOS */
+  .top-buttons,
+  .modal-overlay {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .achievement-card:hover,
+  .project-card:hover,
+  .event-card:hover,
+  .community-card:hover,
+  .member-profile-card:hover,
+  .home-achievement-card:hover,
+  .home-project-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Use active state instead */
+  .achievement-card:active,
+  .project-card:active,
+  .community-card:active,
+  .member-profile-card:active {
+    transform: scale(0.98) !important;
+    opacity: 0.9;
+  }
+
+  /* Larger touch targets */
+  button, a, [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

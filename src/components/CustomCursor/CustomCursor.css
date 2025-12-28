@@ -1,0 +1,77 @@
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: all 0.15s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.custom-cursor::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  background-color: rgba(168, 85, 247, 0.2);
+  border: 2px solid rgba(168, 85, 247, 0.8);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.custom-cursor.hovering {
+  opacity: 1;
+}
+
+.custom-cursor.hovering::before {
+  width: 60px;
+  height: 60px;
+}
+
+.cursor-text {
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fafafa;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeIn 0.2s ease forwards;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hide default cursor on cards */
+.achievement-card,
+.home-achievement-card,
+.event-card,
+.home-project-card,
+.project-card {
+  cursor: none;
+}
+
+/* Hide custom cursor on mobile devices */
+@media (max-width: 768px) {
+  .custom-cursor {
+    display: none;
+  }
+  
+  .achievement-card,
+  .home-achievement-card,
+  .event-card,
+  .home-project-card,
+  .project-card {
+    cursor: pointer !important;
+  }
+}
