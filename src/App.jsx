@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FlowerMenu from './components/FlowerMenu';
 import MusicPlayer from './components/MusicPlayer';
+import MusicTooltip from './components/MusicTooltip';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
 import Loading from './pages/Loading';
@@ -59,6 +60,7 @@ function App() {
             <CustomCursor />
             <Navbar />
             <MusicPlayer />
+            <MusicTooltip />
             <FlowerMenu
               menuItems={[
                 { icon: AiOutlineHome, href: '/' },

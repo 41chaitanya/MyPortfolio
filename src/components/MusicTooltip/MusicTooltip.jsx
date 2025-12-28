@@ -1,20 +1,28 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import './MusicTooltip.css';
 
 export default function MusicTooltip() {
   const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Show tooltip after a short delay (to ensure page is loaded)
+    // Check if user has already seen the tooltip
+    const hasSeenTooltip = localStorage.getItem('hasSeenMusicTooltip');
+    
+    if (hasSeenTooltip) {
+      return; // Don't show if already seen
+    }
+
+    // Show tooltip after 4 seconds (after page loads)
     const showTimer = setTimeout(() => {
       setIsVisible(true);
-    }, 500);
+    }, 4000);
 
-    // Hide tooltip after 5 seconds
+    // Hide tooltip after 4 more seconds (8 seconds total)
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
-    }, 5500);
+      localStorage.setItem('hasSeenMusicTooltip', 'true');
+    }, 8000);
 
     return () => {
       clearTimeout(showTimer);
@@ -22,34 +30,23 @@ export default function MusicTooltip() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const updatePosition = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', updatePosition);
-
-    return () => {
-      window.removeEventListener('mousemove', updatePosition);
-    };
-  }, [isVisible]);
-
-  if (!isVisible) return null;
-
   return (
-    <div 
-      className="music-tooltip"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-    >
-      <div className="music-tooltip-arrow"></div>
-      <div className="music-tooltip-content">
-        <span className="music-tooltip-text">Play music track to vibe! 🎵</span>
-      </div>
-    </div>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div 
+          className="music-tooltip-fixed"
+          initial={{ opacity: 0, scale: 0.8, x: -20 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          exit={{ opacity: 0, scale: 0.8, x: -20 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+        >
+          <div className="music-tooltip-arrow-pointer"></div>
+          <div className="music-tooltip-content">
+            <span className="music-tooltip-emoji">🎵</span>
+            <span className="music-tooltip-text">Vibe with music!</span>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
