@@ -3,8 +3,10 @@ services:
     name: portfolio-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
+    dockerContext: .
     region: oregon
     plan: free
+    healthCheckPath: /api/health
     envVars:
       - key: SPRING_DATA_MONGODB_URI
         sync: false
@@ -15,4 +17,4 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: CORS_ORIGINS
-        value: https://41chaitanya.github.io
+        value: https://41chaitanya.github.io,https://41chaitanya.github.io/MyPortfolio
