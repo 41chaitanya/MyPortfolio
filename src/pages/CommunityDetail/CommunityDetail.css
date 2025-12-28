@@ -2242,6 +2242,58 @@
   gap: 8px;
 }
 
+.profile-tech-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tech-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #27272a;
+  color: #fafafa;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.tech-chip button {
+  background: none;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.tech-chip button:hover {
+  color: #ef4444;
+}
+
+.tech-select {
+  padding: 8px 12px;
+  background-color: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  color: #fafafa;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.tech-select:focus {
+  outline: none;
+  border-color: #a855f7;
+}
+
 .tech-tag {
   padding: 4px 10px;
   background-color: #27272a;
@@ -2280,6 +2332,13 @@
   border-color: #3f3f46;
 }
 
+.contribution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
 .contribution-type {
   display: inline-block;
   padding: 3px 8px;
@@ -2288,13 +2347,35 @@
   border-radius: 5px;
   font-size: 0.7rem;
   font-weight: 600;
-  margin-bottom: 8px;
+}
+
+.contribution-date {
+  font-size: 0.75rem;
+  color: #71717a;
 }
 
 .contribution-card h4 {
   font-size: 1rem;
   color: #fafafa;
   margin-bottom: 5px;
+}
+
+.contribution-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #27272a;
+  color: #fafafa;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.contribution-link:hover {
+  background-color: #3f3f46;
 }
 
 .contribution-card p {

@@ -29,11 +29,15 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeMembers() {
         // com.the-boys-dev members
         List<Member> theBoysMembers = List.of(
-            createMember("Chaitanya Sharma", "chaitanya4141sharma@gmail.com",
+            createMemberWithTech("Chaitanya Sharma", "chaitanya4141sharma@gmail.com",
                 "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg",
                 "https://github.com/41chaitanya", "https://linkedin.com/in/41chaitanya",
                 "Owner", List.of("Backend", "Frontend"), List.of("com.the-boys-dev", "debug-oist"),
-                List.of(new Member.PastWork("Portfolio Website", "Personal portfolio with React", "https://chaitanya-dev.netlify.app", "Project"))),
+                List.of(
+                    new Member.PastWork("Portfolio Website", "Personal portfolio built with React, featuring interactive UI, community pages, and Spring Boot backend with MongoDB", "https://github.com/41chaitanya/MyPortfolio", "Project"),
+                    new Member.PastWork("com.the-boys-dev Community", "Developer community platform with OTP authentication, member management, and GitHub integration", "https://github.com/com-the-boys-dev", "Project")
+                ),
+                List.of("Java", "Spring Boot", "React", "JavaScript", "MongoDB", "Docker")),
             
             createMember("Priyanshu Singh", "priyanshu@example.com",
                 "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png",
@@ -127,6 +131,12 @@ public class DataInitializer implements CommandLineRunner {
     private Member createMember(String name, String email, String image, String githubUrl,
                                  String linkedinUrl, String role, List<String> teams,
                                  List<String> communities, List<Member.PastWork> pastWork) {
+        return createMemberWithTech(name, email, image, githubUrl, linkedinUrl, role, teams, communities, pastWork, new java.util.ArrayList<>());
+    }
+
+    private Member createMemberWithTech(String name, String email, String image, String githubUrl,
+                                 String linkedinUrl, String role, List<String> teams,
+                                 List<String> communities, List<Member.PastWork> pastWork, List<String> techStack) {
         Member member = new Member();
         member.setName(name);
         member.setEmail(email);
@@ -136,6 +146,7 @@ public class DataInitializer implements CommandLineRunner {
         member.setLinkedinUrl(linkedinUrl);
         member.setRole(role);
         member.setTeams(teams);
+        member.setTechStack(techStack);
         member.setCommunities(new java.util.ArrayList<>(communities));
         member.setPastWork(pastWork);
         member.setStatus("APPROVED");

@@ -97,6 +97,7 @@ public class MemberService {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Member not found"));
         if (updated.getName() != null) member.setName(updated.getName());
+        if (updated.getEmail() != null) member.setEmail(updated.getEmail());
         if (updated.getImage() != null) member.setImage(updated.getImage());
         if (updated.getRole() != null) member.setRole(updated.getRole());
         if (updated.getTeams() != null) member.setTeams(updated.getTeams());

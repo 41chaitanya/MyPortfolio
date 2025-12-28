@@ -700,6 +700,15 @@ export default function CommunityDetail() {
                   </div>
 
                   <div className="profile-field">
+                    <label>Email</label>
+                    {editMode ? (
+                      <input type="email" value={profileForm.email || ''} onChange={e => setProfileForm({ ...profileForm, email: e.target.value })} className="profile-input" />
+                    ) : (
+                      <p>{profileForm.email}</p>
+                    )}
+                  </div>
+
+                  <div className="profile-field">
                     <label>GitHub</label>
                     {editMode ? (
                       <input type="url" value={profileForm.githubUrl || ''} onChange={e => setProfileForm({ ...profileForm, githubUrl: e.target.value })} className="profile-input" />
@@ -737,9 +746,38 @@ export default function CommunityDetail() {
 
                   <div className="profile-field">
                     <label>Tech Stack</label>
-                    <div className="profile-tech">
-                      {profileForm.techStack?.length > 0 ? profileForm.techStack.map((t, i) => <span key={i} className="tech-tag">{t}</span>) : <span className="no-data">Not specified</span>}
-                    </div>
+                    {editMode ? (
+                      <div className="profile-tech-edit">
+                        <div className="tech-chips-container">
+                          {profileForm.techStack?.map((t, i) => (
+                            <span key={i} className="tech-chip">
+                              {t}
+                              <button type="button" onClick={() => setProfileForm({ ...profileForm, techStack: profileForm.techStack.filter((_, idx) => idx !== i) })}>×</button>
+                            </span>
+                          ))}
+                        </div>
+                        <div className="tech-dropdown-wrapper">
+                          <select 
+                            className="tech-select"
+                            onChange={e => {
+                              if (e.target.value && !profileForm.techStack?.includes(e.target.value)) {
+                                setProfileForm({ ...profileForm, techStack: [...(profileForm.techStack || []), e.target.value] });
+                              }
+                              e.target.value = '';
+                            }}
+                          >
+                            <option value="">Add tech...</option>
+                            {TECH_STACK_OPTIONS.filter(t => !profileForm.techStack?.includes(t)).map(t => (
+                              <option key={t} value={t}>{t}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="profile-tech">
+                        {profileForm.techStack?.length > 0 ? profileForm.techStack.map((t, i) => <span key={i} className="tech-tag">{t}</span>) : <span className="no-data">Not specified</span>}
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -749,10 +787,13 @@ export default function CommunityDetail() {
                     <div className="contributions-list">
                       {profileForm.pastWork.map((work, i) => (
                         <div key={i} className="contribution-card">
-                          <span className="contribution-type">{work.type}</span>
+                          <div className="contribution-header">
+                            <span className="contribution-type">{work.type || 'Project'}</span>
+                            <span className="contribution-date">{work.date || ''}</span>
+                          </div>
                           <h4>{work.title}</h4>
                           <p>{work.description}</p>
-                          {work.url && <a href={work.url} target="_blank" rel="noopener noreferrer">View →</a>}
+                          {work.url && <a href={work.url} target="_blank" rel="noopener noreferrer" className="contribution-link"><FaGithub /> View Project</a>}
                         </div>
                       ))}
                     </div>
@@ -760,7 +801,7 @@ export default function CommunityDetail() {
                     <div className="no-contributions">
                       <FaCode className="no-contrib-icon" />
                       <p>No contributions yet</p>
-                      <span>Your projects and hackathon participations will appear here</span>
+                      <span>Your projects and contributions will appear here once added</span>
                     </div>
                   )}
                 </div>
