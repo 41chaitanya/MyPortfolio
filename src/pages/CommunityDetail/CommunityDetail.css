@@ -2001,6 +2001,14 @@
   transform: scale(1.1);
 }
 
+.profile-image-hint {
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #a1a1a1;
+  margin-top: 8px;
+}
+
 .upload-overlay {
   position: absolute;
   top: 0;

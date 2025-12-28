@@ -530,7 +530,7 @@ export default function CommunityDetail() {
                         <input type="file" accept="image/*" onChange={handleImageSelect} hidden />
                       </label>
                     </div>
-                    <span className="image-hint">Click camera to upload</span>
+                    <span className="image-hint">Upload your profile photo</span>
                   </div>
                 </div>
                 <div className="form-group"><label className="form-label">Name *</label><input type="text" placeholder="Your full name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="form-input" /></div>
@@ -610,10 +610,13 @@ export default function CommunityDetail() {
                 <div className="profile-image-container">
                   <img src={profileForm.image || DEFAULT_MALE_IMAGE} alt="" className="profile-image" />
                   {editMode && (
-                    <label className="profile-image-edit">
-                      <FaCamera />
-                      <input type="file" accept="image/*" onChange={handleProfileImageChange} hidden />
-                    </label>
+                    <>
+                      <label className="profile-image-edit">
+                        <FaCamera />
+                        <input type="file" accept="image/*" onChange={handleProfileImageChange} hidden />
+                      </label>
+                      <span className="profile-image-hint">Upload your profile photo</span>
+                    </>
                   )}
                   {uploading && <div className="upload-overlay">Uploading...</div>}
                 </div>
