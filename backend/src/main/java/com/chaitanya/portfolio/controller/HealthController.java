@@ -2,27 +2,20 @@ package com.chaitanya.portfolio.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class HealthController {
 
-    @GetMapping("/")
-    public ResponseEntity<Map<String, String>> root() {
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, Object>> health() {
         return ResponseEntity.ok(Map.of(
-            "status", "running",
-            "service", "Portfolio Backend API",
-            "version", "1.0.0"
-        ));
-    }
-
-    @GetMapping("/api/health")
-    public ResponseEntity<Map<String, String>> health() {
-        return ResponseEntity.ok(Map.of(
-            "status", "healthy",
-            "timestamp", java.time.Instant.now().toString()
+            "status", "UP",
+            "timestamp", System.currentTimeMillis()
         ));
     }
 }
