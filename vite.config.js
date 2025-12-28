@@ -9,7 +9,7 @@ export default defineConfig({
         tailwindcss(),
 
   ],
-  base: '/MyPortfolio/',  // GitHub Pages repo name
+  base: process.env.NODE_ENV === 'production' ? '/MyPortfolio/' : '/',
   server: {
     host: '0.0.0.0',  // Expose to network
     port: 5173,
