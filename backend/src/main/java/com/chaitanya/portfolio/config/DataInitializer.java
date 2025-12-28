@@ -1,6 +1,8 @@
 package com.chaitanya.portfolio.config;
 
+import com.chaitanya.portfolio.model.Community;
 import com.chaitanya.portfolio.model.Member;
+import com.chaitanya.portfolio.repository.CommunityRepository;
 import com.chaitanya.portfolio.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +18,48 @@ import java.util.List;
 public class DataInitializer implements CommandLineRunner {
 
     private final MemberRepository memberRepository;
+    private final CommunityRepository communityRepository;
 
     @Override
     public void run(String... args) {
+        // Initialize communities if none exist
+        if (communityRepository.count() == 0) {
+            log.info("Initializing default communities...");
+            initializeCommunities();
+        }
+        
         // Only initialize if no members exist
         if (memberRepository.count() == 0) {
             log.info("Initializing default members...");
             initializeMembers();
         }
+    }
+
+    private void initializeCommunities() {
+        Community theBoysDev = new Community();
+        theBoysDev.setSlug("com.the-boys-dev");
+        theBoysDev.setName("com.the-boys-dev");
+        theBoysDev.setLogo("https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg");
+        theBoysDev.setColor("#dc2626");
+        theBoysDev.setDescription("A community of passionate developers building cool stuff together");
+        theBoysDev.setFollowers(0);
+        theBoysDev.setGithubOrgName("com-the-boys-dev");
+        theBoysDev.setGithubOrgUrl("https://github.com/com-the-boys-dev");
+        theBoysDev.setOwnerEmail("chaitanya4141sharma@gmail.com");
+
+        Community debugOist = new Community();
+        debugOist.setSlug("debug-oist");
+        debugOist.setName("Debug-OIST");
+        debugOist.setLogo("https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png");
+        debugOist.setColor("#3b82f6");
+        debugOist.setDescription("Debugging and development community");
+        debugOist.setFollowers(0);
+        debugOist.setGithubOrgName("debug-oist");
+        debugOist.setGithubOrgUrl("https://github.com/debug-oist");
+        debugOist.setOwnerEmail("ashish@example.com");
+
+        communityRepository.saveAll(List.of(theBoysDev, debugOist));
+        log.info("Initialized 2 communities");
     }
 
     private void initializeMembers() {
