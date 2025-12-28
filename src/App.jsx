@@ -21,6 +21,9 @@ import { HiUserGroup } from 'react-icons/hi';
 import './App.css';
 import './mobile-optimizations.css';
 
+// Base path for GitHub Pages
+const basename = import.meta.env.MODE === 'production' ? '/MyPortfolio' : '';
+
 // Wrapper component to conditionally render Footer
 function ConditionalFooter() {
   const location = useLocation();
@@ -55,7 +58,7 @@ function App() {
           <video autoPlay muted loop className="background-video">
             <source src="https://www.youtube.com/watch?v=aJOTlE1K90k&list=RDRgKAFK5djSk&index=5" type="video/mp4" />
           </video>
-          <Router>
+          <Router basename={basename}>
             <ScrollToTop />
             <CustomCursor />
             <Navbar />
