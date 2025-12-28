@@ -58,28 +58,45 @@ export default function CommunityDetail() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Check for saved login (JWT token)
+  // Check for saved login (JWT token) on page load
   useEffect(() => {
     const token = localStorage.getItem(`token_${slug}`);
     const savedUser = localStorage.getItem(`user_${slug}`);
+    
     if (token && savedUser) {
       // Validate token with backend
       fetch(`${API_URL}/api/auth/validate`, {
+        method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       })
         .then(r => r.json())
         .then(d => {
           if (d.success) {
-            setCurrentUser(JSON.parse(savedUser));
+            // Token is valid, restore user session
+            const user = JSON.parse(savedUser);
+            setCurrentUser(user);
+            // Update user data from backend response if available
+            if (d.data) {
+              const updatedUser = { ...user, ...d.data };
+              setCurrentUser(updatedUser);
+              localStorage.setItem(`user_${slug}`, JSON.stringify(updatedUser));
+            }
           } else {
-            // Token expired, clear storage
+            // Token expired or invalid, clear storage
             localStorage.removeItem(`token_${slug}`);
             localStorage.removeItem(`user_${slug}`);
+            setCurrentUser(null);
           }
         })
         .catch(() => {
-          localStorage.removeItem(`token_${slug}`);
-          localStorage.removeItem(`user_${slug}`);
+          // Backend not available, but keep user logged in with saved data
+          // Token will be validated on next API call
+          try {
+            setCurrentUser(JSON.parse(savedUser));
+          } catch {
+            localStorage.removeItem(`token_${slug}`);
+            localStorage.removeItem(`user_${slug}`);
+          }
         });
     }
   }, [slug]);
@@ -100,14 +117,33 @@ export default function CommunityDetail() {
   }, [slug]);
 
   // Fetch pending members for admin
-  useEffect(() => {
-    if (currentUser?.role === 'Owner') {
-      fetch(`${API_URL}/api/members/community/${slug}/all`)
-        .then(r => r.json())
-        .then(d => d.success && setPendingMembers(d.data?.filter(m => m.status === 'PENDING') || []))
-        .catch(() => {});
+  const fetchPendingMembers = async () => {
+    if (currentUser?.role === 'Owner' || currentUser?.role === 'Admin') {
+      try {
+        const token = localStorage.getItem(`token_${slug}`);
+        const res = await fetch(`${API_URL}/api/members/community/${slug}/all`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        const data = await res.json();
+        if (data.success) {
+          setPendingMembers(data.data?.filter(m => m.status === 'PENDING') || []);
+        }
+      } catch (err) {
+        console.log('Failed to fetch pending members');
+      }
     }
+  };
+
+  useEffect(() => {
+    fetchPendingMembers();
   }, [currentUser, slug]);
+
+  // Refetch pending when admin panel opens
+  useEffect(() => {
+    if (showAdminPanel && currentUser?.role === 'Owner') {
+      fetchPendingMembers();
+    }
+  }, [showAdminPanel]);
 
   useEffect(() => { if (slug === 'com.the-boys-dev' && videoRef.current) { videoRef.current.play().catch(() => {}); videoRef.current.onended = () => setShowPreloader(false); } }, [slug]);
   useEffect(() => { if (community?.githubOrgName) fetch(`https://api.github.com/orgs/${community.githubOrgName}/repos?per_page=20`).then(r => r.json()).then(d => Array.isArray(d) && setRepos(d)).catch(() => {}); }, [community?.githubOrgName]);
@@ -166,7 +202,11 @@ export default function CommunityDetail() {
   // Approve member
   const approveMember = async (id) => {
     try {
-      await fetch(`${API_URL}/api/members/${id}/status?status=APPROVED`, { method: 'PUT' });
+      const token = localStorage.getItem(`token_${slug}`);
+      await fetch(`${API_URL}/api/members/${id}/status?status=APPROVED`, { 
+        method: 'PUT',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       setPendingMembers(prev => prev.filter(m => m.id !== id));
       // Refresh members list
       const res = await fetch(`${API_URL}/api/members/community/${slug}`);
@@ -178,7 +218,11 @@ export default function CommunityDetail() {
   // Reject member
   const rejectMember = async (id) => {
     try {
-      await fetch(`${API_URL}/api/members/${id}/status?status=REJECTED`, { method: 'PUT' });
+      const token = localStorage.getItem(`token_${slug}`);
+      await fetch(`${API_URL}/api/members/${id}/status?status=REJECTED`, { 
+        method: 'PUT',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       setPendingMembers(prev => prev.filter(m => m.id !== id));
     } catch { alert('Failed to reject'); }
   };
