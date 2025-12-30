@@ -8,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 export default function Community() {
   const navigate = useNavigate();
   const [memberCounts, setMemberCounts] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const communities = [
     {
@@ -32,17 +33,26 @@ export default function Community() {
 
   // Fetch member counts for each community
   useEffect(() => {
-    communities.forEach(async (community) => {
-      try {
-        const res = await fetch(`${API_URL}/api/members/community/${community.slug}`);
-        const data = await res.json();
-        if (data.success) {
-          setMemberCounts(prev => ({ ...prev, [community.slug]: data.data?.length || 0 }));
+    const fetchCounts = async () => {
+      setLoading(true);
+      const promises = communities.map(async (community) => {
+        try {
+          const res = await fetch(`${API_URL}/api/members/community/${community.slug}`);
+          const data = await res.json();
+          return { slug: community.slug, count: data.success ? data.data?.length || 0 : 0 };
+        } catch {
+          return { slug: community.slug, count: 0 };
         }
-      } catch {
-        setMemberCounts(prev => ({ ...prev, [community.slug]: 0 }));
-      }
-    });
+      });
+      
+      const results = await Promise.all(promises);
+      const counts = {};
+      results.forEach(r => counts[r.slug] = r.count);
+      setMemberCounts(counts);
+      setLoading(false);
+    };
+    
+    fetchCounts();
   }, []);
 
   return (
@@ -56,7 +66,7 @@ export default function Community() {
         {communities.map((community) => (
           <div 
             key={community.id} 
-            className="community-card"
+            className={`community-card ${loading ? 'skeleton-loading' : 'loaded'}`}
             onClick={() => navigate(community.route)}
           >
             <div 
@@ -73,7 +83,9 @@ export default function Community() {
               <h3 className="community-name">{community.name}</h3>
               <p className="community-description">{community.description}</p>
               <div className="community-meta">
-                <span className="community-members"><FaUsers /> {memberCounts[community.slug] ?? '...'} Members</span>
+                <span className={`community-members ${loading ? 'skeleton-text' : ''}`}>
+                  <FaUsers /> {loading ? <span className="skeleton-pulse">Loading...</span> : `${memberCounts[community.slug] ?? 0} Members`}
+                </span>
               </div>
             </div>
           </div>

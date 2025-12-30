@@ -56,6 +56,8 @@ export default function CommunityDetail() {
   const [showTechDropdown, setShowTechDropdown] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [membersLoading, setMembersLoading] = useState(true);
+  const [reposLoading, setReposLoading] = useState(true);
   const [error, setError] = useState('');
 
   // Check for saved login (JWT token) on page load
@@ -104,14 +106,16 @@ export default function CommunityDetail() {
   // Fetch members
   useEffect(() => { 
     const fetchMembers = async () => {
+      setMembersLoading(true);
       try {
         const response = await fetch(`${API_URL}/api/members/community/${slug}`);
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.data?.length > 0) { setMembers(data.data); return; }
+          if (data.success && data.data?.length > 0) { setMembers(data.data); setMembersLoading(false); return; }
         }
       } catch (err) { console.log('Backend not available'); }
       setMembers(fallbackMembers[slug] || []);
+      setMembersLoading(false);
     };
     fetchMembers();
   }, [slug]);
@@ -146,7 +150,17 @@ export default function CommunityDetail() {
   }, [showAdminPanel]);
 
   useEffect(() => { if (slug === 'com.the-boys-dev' && videoRef.current) { videoRef.current.play().catch(() => {}); videoRef.current.onended = () => setShowPreloader(false); } }, [slug]);
-  useEffect(() => { if (community?.githubOrgName) fetch(`https://api.github.com/orgs/${community.githubOrgName}/repos?per_page=20`).then(r => r.json()).then(d => Array.isArray(d) && setRepos(d)).catch(() => {}); }, [community?.githubOrgName]);
+  useEffect(() => { 
+    if (community?.githubOrgName) {
+      setReposLoading(true);
+      fetch(`https://api.github.com/orgs/${community.githubOrgName}/repos?per_page=20`)
+        .then(r => r.json())
+        .then(d => { Array.isArray(d) && setRepos(d); setReposLoading(false); })
+        .catch(() => setReposLoading(false)); 
+    } else {
+      setReposLoading(false);
+    }
+  }, [community?.githubOrgName]);
 
   // Send OTP handler
   const handleSendOtp = async (e) => {
@@ -400,26 +414,50 @@ export default function CommunityDetail() {
 
         <div className="community-detail-content">
           <div className="members-section">
-            <div className="members-header"><h2 className="members-title">Team Members</h2>{hasMore && <button className="view-all-btn" onClick={() => setShowSidebar(true)}>View All ({members.length}) <FaChevronRight /></button>}</div>
+            <div className="members-header"><h2 className="members-title">Team Members</h2>{!membersLoading && hasMore && <button className="view-all-btn" onClick={() => setShowSidebar(true)}>View All ({members.length}) <FaChevronRight /></button>}</div>
             <div className="members-grid">
-              {displayed.map((m, i) => (
-                <div key={i} className="member-profile-card" onClick={() => setSelectedMember(m)}>
-                  <div className="member-card-image"><img src={m.image} alt={m.name} /></div>
-                  <div className="member-card-content">
-                    <h3 className="member-card-name">{m.name}</h3>
-                    <span className="member-card-role" style={{ backgroundColor: m.role === 'Owner' ? `${community.color}30` : '#27272a', color: m.role === 'Owner' ? community.color : '#a1a1a1' }}>{m.role}</span>
-                    <div className="member-card-teams">{m.teams?.map((t, j) => <span key={j} className="team-badge">{getTeamIcon(t)} {t}</span>)}</div>
-                    <div className="member-card-links">{m.githubUrl && <a href={m.githubUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}><FaGithub /></a>}{m.linkedinUrl && <a href={m.linkedinUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}><FaLinkedin /></a>}</div>
+              {membersLoading ? (
+                // Skeleton loading cards
+                [...Array(4)].map((_, i) => (
+                  <div key={i} className="member-profile-card skeleton-card">
+                    <div className="member-card-image skeleton-image"></div>
+                    <div className="member-card-content">
+                      <div className="skeleton-text skeleton-name"></div>
+                      <div className="skeleton-text skeleton-role"></div>
+                      <div className="skeleton-text skeleton-teams"></div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                displayed.map((m, i) => (
+                  <div key={i} className="member-profile-card" onClick={() => setSelectedMember(m)}>
+                    <div className="member-card-image"><img src={m.image} alt={m.name} /></div>
+                    <div className="member-card-content">
+                      <h3 className="member-card-name">{m.name}</h3>
+                      <span className="member-card-role" style={{ backgroundColor: m.role === 'Owner' ? `${community.color}30` : '#27272a', color: m.role === 'Owner' ? community.color : '#a1a1a1' }}>{m.role}</span>
+                      <div className="member-card-teams">{m.teams?.map((t, j) => <span key={j} className="team-badge">{getTeamIcon(t)} {t}</span>)}</div>
+                      <div className="member-card-links">{m.githubUrl && <a href={m.githubUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}><FaGithub /></a>}{m.linkedinUrl && <a href={m.linkedinUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}><FaLinkedin /></a>}</div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
           {community.githubOrgName && (
             <div className="projects-section">
               <h2 className="projects-title">Projects</h2>
-              {repos.length > 0 ? (
+              {reposLoading ? (
+                <div className="projects-grid">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="project-card skeleton-card">
+                      <div className="skeleton-text skeleton-project-name"></div>
+                      <div className="skeleton-text skeleton-project-desc"></div>
+                      <div className="skeleton-text skeleton-project-meta"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : repos.length > 0 ? (
                 <div className="projects-grid">
                   {repos.map(r => (
                     <a key={r.id} href={r.html_url} target="_blank" rel="noopener noreferrer" className="project-card">
