@@ -223,39 +223,20 @@ export default function Home() {
       </div>
 
       <div style={{ marginTop: '80px', maxWidth: '800px' }}>
-        <h2 className="home-section-title tech-stack-title">Tech Stack</h2>
-        {/* Desktop: AnimatedDock */}
-        <div className="tech-stack-desktop">
-          <AnimatedDock
-            items={[
-              { title: 'Java', icon: <FaJava size={24} /> },
-              { title: 'Spring Boot', icon: <SiSpringboot size={24} /> },
-              { title: 'PostgreSQL', icon: <SiPostgresql size={24} /> },
-              { title: 'MongoDB', icon: <SiMongodb size={24} /> },
-              { title: 'Redis', icon: <SiRedis size={24} /> },
-              { title: 'Apache Kafka', icon: <SiApachekafka size={24} /> },
-              { title: 'Docker', icon: <FaDocker size={24} /> },
-              { title: 'Kubernetes', icon: <SiKubernetes size={24} /> },
-            ]}
-          />
-        </div>
-        {/* Mobile: Grid of tech icons */}
-        <div className="tech-stack-mobile">
-          {[
-            { title: 'Java', icon: <FaJava size={28} /> },
-            { title: 'Spring Boot', icon: <SiSpringboot size={28} /> },
-            { title: 'PostgreSQL', icon: <SiPostgresql size={28} /> },
-            { title: 'MongoDB', icon: <SiMongodb size={28} /> },
-            { title: 'Redis', icon: <SiRedis size={28} /> },
-            { title: 'Kafka', icon: <SiApachekafka size={28} /> },
-            { title: 'Docker', icon: <FaDocker size={28} /> },
-            { title: 'K8s', icon: <SiKubernetes size={28} /> },
-          ].map((tech, index) => (
-            <div key={index} className="tech-stack-item">
-              <div className="tech-stack-icon">{tech.icon}</div>
-              <span className="tech-stack-name">{tech.title}</span>
-            </div>
-          ))}
+        <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '40px', marginTop: '40px', textAlign: 'left', position: 'relative', paddingBottom: '15px' }} className="home-section-title">Tech Stack</h2>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <AnimatedDock
+          items={[
+            { title: 'Java', icon: <FaJava size={24} /> },
+            { title: 'Spring Boot', icon: <SiSpringboot size={24} /> },
+            { title: 'PostgreSQL', icon: <SiPostgresql size={24} /> },
+            { title: 'MongoDB', icon: <SiMongodb size={24} /> },
+            { title: 'Redis', icon: <SiRedis size={24} /> },
+            { title: 'Apache Kafka', icon: <SiApachekafka size={24} /> },
+            { title: 'Docker', icon: <FaDocker size={24} /> },
+            { title: 'Kubernetes', icon: <SiKubernetes size={24} /> },
+          ]}
+        />
         </div>
       </div>
 

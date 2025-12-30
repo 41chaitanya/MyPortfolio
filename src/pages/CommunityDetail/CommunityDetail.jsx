@@ -394,7 +394,7 @@ export default function CommunityDetail() {
             {community.githubOrgUrl && <a href={community.githubOrgUrl} target="_blank" rel="noopener noreferrer" className="github-org-link"><FaGithub /> GitHub</a>}
             {community.discordChannelUrl && <a href={community.discordChannelUrl} target="_blank" rel="noopener noreferrer" className="discord-channel-link"><FaDiscord /> Channel</a>}
             {community.ownerEmail && <a href={`mailto:${community.ownerEmail}`} className="email-link"><FaEnvelope /> {community.ownerEmail}</a>}
-            <button onClick={() => setShowJoinModal(true)} className="join-community-btn"><FaUserPlus /> Request to Join</button>
+            {slug !== 'debug-oist' && <button onClick={() => setShowJoinModal(true)} className="join-community-btn"><FaUserPlus /> Request to Join</button>}
           </div>
         </div>
 

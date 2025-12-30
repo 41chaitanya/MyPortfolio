@@ -68,7 +68,7 @@ public class DataInitializer implements CommandLineRunner {
             createMemberWithTech("Chaitanya Sharma", "chaitanya4141sharma@gmail.com",
                 "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg",
                 "https://github.com/41chaitanya", "https://linkedin.com/in/41chaitanya",
-                "Owner", List.of("Backend", "Frontend"), List.of("com.the-boys-dev", "debug-oist"),
+                "Owner", List.of("Backend", "Frontend"), List.of("com.the-boys-dev"),
                 List.of(
                     new Member.PastWork("Portfolio Website", "Personal portfolio built with React, featuring interactive UI, community pages, and Spring Boot backend with MongoDB", "https://github.com/41chaitanya/MyPortfolio", "Project"),
                     new Member.PastWork("com.the-boys-dev Community", "Developer community platform with OTP authentication, member management, and GitHub integration", "https://github.com/com-the-boys-dev", "Project")
@@ -131,6 +131,12 @@ public class DataInitializer implements CommandLineRunner {
                 "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png",
                 "https://github.com/nevernever69", null,
                 "Owner", List.of("Backend", "DevOps"), List.of("debug-oist"),
+                List.of()),
+            
+            createMember("Chaitanya Sharma", "chaitanya.debugoist@gmail.com",
+                "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg",
+                "https://github.com/41chaitanya", "https://linkedin.com/in/41chaitanya",
+                "Member", List.of("Backend", "Frontend"), List.of("debug-oist"),
                 List.of()),
             
             createMember("Aryan Kumar", "aryan@example.com",

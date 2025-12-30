@@ -12,21 +12,21 @@ export default function Community() {
   const communities = [
     {
       id: 1,
-      name: 'OIST PROGRAMMING CLUB',
-      slug: 'debug-oist',
-      description: 'think. build. deploy.',
-      route: '/community/debug-oist',
-      logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg',
-      color: '#ef4444'
-    },
-    {
-      id: 2,
       name: 'com.the-boys-dev',
       slug: 'com.the-boys-dev',
       description: 'Helping fellow devs level up — no corporate fluff',
       route: '/community/com.the-boys-dev',
       logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704388/portfolio-images/zw2ml9hamyshiieznbwz.jpg',
       color: '#a855f7'
+    },
+    {
+      id: 2,
+      name: 'OIST PROGRAMMING CLUB',
+      slug: 'debug-oist',
+      description: 'think. build. deploy.',
+      route: '/community/debug-oist',
+      logo: 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1766704386/portfolio-images/un7oyxvfnsedotuaod9j.jpg',
+      color: '#ef4444'
     }
   ];
 
