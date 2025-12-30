@@ -39,6 +39,8 @@ export default function CommunityDetail() {
   const [pendingMembers, setPendingMembers] = useState([]);
   const [showPreloader, setShowPreloader] = useState(slug === 'com.the-boys-dev');
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showGuidelinesModal, setShowGuidelinesModal] = useState(false);
+  const [showProblemStatements, setShowProblemStatements] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
@@ -465,7 +467,12 @@ export default function CommunityDetail() {
             {community.githubOrgUrl && <a href={community.githubOrgUrl} target="_blank" rel="noopener noreferrer" className="github-org-link"><FaGithub /> GitHub</a>}
             {community.discordChannelUrl && <a href={community.discordChannelUrl} target="_blank" rel="noopener noreferrer" className="discord-channel-link"><FaDiscord /> Channel</a>}
             {community.ownerEmail && <a href={`mailto:${community.ownerEmail}`} className="email-link"><FaEnvelope /> {community.ownerEmail}</a>}
-            {slug !== 'debug-oist' && <button onClick={() => setShowJoinModal(true)} className="join-community-btn"><FaUserPlus /> Request to Join</button>}
+            {slug === 'com.the-boys-dev' && (
+              <>
+                <button onClick={() => setShowGuidelinesModal(true)} className="guidelines-btn">📋 Club Guidelines</button>
+                {!currentUser && <button onClick={() => setShowGuidelinesModal(true)} className="join-community-btn"><FaUserPlus /> Request to Join</button>}
+              </>
+            )}
           </div>
         </div>
 
@@ -732,6 +739,204 @@ export default function CommunityDetail() {
                 </div>
                 <button type="submit" className="submit-button" disabled={loading || uploading || form.teams.length === 0}>{uploading ? 'Uploading image...' : loading ? 'Sending...' : 'Submit Request'}</button>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Club Guidelines Modal */}
+        {showGuidelinesModal && slug === 'com.the-boys-dev' && (
+          <div className="modal-overlay" onClick={() => setShowGuidelinesModal(false)}>
+            <div className="guidelines-modal" onClick={e => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowGuidelinesModal(false)}><FaTimes /></button>
+              
+              <div className="guidelines-header">
+                <div className="guidelines-icon">📋</div>
+                <h2>Club Guidelines</h2>
+                <p>Please read and understand our community rules before joining</p>
+              </div>
+
+              <div className="guidelines-content">
+                <div className="guideline-section">
+                  <h3>🚀 Getting Started (Required)</h3>
+                  <ul className="guidelines-list">
+                    <li>
+                      <span className="guideline-number">1</span>
+                      <div className="guideline-text">
+                        <strong>Initialize Your First Project</strong>
+                        <p>Create at least one project in the organization repository using your GitHub username. Choose from our problem statements below.</p>
+                        <button className="view-problems-btn" onClick={() => setShowProblemStatements(true)}>
+                          📝 View Problem Statements & Project Ideas
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="guideline-section">
+                  <h3>📅 Weekly Contribution Requirements</h3>
+                  <ul className="guidelines-list">
+                    <li>
+                      <span className="guideline-number">2</span>
+                      <div className="guideline-text">
+                        <strong>Minimum 2 Contributions per Week</strong>
+                        <p>Contribute to any public repository at least twice within 7 days of joining. This includes PRs, issues, or code reviews.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="guideline-number">3</span>
+                      <div className="guideline-text">
+                        <strong>Stay Active</strong>
+                        <p>Members inactive for more than 14 days without notice may be removed from the organization.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="guideline-section">
+                  <h3>🔀 Pull Request Guidelines</h3>
+                  <ul className="guidelines-list">
+                    <li>
+                      <span className="guideline-number">4</span>
+                      <div className="guideline-text">
+                        <strong>PR Requirements for Merge</strong>
+                        <p>All PRs must have a clear description, follow the project's coding standards, and pass all CI checks before merge.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="guideline-number">5</span>
+                      <div className="guideline-text">
+                        <strong>Code Review</strong>
+                        <p>PRs require at least 1 approval from a maintainer. Be responsive to feedback and make requested changes promptly.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="guideline-number">6</span>
+                      <div className="guideline-text">
+                        <strong>No Direct Pushes to Main</strong>
+                        <p>Always create a feature branch and submit a PR. Direct pushes to main/master are not allowed.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="guideline-section">
+                  <h3>🐛 Issue Resolution</h3>
+                  <ul className="guidelines-list">
+                    <li>
+                      <span className="guideline-number">7</span>
+                      <div className="guideline-text">
+                        <strong>Claim Before Working</strong>
+                        <p>Comment on an issue to claim it before starting work. This prevents duplicate efforts.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="guideline-number">8</span>
+                      <div className="guideline-text">
+                        <strong>Issue Templates</strong>
+                        <p>Use proper issue templates when reporting bugs or requesting features. Include steps to reproduce for bugs.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="guideline-section">
+                  <h3>👥 Collaborator Responsibilities</h3>
+                  <ul className="guidelines-list">
+                    <li>
+                      <span className="guideline-number">9</span>
+                      <div className="guideline-text">
+                        <strong>GitHub Profile Setup</strong>
+                        <p>Ensure your GitHub profile has a proper bio, profile picture, and your real name for identification.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="guideline-number">10</span>
+                      <div className="guideline-text">
+                        <strong>Enable 2FA</strong>
+                        <p>Two-factor authentication must be enabled on your GitHub account for organization access.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <span className="guideline-number">11</span>
+                      <div className="guideline-text">
+                        <strong>Respect & Collaboration</strong>
+                        <p>Be respectful in all interactions. Help fellow members, share knowledge, and maintain a positive environment.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="guidelines-footer">
+                <p className="guidelines-note">By joining, you agree to follow these guidelines. Violations may result in removal from the community.</p>
+                <div className="guidelines-actions">
+                  <button className="guidelines-cancel-btn" onClick={() => setShowGuidelinesModal(false)}>Cancel</button>
+                  <button className="guidelines-accept-btn" onClick={() => { setShowGuidelinesModal(false); setShowJoinModal(true); }}>
+                    I Understand, Continue to Join
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Problem Statements Modal */}
+        {showProblemStatements && (
+          <div className="modal-overlay" onClick={() => setShowProblemStatements(false)}>
+            <div className="problems-modal" onClick={e => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => setShowProblemStatements(false)}><FaTimes /></button>
+              
+              <div className="problems-header">
+                <h2>📝 Problem Statements & Project Ideas</h2>
+                <p>Choose one of these projects to initialize in the organization</p>
+              </div>
+
+              <div className="problems-content">
+                <div className="problem-card">
+                  <div className="problem-difficulty easy">Beginner</div>
+                  <h3>🌐 Personal Portfolio Website</h3>
+                  <p>Build a responsive portfolio website showcasing your skills, projects, and contact information using React/Next.js.</p>
+                  <div className="problem-tech">React, CSS, Responsive Design</div>
+                </div>
+
+                <div className="problem-card">
+                  <div className="problem-difficulty medium">Intermediate</div>
+                  <h3>📝 Task Management API</h3>
+                  <p>Create a RESTful API for task management with user authentication, CRUD operations, and task categorization.</p>
+                  <div className="problem-tech">Spring Boot, PostgreSQL, JWT</div>
+                </div>
+
+                <div className="problem-card">
+                  <div className="problem-difficulty medium">Intermediate</div>
+                  <h3>💬 Real-time Chat Application</h3>
+                  <p>Build a real-time chat application with rooms, direct messages, and online status indicators.</p>
+                  <div className="problem-tech">Node.js, Socket.io, MongoDB</div>
+                </div>
+
+                <div className="problem-card">
+                  <div className="problem-difficulty hard">Advanced</div>
+                  <h3>🛒 E-commerce Microservices</h3>
+                  <p>Design and implement a microservices-based e-commerce backend with product catalog, cart, and order services.</p>
+                  <div className="problem-tech">Spring Boot, Kafka, Docker, Kubernetes</div>
+                </div>
+
+                <div className="problem-card">
+                  <div className="problem-difficulty hard">Advanced</div>
+                  <h3>📊 Analytics Dashboard</h3>
+                  <p>Create a data analytics dashboard with real-time charts, data visualization, and export functionality.</p>
+                  <div className="problem-tech">React, D3.js, Python, FastAPI</div>
+                </div>
+
+                <div className="problem-card coming-soon">
+                  <div className="problem-difficulty">Coming Soon</div>
+                  <h3>🔮 More Projects Coming...</h3>
+                  <p>We're adding more problem statements regularly. Check back soon or suggest your own project idea!</p>
+                </div>
+              </div>
+
+              <div className="problems-footer">
+                <button className="problems-close-btn" onClick={() => setShowProblemStatements(false)}>Close</button>
+              </div>
             </div>
           </div>
         )}
