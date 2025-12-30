@@ -570,65 +570,6 @@ export default function CommunityDetail() {
             <div className="admin-panel admin-panel-enhanced" onClick={e => e.stopPropagation()}>
               <button className="modal-close" onClick={() => { setShowAdminPanel(false); setAdminEditMember(null); }}><FaTimes /></button>
               <div className="admin-header"><h2><FaCrown /> Admin Panel</h2><p>Manage {community.name}</p></div>
-              
-              {/* Admin Edit Modal */}
-              {adminEditMember && (
-                <div className="admin-edit-overlay">
-                  <div className="admin-edit-modal">
-                    <div className="admin-edit-header">
-                      <h3><FaEdit /> Edit Member</h3>
-                      <button onClick={() => setAdminEditMember(null)}><FaTimes /></button>
-                    </div>
-                    <div className="admin-edit-content">
-                      <div className="admin-edit-avatar">
-                        <img src={adminEditForm.image} alt="" />
-                      </div>
-                      <div className="admin-edit-form">
-                        <div className="admin-edit-row">
-                          <label>Name</label>
-                          <input type="text" value={adminEditForm.name} onChange={e => setAdminEditForm({...adminEditForm, name: e.target.value})} />
-                        </div>
-                        <div className="admin-edit-row">
-                          <label>Email</label>
-                          <input type="email" value={adminEditForm.email} onChange={e => setAdminEditForm({...adminEditForm, email: e.target.value})} />
-                        </div>
-                        <div className="admin-edit-row">
-                          <label>Contact</label>
-                          <input type="text" value={adminEditForm.contactNumber} onChange={e => setAdminEditForm({...adminEditForm, contactNumber: e.target.value})} placeholder="Phone number" />
-                        </div>
-                        <div className="admin-edit-row">
-                          <label>GitHub URL</label>
-                          <input type="url" value={adminEditForm.githubUrl} onChange={e => setAdminEditForm({...adminEditForm, githubUrl: e.target.value})} />
-                        </div>
-                        <div className="admin-edit-row">
-                          <label>LinkedIn URL</label>
-                          <input type="url" value={adminEditForm.linkedinUrl} onChange={e => setAdminEditForm({...adminEditForm, linkedinUrl: e.target.value})} />
-                        </div>
-                        <div className="admin-edit-row">
-                          <label>Role</label>
-                          <select value={adminEditForm.role} onChange={e => setAdminEditForm({...adminEditForm, role: e.target.value})}>
-                            <option value="Member">Member</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Owner">Owner</option>
-                          </select>
-                        </div>
-                        <div className="admin-edit-row">
-                          <label>Teams</label>
-                          <div className="admin-edit-teams">
-                            {TEAM_OPTIONS.map(team => (
-                              <button key={team} type="button" className={`team-toggle ${adminEditForm.teams?.includes(team) ? 'active' : ''}`} onClick={() => toggleAdminTeam(team)}>{team}</button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="admin-edit-actions">
-                      <button className="cancel-btn" onClick={() => setAdminEditMember(null)}>Cancel</button>
-                      <button className="save-btn" onClick={saveAdminEdit} disabled={loading}>{loading ? 'Saving...' : 'Save Changes'}</button>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Pending Requests */}
               <div className="admin-section">
@@ -972,6 +913,117 @@ export default function CommunityDetail() {
                   )}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Admin Edit Member Modal - Full Page Centered */}
+        {adminEditMember && (
+          <div className="admin-edit-fullpage-overlay" onClick={() => setAdminEditMember(null)}>
+            <div className="admin-edit-fullpage-modal" onClick={e => e.stopPropagation()}>
+              <div className="admin-edit-fullpage-header">
+                <h2><FaEdit /> Edit Member Details</h2>
+                <button className="admin-edit-close" onClick={() => setAdminEditMember(null)}><FaTimes /></button>
+              </div>
+              
+              <div className="admin-edit-fullpage-body">
+                <div className="admin-edit-fullpage-avatar">
+                  <img src={adminEditForm.image} alt={adminEditForm.name} />
+                  <h3>{adminEditForm.name}</h3>
+                  <span className="admin-edit-role-badge">{adminEditForm.role}</span>
+                </div>
+
+                <div className="admin-edit-fullpage-form">
+                  <div className="admin-edit-form-grid">
+                    <div className="admin-edit-field">
+                      <label><FaUser /> Full Name</label>
+                      <input 
+                        type="text" 
+                        value={adminEditForm.name} 
+                        onChange={e => setAdminEditForm({...adminEditForm, name: e.target.value})} 
+                        placeholder="Enter full name"
+                      />
+                    </div>
+                    
+                    <div className="admin-edit-field">
+                      <label><FaEnvelope /> Email Address</label>
+                      <input 
+                        type="email" 
+                        value={adminEditForm.email} 
+                        onChange={e => setAdminEditForm({...adminEditForm, email: e.target.value})} 
+                        placeholder="Enter email"
+                      />
+                    </div>
+                    
+                    <div className="admin-edit-field">
+                      <label>📞 Contact Number</label>
+                      <input 
+                        type="text" 
+                        value={adminEditForm.contactNumber} 
+                        onChange={e => setAdminEditForm({...adminEditForm, contactNumber: e.target.value})} 
+                        placeholder="Enter phone number"
+                      />
+                    </div>
+                    
+                    <div className="admin-edit-field">
+                      <label><FaGithub /> GitHub URL</label>
+                      <input 
+                        type="url" 
+                        value={adminEditForm.githubUrl} 
+                        onChange={e => setAdminEditForm({...adminEditForm, githubUrl: e.target.value})} 
+                        placeholder="https://github.com/username"
+                      />
+                    </div>
+                    
+                    <div className="admin-edit-field">
+                      <label><FaLinkedin /> LinkedIn URL</label>
+                      <input 
+                        type="url" 
+                        value={adminEditForm.linkedinUrl} 
+                        onChange={e => setAdminEditForm({...adminEditForm, linkedinUrl: e.target.value})} 
+                        placeholder="https://linkedin.com/in/username"
+                      />
+                    </div>
+                    
+                    <div className="admin-edit-field">
+                      <label><FaCrown /> Role</label>
+                      <select 
+                        value={adminEditForm.role} 
+                        onChange={e => setAdminEditForm({...adminEditForm, role: e.target.value})}
+                      >
+                        <option value="Member">Member</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Owner">Owner</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="admin-edit-field admin-edit-field-full">
+                    <label>Teams</label>
+                    <div className="admin-edit-teams-grid">
+                      {TEAM_OPTIONS.map(team => (
+                        <button 
+                          key={team} 
+                          type="button" 
+                          className={`admin-team-btn ${adminEditForm.teams?.includes(team) ? 'active' : ''}`} 
+                          onClick={() => toggleAdminTeam(team)}
+                        >
+                          {getTeamIcon(team)} {team}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-edit-fullpage-footer">
+                <button className="admin-edit-cancel-btn" onClick={() => setAdminEditMember(null)}>
+                  <FaTimes /> Cancel
+                </button>
+                <button className="admin-edit-confirm-btn" onClick={saveAdminEdit} disabled={loading}>
+                  <FaCheck /> {loading ? 'Saving...' : 'Confirm Changes'}
+                </button>
+              </div>
             </div>
           </div>
         )}

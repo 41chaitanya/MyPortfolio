@@ -3018,3 +3018,272 @@ input[type="checkbox"] {
   background: #3f3f46;
   cursor: not-allowed;
 }
+
+
+/* Full Page Admin Edit Modal */
+.admin-edit-fullpage-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.admin-edit-fullpage-modal {
+  background: linear-gradient(145deg, #18181b 0%, #1f1f23 100%);
+  border: 1px solid #3f3f46;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 85, 247, 0.1);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-edit-fullpage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #3f3f46;
+  background: rgba(168, 85, 247, 0.05);
+}
+
+.admin-edit-fullpage-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.3rem;
+  color: #fafafa;
+}
+
+.admin-edit-fullpage-header h2 svg {
+  color: #a855f7;
+}
+
+.admin-edit-close {
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  color: #a1a1a1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.admin-edit-close:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.admin-edit-fullpage-body {
+  padding: 25px;
+}
+
+.admin-edit-fullpage-avatar {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #27272a;
+}
+
+.admin-edit-fullpage-avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #a855f7;
+  margin-bottom: 12px;
+}
+
+.admin-edit-fullpage-avatar h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  color: #fafafa;
+}
+
+.admin-edit-role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.admin-edit-fullpage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-edit-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+@media (max-width: 500px) {
+  .admin-edit-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-edit-field-full {
+  grid-column: 1 / -1;
+}
+
+.admin-edit-field label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #a1a1a1;
+  font-weight: 500;
+}
+
+.admin-edit-field label svg {
+  font-size: 0.9rem;
+}
+
+.admin-edit-field input,
+.admin-edit-field select {
+  padding: 12px 14px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  color: #fafafa;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.admin-edit-field input:focus,
+.admin-edit-field select:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+
+.admin-edit-field input::placeholder {
+  color: #52525b;
+}
+
+.admin-edit-teams-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-team-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 25px;
+  color: #a1a1a1;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.admin-team-btn:hover {
+  border-color: #a855f7;
+  color: #fafafa;
+}
+
+.admin-team-btn.active {
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.admin-edit-fullpage-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 25px;
+  border-top: 1px solid #3f3f46;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-edit-cancel-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  color: #a1a1a1;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.admin-edit-cancel-btn:hover {
+  background: #3f3f46;
+  color: #fafafa;
+}
+
+.admin-edit-confirm-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.admin-edit-confirm-btn:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  box-shadow: 0 5px 20px rgba(34, 197, 94, 0.3);
+  transform: translateY(-1px);
+}
+
+.admin-edit-confirm-btn:disabled {
+  background: #3f3f46;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
