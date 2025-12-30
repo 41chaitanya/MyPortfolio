@@ -49,6 +49,8 @@ export default function CommunityDetail() {
   const [editMode, setEditMode] = useState(false);
   const [profileForm, setProfileForm] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
+  const [adminEditMember, setAdminEditMember] = useState(null);
+  const [adminEditForm, setAdminEditForm] = useState({});
   const [loginStep, setLoginStep] = useState('email'); // 'email' or 'otp'
   const [loginForm, setLoginForm] = useState({ email: '', otp: '' });
   const [form, setForm] = useState({ name: '', email: '', githubUrl: '', linkedinUrl: '', contactNumber: '', teams: [], techStack: [], image: null, imagePreview: '' });
@@ -248,6 +250,61 @@ export default function CommunityDetail() {
       await fetch(`${API_URL}/api/members/${id}/kick/${slug}`, { method: 'DELETE' });
       setMembers(prev => prev.filter(m => m.id !== id));
     } catch { alert('Failed to kick member'); }
+  };
+
+  // Admin: Open edit modal for a member
+  const openAdminEdit = (member) => {
+    setAdminEditMember(member);
+    setAdminEditForm({
+      name: member.name || '',
+      email: member.email || '',
+      contactNumber: member.contactNumber || '',
+      githubUrl: member.githubUrl || '',
+      linkedinUrl: member.linkedinUrl || '',
+      role: member.role || 'Member',
+      teams: member.teams || [],
+      techStack: member.techStack || [],
+      image: member.image || ''
+    });
+  };
+
+  // Admin: Save member edits
+  const saveAdminEdit = async () => {
+    if (!adminEditMember) return;
+    setLoading(true);
+    try {
+      const token = localStorage.getItem(`token_${slug}`);
+      const res = await fetch(`${API_URL}/api/members/${adminEditMember.id}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(adminEditForm)
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Update local state
+        setMembers(prev => prev.map(m => m.id === adminEditMember.id ? { ...m, ...adminEditForm } : m));
+        setAdminEditMember(null);
+        setAdminEditForm({});
+      } else {
+        alert(data.message || 'Failed to update member');
+      }
+    } catch {
+      alert('Failed to save changes');
+    }
+    setLoading(false);
+  };
+
+  // Admin: Toggle team for edit form
+  const toggleAdminTeam = (team) => {
+    setAdminEditForm(prev => ({
+      ...prev,
+      teams: prev.teams?.includes(team) 
+        ? prev.teams.filter(t => t !== team) 
+        : [...(prev.teams || []), team]
+    }));
   };
 
   // Handle image selection for join form
@@ -509,25 +566,90 @@ export default function CommunityDetail() {
 
         {/* Admin Panel */}
         {showAdminPanel && currentUser?.role === 'Owner' && (
-          <div className="modal-overlay" onClick={() => setShowAdminPanel(false)}>
-            <div className="admin-panel" onClick={e => e.stopPropagation()}>
-              <button className="modal-close" onClick={() => setShowAdminPanel(false)}><FaTimes /></button>
+          <div className="modal-overlay" onClick={() => { setShowAdminPanel(false); setAdminEditMember(null); }}>
+            <div className="admin-panel admin-panel-enhanced" onClick={e => e.stopPropagation()}>
+              <button className="modal-close" onClick={() => { setShowAdminPanel(false); setAdminEditMember(null); }}><FaTimes /></button>
               <div className="admin-header"><h2><FaCrown /> Admin Panel</h2><p>Manage {community.name}</p></div>
               
+              {/* Admin Edit Modal */}
+              {adminEditMember && (
+                <div className="admin-edit-overlay">
+                  <div className="admin-edit-modal">
+                    <div className="admin-edit-header">
+                      <h3><FaEdit /> Edit Member</h3>
+                      <button onClick={() => setAdminEditMember(null)}><FaTimes /></button>
+                    </div>
+                    <div className="admin-edit-content">
+                      <div className="admin-edit-avatar">
+                        <img src={adminEditForm.image} alt="" />
+                      </div>
+                      <div className="admin-edit-form">
+                        <div className="admin-edit-row">
+                          <label>Name</label>
+                          <input type="text" value={adminEditForm.name} onChange={e => setAdminEditForm({...adminEditForm, name: e.target.value})} />
+                        </div>
+                        <div className="admin-edit-row">
+                          <label>Email</label>
+                          <input type="email" value={adminEditForm.email} onChange={e => setAdminEditForm({...adminEditForm, email: e.target.value})} />
+                        </div>
+                        <div className="admin-edit-row">
+                          <label>Contact</label>
+                          <input type="text" value={adminEditForm.contactNumber} onChange={e => setAdminEditForm({...adminEditForm, contactNumber: e.target.value})} placeholder="Phone number" />
+                        </div>
+                        <div className="admin-edit-row">
+                          <label>GitHub URL</label>
+                          <input type="url" value={adminEditForm.githubUrl} onChange={e => setAdminEditForm({...adminEditForm, githubUrl: e.target.value})} />
+                        </div>
+                        <div className="admin-edit-row">
+                          <label>LinkedIn URL</label>
+                          <input type="url" value={adminEditForm.linkedinUrl} onChange={e => setAdminEditForm({...adminEditForm, linkedinUrl: e.target.value})} />
+                        </div>
+                        <div className="admin-edit-row">
+                          <label>Role</label>
+                          <select value={adminEditForm.role} onChange={e => setAdminEditForm({...adminEditForm, role: e.target.value})}>
+                            <option value="Member">Member</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Owner">Owner</option>
+                          </select>
+                        </div>
+                        <div className="admin-edit-row">
+                          <label>Teams</label>
+                          <div className="admin-edit-teams">
+                            {TEAM_OPTIONS.map(team => (
+                              <button key={team} type="button" className={`team-toggle ${adminEditForm.teams?.includes(team) ? 'active' : ''}`} onClick={() => toggleAdminTeam(team)}>{team}</button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="admin-edit-actions">
+                      <button className="cancel-btn" onClick={() => setAdminEditMember(null)}>Cancel</button>
+                      <button className="save-btn" onClick={saveAdminEdit} disabled={loading}>{loading ? 'Saving...' : 'Save Changes'}</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Pending Requests */}
               <div className="admin-section">
                 <h3>Pending Requests ({pendingMembers.length})</h3>
                 {pendingMembers.length > 0 ? (
                   <div className="admin-list">
                     {pendingMembers.map(m => (
-                      <div key={m.id} className="admin-member-card">
+                      <div key={m.id} className="admin-member-card admin-member-card-detailed">
                         <img src={m.image} alt="" className="admin-member-img" />
-                        <div className="admin-member-info">
+                        <div className="admin-member-info admin-member-info-full">
                           <h4>{m.name}</h4>
-                          <p>{m.email}</p>
+                          <div className="admin-member-details">
+                            <span><FaEnvelope /> {m.email}</span>
+                            {m.contactNumber && <span>📞 {m.contactNumber}</span>}
+                            {m.githubUrl && <a href={m.githubUrl} target="_blank" rel="noopener noreferrer"><FaGithub /> GitHub</a>}
+                            {m.linkedinUrl && <a href={m.linkedinUrl} target="_blank" rel="noopener noreferrer"><FaLinkedin /> LinkedIn</a>}
+                          </div>
                           <div className="admin-member-teams">{m.teams?.map((t, i) => <span key={i}>{t}</span>)}</div>
+                          {m.techStack?.length > 0 && <div className="admin-member-tech">{m.techStack.map((t, i) => <span key={i}>{t}</span>)}</div>}
                         </div>
-                        <div className="admin-actions">
+                        <div className="admin-actions admin-actions-vertical">
                           <button className="approve-btn" onClick={() => approveMember(m.id)}><FaCheck /> Approve</button>
                           <button className="reject-btn" onClick={() => rejectMember(m.id)}><FaBan /> Reject</button>
                         </div>
@@ -542,18 +664,24 @@ export default function CommunityDetail() {
                 <h3>Current Members ({members.length})</h3>
                 <div className="admin-list">
                   {members.map(m => (
-                    <div key={m.id} className="admin-member-card">
+                    <div key={m.id} className="admin-member-card admin-member-card-detailed">
                       <img src={m.image} alt="" className="admin-member-img" />
-                      <div className="admin-member-info">
+                      <div className="admin-member-info admin-member-info-full">
                         <h4>{m.name} {m.role === 'Owner' && <FaCrown className="owner-icon" />}</h4>
-                        <p>{m.email}</p>
-                        <div className="admin-member-teams">{m.teams?.map((t, i) => <span key={i}>{t}</span>)}</div>
-                      </div>
-                      {m.role !== 'Owner' && (
-                        <div className="admin-actions">
-                          <button className="kick-btn" onClick={() => kickMember(m.id)}><FaTrash /> Kick</button>
+                        <span className="admin-member-role-badge">{m.role}</span>
+                        <div className="admin-member-details">
+                          <span><FaEnvelope /> {m.email}</span>
+                          {m.contactNumber && <span>📞 {m.contactNumber}</span>}
+                          {m.githubUrl && <a href={m.githubUrl} target="_blank" rel="noopener noreferrer"><FaGithub /> GitHub</a>}
+                          {m.linkedinUrl && <a href={m.linkedinUrl} target="_blank" rel="noopener noreferrer"><FaLinkedin /> LinkedIn</a>}
                         </div>
-                      )}
+                        <div className="admin-member-teams">{m.teams?.map((t, i) => <span key={i}>{t}</span>)}</div>
+                        {m.techStack?.length > 0 && <div className="admin-member-tech">{m.techStack.map((t, i) => <span key={i}>{t}</span>)}</div>}
+                      </div>
+                      <div className="admin-actions admin-actions-vertical">
+                        <button className="edit-btn" onClick={() => openAdminEdit(m)}><FaEdit /> Edit</button>
+                        {m.role !== 'Owner' && <button className="kick-btn" onClick={() => kickMember(m.id)}><FaTrash /> Kick</button>}
+                      </div>
                     </div>
                   ))}
                 </div>

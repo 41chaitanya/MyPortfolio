@@ -2745,3 +2745,276 @@ input[type="checkbox"] {
     transform: translateY(0);
   }
 }
+
+
+/* Enhanced Admin Panel Styles */
+.admin-panel-enhanced {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-member-card-detailed {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 15px;
+}
+
+@media (min-width: 600px) {
+  .admin-member-card-detailed {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.admin-member-info-full {
+  flex: 1;
+}
+
+.admin-member-info-full h4 {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-member-role-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: #3f3f46;
+  border-radius: 10px;
+  color: #a1a1a1;
+  margin-bottom: 8px;
+}
+
+.admin-member-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: #a1a1a1;
+}
+
+.admin-member-details span,
+.admin-member-details a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.admin-member-details a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.admin-member-details a:hover {
+  text-decoration: underline;
+}
+
+.admin-member-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.admin-member-tech span {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: #27272a;
+  border-radius: 4px;
+  color: #71717a;
+}
+
+.admin-actions-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.edit-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.edit-btn:hover {
+  background: #2563eb;
+}
+
+/* Admin Edit Modal */
+.admin-edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 16px;
+}
+
+.admin-edit-modal {
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.admin-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #3f3f46;
+}
+
+.admin-edit-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #fafafa;
+}
+
+.admin-edit-header button {
+  background: none;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.admin-edit-content {
+  padding: 20px;
+}
+
+.admin-edit-avatar {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-edit-avatar img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3f3f46;
+}
+
+.admin-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-edit-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.admin-edit-row label {
+  font-size: 0.85rem;
+  color: #a1a1a1;
+  font-weight: 500;
+}
+
+.admin-edit-row input,
+.admin-edit-row select {
+  padding: 10px 12px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  color: #fafafa;
+  font-size: 0.9rem;
+}
+
+.admin-edit-row input:focus,
+.admin-edit-row select:focus {
+  outline: none;
+  border-color: #a855f7;
+}
+
+.admin-edit-teams {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.team-toggle {
+  padding: 6px 12px;
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 20px;
+  color: #a1a1a1;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.team-toggle.active {
+  background: #a855f7;
+  border-color: #a855f7;
+  color: white;
+}
+
+.team-toggle:hover {
+  border-color: #a855f7;
+}
+
+.admin-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #3f3f46;
+}
+
+.cancel-btn {
+  padding: 10px 20px;
+  background: #3f3f46;
+  border: none;
+  border-radius: 8px;
+  color: #fafafa;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.save-btn {
+  padding: 10px 20px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.save-btn:hover {
+  background: #16a34a;
+}
+
+.save-btn:disabled {
+  background: #3f3f46;
+  cursor: not-allowed;
+}
