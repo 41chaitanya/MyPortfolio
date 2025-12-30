@@ -9,11 +9,11 @@ import './MusicPlayer.css';
 
 // Local tracks as fallback
 const LOCAL_TRACKS = [
-  { id: 1, name: 'GTA 4 Theme', artist: 'Michael Hunter', file: '/audio/gta4themesong.mp3' },
-  { id: 2, name: 'BGMI Theme', artist: 'PUBG Mobile', file: '/audio/bgmiThemeSong.mp3' },
-  { id: 3, name: 'GTA San Andreas Theme', artist: 'Young Maylay', file: '/audio/GTASanAndThemeSong.mp3' },
-  { id: 4, name: 'RDR2 Theme', artist: 'Woody Jackson', file: '/audio/rdr2ThemeSong.mp3' },
-  { id: 5, name: 'The Boys BGM', artist: 'The Boys', file: '/audio/the boys bgm.mp3', isTheBoys: true },
+  { id: 1, name: 'GTA 4 Theme', artist: 'Michael Hunter', file: `${import.meta.env.BASE_URL}audio/gta4themesong.mp3` },
+  { id: 2, name: 'BGMI Theme', artist: 'PUBG Mobile', file: `${import.meta.env.BASE_URL}audio/bgmiThemeSong.mp3` },
+  { id: 3, name: 'GTA San Andreas Theme', artist: 'Young Maylay', file: `${import.meta.env.BASE_URL}audio/GTASanAndThemeSong.mp3` },
+  { id: 4, name: 'RDR2 Theme', artist: 'Woody Jackson', file: `${import.meta.env.BASE_URL}audio/rdr2ThemeSong.mp3` },
+  { id: 5, name: 'The Boys BGM', artist: 'The Boys', file: `${import.meta.env.BASE_URL}audio/the boys bgm.mp3`, isTheBoys: true },
 ];
 
 // JioSaavn API endpoints

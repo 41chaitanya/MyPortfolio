@@ -351,7 +351,7 @@ export default function CommunityDetail() {
       {showPreloader && slug === 'com.the-boys-dev' && (
         <div className="preloader-container">
           <video ref={videoRef} className="preloader-video" muted playsInline>
-            <source src="/gifs/com_The_Boys_Preloader.mp4" type="video/mp4" />
+            <source src={`${import.meta.env.BASE_URL}gifs/com_The_Boys_Preloader.mp4`} type="video/mp4" />
           </video>
           <div className="preloader-overlay">
             <div className="preloader-text">

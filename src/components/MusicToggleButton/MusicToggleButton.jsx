@@ -6,10 +6,10 @@ export const MusicToggleButton = () => {
   const audioRef = useRef(null);
 
   const musicTracks = [
-    { id: 0, name: 'Track 1', file: '/audio/gta4themesong.mp3' },
-    { id: 1, name: 'Track 2', file: '/audio/bgmiThemeSong.mp3' },
-    { id: 2, name: 'Track 3', file: '/audio/GTASanAndThemeSong.mp3' },
-    { id: 3, name: 'Track 4', file: '/audio/rdr2ThemeSong.mp3' },
+    { id: 0, name: 'Track 1', file: `${import.meta.env.BASE_URL}audio/gta4themesong.mp3` },
+    { id: 1, name: 'Track 2', file: `${import.meta.env.BASE_URL}audio/bgmiThemeSong.mp3` },
+    { id: 2, name: 'Track 3', file: `${import.meta.env.BASE_URL}audio/GTASanAndThemeSong.mp3` },
+    { id: 3, name: 'Track 4', file: `${import.meta.env.BASE_URL}audio/rdr2ThemeSong.mp3` },
   ];
 
   const getRandomHeights = () => {
