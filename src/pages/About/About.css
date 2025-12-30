@@ -408,3 +408,17 @@
 .see-all-hackathons-button:active {
   transform: translateY(0);
 }
+
+
+/* Community Link */
+.community-link {
+  color: #a855f7;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.community-link:hover {
+  color: #c084fc;
+  text-decoration: underline;
+}

@@ -151,6 +151,44 @@
   transform: translateY(0);
 }
 
+.community-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: #fafafa;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-decoration: none;
+}
+
+.community-button:hover {
+  background: linear-gradient(135deg, #9333ea 0%, #6d28d9 100%);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+  transform: translateY(-2px);
+}
+
+.community-button:active {
+  transform: translateY(0);
+}
+
+.community-link {
+  color: #a855f7;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.community-link:hover {
+  color: #c084fc;
+  text-decoration: underline;
+}
+
 .social-icons {
   display: flex;
   gap: 15px;

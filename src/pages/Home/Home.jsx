@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { TextRoll } from '../../components/TextRoll';
 import { AnimatedDock } from '../../components/AnimatedDock';
 import HackathonDetailModal from '../../components/HackathonDetailModal';
 import ProjectDetailModal from '../../components/ProjectDetailModal';
-import { FaGithub, FaInstagram, FaTwitter, FaDownload, FaLinkedin, FaJava, FaDocker } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaTwitter, FaDownload, FaLinkedin, FaJava, FaDocker, FaUsers } from 'react-icons/fa';
 import { SiSpringboot, SiPostgresql, SiMongodb, SiRedis, SiApachekafka, SiKubernetes } from 'react-icons/si';
 import './Home.css';
 
@@ -130,7 +130,12 @@ export default function Home() {
             I'm eager to explore microservices, database design, and RESTful APIs. With dedication and continuous 
             learning, I'm committed to growing my skills and contributing to meaningful projects. Recently, I was honored 
             to compete as a <strong>Grand Finalist at Smart India Hackathon 2025</strong>, a prestigious national-level innovation 
-            platform. Let's build something great together!
+            platform.
+          </p>
+          <p>
+            I also run a developer community called <Link to="/community/com.the-boys-dev" className="community-link">com.the-boys-dev</Link> — 
+            a space where fellow devs level up together, share knowledge, and build cool stuff without the corporate fluff. 
+            Let's build something great together!
           </p>
         </div>
 
@@ -149,6 +154,11 @@ export default function Home() {
             <FaDownload style={{ marginRight: '8px' }} />
             Download CV
           </a>
+
+          <Link to="/community/com.the-boys-dev" className="community-button">
+            <FaUsers style={{ marginRight: '8px' }} />
+            My Community
+          </Link>
           
           <div className="social-icons">
             <a href="https://www.linkedin.com/in/chaitanya-sharma-799041301" target="_blank" rel="noopener noreferrer" className="social-icon" title="LinkedIn">

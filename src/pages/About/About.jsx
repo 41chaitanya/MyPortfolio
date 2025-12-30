@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { TextRoll } from '../../components/TextRoll';
 import './About.css';
 
@@ -98,6 +98,11 @@ export default function About() {
             My journey in tech has been driven by curiosity and a desire to solve real-world problems through code. 
             I believe in writing clean, maintainable code and following best practices in software development. With 15+ 
             hackathon participations across NITs and IITs, I've honed my problem-solving skills and learned the value of teamwork.
+          </p>
+          <p>
+            I also run a developer community called <Link to="/community/com.the-boys-dev" className="community-link">com.the-boys-dev</Link> — 
+            a space where fellow devs level up together, share knowledge, and build cool stuff without the corporate fluff. 
+            It's all about helping each other grow and having fun while coding!
           </p>
         </div>
       </div>
