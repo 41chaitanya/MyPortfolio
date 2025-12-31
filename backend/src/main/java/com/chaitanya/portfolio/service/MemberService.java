@@ -19,6 +19,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final EmailService emailService;
+    private final GitHubService gitHubService;
 
     // Default avatar images
     private static final String MALE_AVATAR = "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png";
@@ -99,6 +100,16 @@ public class MemberService {
                 String communitySlug = member.getCommunities().isEmpty() ? "com.the-boys-dev" : member.getCommunities().get(0);
                 String communityName = getCommunityDisplayName(communitySlug);
                 emailService.sendWelcomeEmail(member.getEmail(), member.getName(), communityName, communitySlug);
+                
+                // Send GitHub organization invitation
+                if (member.getGithubUrl() != null && !member.getGithubUrl().isEmpty()) {
+                    boolean inviteSent = gitHubService.sendOrgInvitation(member.getGithubUrl());
+                    if (inviteSent) {
+                        log.info("GitHub org invitation sent to: {}", member.getGithubUrl());
+                    } else {
+                        log.warn("Failed to send GitHub org invitation to: {}", member.getGithubUrl());
+                    }
+                }
             }
         }
         return memberRepository.save(member);

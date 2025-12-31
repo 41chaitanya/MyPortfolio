@@ -35,3 +35,10 @@ app:
     allowed-origins: ${CORS_ORIGINS:http://localhost:5173,https://chaitanya-dev.netlify.app}
   email:
     enabled: true
+
+# GitHub Configuration
+github:
+  token: ${GITHUB_TOKEN:}
+  org: ${GITHUB_ORG:com-the-boys-dev}
+  invitation:
+    enabled: ${GITHUB_INVITATION_ENABLED:true}
