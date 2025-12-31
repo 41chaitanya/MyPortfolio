@@ -21,7 +21,6 @@ public class EmailService {
     private boolean emailEnabled;
 
     public void sendOtpEmail(String toEmail, String otp, String communityName) {
-        // Log OTP for development/testing
         log.info("========================================");
         log.info("OTP for {}: {}", toEmail, otp);
         log.info("========================================");
@@ -51,7 +50,49 @@ public class EmailService {
         } catch (Exception e) {
             log.error("Failed to send OTP email to {}: {}", toEmail, e.getMessage());
             log.warn("Email failed but OTP is logged above for testing.");
-            // Don't throw exception - allow login to continue with logged OTP
+        }
+    }
+
+    public void sendWelcomeEmail(String toEmail, String memberName, String communityName, String communitySlug) {
+        log.info("Sending welcome email to: {} for community: {}", toEmail, communityName);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Welcome email not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("🎉 Welcome to " + communityName + "!");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "Congratulations! Your request to join " + communityName + " has been APPROVED! 🚀\n\n" +
+                "You're now officially part of the crew. Here's what you can do next:\n\n" +
+                "✅ LOGIN TO YOUR PROFILE\n" +
+                "Visit: https://41chaitanya.github.io/MyPortfolio/community/" + communitySlug + "\n" +
+                "Click 'Login' and use your registered email to receive an OTP.\n\n" +
+                "✅ UPDATE YOUR PROFILE\n" +
+                "Once logged in, you can:\n" +
+                "- Add your tech stack\n" +
+                "- Update your social links\n" +
+                "- Add your past work & contributions\n\n" +
+                "✅ START CONTRIBUTING\n" +
+                "Check out our GitHub organization and start contributing to projects!\n\n" +
+                "Remember the rules:\n" +
+                "• Contribute at least twice within 7 days\n" +
+                "• Always use branches & PRs (no direct pushes to main)\n" +
+                "• Be respectful and help fellow devs\n\n" +
+                "Welcome aboard! Let's build something great together. 💪\n\n" +
+                "— " + communityName + " Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\""
+            );
+            
+            mailSender.send(message);
+            log.info("Welcome email sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send welcome email to {}: {}", toEmail, e.getMessage());
         }
     }
 }

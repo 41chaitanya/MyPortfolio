@@ -18,6 +18,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final EmailService emailService;
 
     // Default avatar images
     private static final String MALE_AVATAR = "https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png";
@@ -85,12 +86,31 @@ public class MemberService {
     public Member updateMemberStatus(String id, String status) {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Member not found"));
+        
+        String previousStatus = member.getStatus();
         member.setStatus(status);
         member.setUpdatedAt(LocalDateTime.now());
+        
         if (status.equals("APPROVED")) {
             member.setJoinedAt(LocalDateTime.now());
+            
+            // Send welcome email if status changed to APPROVED
+            if (!"APPROVED".equals(previousStatus) && member.getEmail() != null) {
+                String communitySlug = member.getCommunities().isEmpty() ? "com.the-boys-dev" : member.getCommunities().get(0);
+                String communityName = getCommunityDisplayName(communitySlug);
+                emailService.sendWelcomeEmail(member.getEmail(), member.getName(), communityName, communitySlug);
+            }
         }
         return memberRepository.save(member);
+    }
+
+    private String getCommunityDisplayName(String slug) {
+        if ("com.the-boys-dev".equals(slug)) {
+            return "com.the-boys-dev";
+        } else if ("debug-oist".equals(slug)) {
+            return "OIST Programming Club";
+        }
+        return slug;
     }
 
     public Member updateMember(String id, Member updated) {
