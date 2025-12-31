@@ -155,4 +155,14 @@ public class MemberController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Failed to kick member: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/send-welcome-emails/{communitySlug}")
+    public ResponseEntity<ApiResponse> sendWelcomeEmailsToAll(@PathVariable String communitySlug) {
+        try {
+            int count = memberService.sendWelcomeEmailToAllApprovedMembers(communitySlug);
+            return ResponseEntity.ok(ApiResponse.success("Welcome emails sent to " + count + " members"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to send emails: " + e.getMessage()));
+        }
+    }
 }

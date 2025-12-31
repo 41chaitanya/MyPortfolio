@@ -162,4 +162,24 @@ public class MemberService {
             memberRepository.save(member);
         }
     }
+
+    public int sendWelcomeEmailToAllApprovedMembers(String communitySlug) {
+        List<Member> approvedMembers = memberRepository.findByCommunitiesContainingAndStatus(communitySlug, "APPROVED");
+        int sentCount = 0;
+        String communityName = getCommunityDisplayName(communitySlug);
+        
+        for (Member member : approvedMembers) {
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                try {
+                    emailService.sendWelcomeEmail(member.getEmail(), member.getName(), communityName, communitySlug);
+                    sentCount++;
+                    log.info("Welcome email sent to: {}", member.getEmail());
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    log.error("Failed to send email to {}: {}", member.getEmail(), e.getMessage());
+                }
+            }
+        }
+        return sentCount;
+    }
 }
