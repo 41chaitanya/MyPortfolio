@@ -95,4 +95,58 @@ public class EmailService {
             log.error("Failed to send welcome email to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendNewProjectEmail(String toEmail, String memberName, String repoName, 
+                                    String description, String repoUrl, String issuesUrl, 
+                                    String creatorUsername) {
+        log.info("Sending new project notification to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. New project email not sent.");
+            return;
+        }
+        
+        String desc = (description != null && !description.isEmpty()) 
+            ? description 
+            : "No description provided yet";
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("🚀 New Project Alert: " + repoName + " | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "Exciting news! A new project has just been started in com.the-boys-dev! 🎉\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "📁 PROJECT: " + repoName + "\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "📝 DESCRIPTION:\n" + desc + "\n\n" +
+                "👤 INITIATED BY: @" + creatorUsername + "\n\n" +
+                "🔗 REPOSITORY:\n" + repoUrl + "\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🎯 HOW TO GET INVOLVED:\n\n" +
+                "1️⃣ Check out the Issues section for tasks:\n" +
+                "   " + issuesUrl + "\n\n" +
+                "2️⃣ Pick an issue that matches your skills\n\n" +
+                "3️⃣ Fork the repo, create a branch, and start coding!\n\n" +
+                "4️⃣ Submit a PR when you're ready\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "We're welcoming all contributors! Whether you're a beginner or experienced dev, " +
+                "there's something for everyone. Don't hesitate to ask questions in the issues " +
+                "or reach out to the project creator.\n\n" +
+                "Let's build something amazing together! 💪\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("New project email sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send new project email to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }

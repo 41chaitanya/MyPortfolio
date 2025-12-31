@@ -16,7 +16,6 @@ import java.util.*;
 @RequestMapping("/api/analytics")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 public class GitHubAnalyticsController {
 
     private final GitHubAnalyticsService analyticsService;

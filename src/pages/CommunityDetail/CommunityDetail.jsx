@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { FaArrowLeft, FaGithub, FaEnvelope, FaStar, FaCodeBranch, FaDiscord, FaGlobe, FaUsers, FaUserPlus, FaTimes, FaCheckCircle, FaLinkedin, FaChevronRight, FaCode, FaServer, FaPalette, FaCogs, FaSignInAlt, FaSignOutAlt, FaCrown, FaTrash, FaCheck, FaBan, FaCamera, FaEdit, FaSave, FaUser } from 'react-icons/fa';
+import { FaArrowLeft, FaGithub, FaEnvelope, FaStar, FaCodeBranch, FaDiscord, FaGlobe, FaUsers, FaUserPlus, FaTimes, FaCheckCircle, FaLinkedin, FaChevronRight, FaCode, FaServer, FaPalette, FaCogs, FaSignInAlt, FaSignOutAlt, FaCrown, FaTrash, FaCheck, FaBan, FaCamera, FaEdit, FaSave, FaUser, FaTrophy } from 'react-icons/fa';
 import { uploadToCloudinary, DEFAULT_MALE_IMAGE } from '../../utils/cloudinaryUpload';
 import './CommunityDetail.css';
 
@@ -63,6 +63,10 @@ export default function CommunityDetail() {
   const [membersLoading, setMembersLoading] = useState(true);
   const [reposLoading, setReposLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Analytics popup state
+  const [showAnalyticsPopup, setShowAnalyticsPopup] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState({ performer: null, leaderboard: [], badges: [] });
 
   // Check for saved login (JWT token) on page load
   useEffect(() => {
@@ -154,6 +158,40 @@ export default function CommunityDetail() {
   }, [showAdminPanel]);
 
   useEffect(() => { if (slug === 'com.the-boys-dev' && videoRef.current) { videoRef.current.play().catch(() => {}); videoRef.current.onended = () => setShowPreloader(false); } }, [slug]);
+  
+  // Fetch analytics data and show popup for com.the-boys-dev
+  useEffect(() => {
+    if (slug === 'com.the-boys-dev' && !showPreloader) {
+      const fetchAnalytics = async () => {
+        try {
+          const [performerRes, leaderboardRes, badgesRes] = await Promise.all([
+            fetch(`${API_URL}/api/analytics/performer`),
+            fetch(`${API_URL}/api/analytics/leaderboard`),
+            fetch(`${API_URL}/api/analytics/badges/week`)
+          ]);
+          
+          const performer = performerRes.ok ? await performerRes.json() : null;
+          const leaderboard = leaderboardRes.ok ? await leaderboardRes.json() : [];
+          const badges = badgesRes.ok ? await badgesRes.json() : [];
+          
+          if (performer || leaderboard.length > 0) {
+            setAnalyticsData({ performer, leaderboard: leaderboard.slice(0, 5), badges });
+            setShowAnalyticsPopup(true);
+            
+            // Auto-hide after 8 seconds
+            setTimeout(() => setShowAnalyticsPopup(false), 8000);
+          }
+        } catch (err) {
+          console.log('Analytics not available');
+        }
+      };
+      
+      // Delay popup by 2 seconds after preloader
+      const timer = setTimeout(fetchAnalytics, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [slug, showPreloader]);
+  
   useEffect(() => { 
     if (community?.githubOrgName) {
       setReposLoading(true);
@@ -438,6 +476,51 @@ export default function CommunityDetail() {
         </div>
       )}
       <div className="community-detail-page" style={{ ...(community.wallpaper ? { backgroundImage: `linear-gradient(to bottom, rgba(9,9,11,0.7), rgba(9,9,11,0.95)), url(${community.wallpaper})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' } : {}), visibility: showPreloader ? 'hidden' : 'visible' }}>
+        
+        {/* Analytics Popup */}
+        {showAnalyticsPopup && analyticsData.performer && (
+          <div className={`analytics-popup ${showAnalyticsPopup ? 'show' : ''}`}>
+            <button className="analytics-popup-close" onClick={() => setShowAnalyticsPopup(false)}><FaTimes /></button>
+            <div className="analytics-popup-header">
+              <FaTrophy className="analytics-popup-icon" />
+              <span>This Week's Stats</span>
+            </div>
+            
+            {analyticsData.performer && (
+              <div className="analytics-performer">
+                <div className="performer-crown">👑</div>
+                <img src={analyticsData.performer.memberImage} alt="" className="performer-img" />
+                <div className="performer-info">
+                  <span className="performer-label">Performer of the Week</span>
+                  <span className="performer-name">{analyticsData.performer.memberName}</span>
+                  <span className="performer-username">@{analyticsData.performer.githubUsername}</span>
+                </div>
+                <div className="performer-stats">
+                  <span>🔥 {analyticsData.performer.commits} commits</span>
+                  <span>🚀 {analyticsData.performer.pullRequestsMerged} PRs</span>
+                  <span>🔧 {analyticsData.performer.issuesClosed} issues</span>
+                </div>
+              </div>
+            )}
+            
+            {analyticsData.leaderboard.length > 0 && (
+              <div className="analytics-leaderboard">
+                <div className="leaderboard-title">🏅 Top Contributors</div>
+                {analyticsData.leaderboard.map((stat, idx) => (
+                  <div key={stat.id} className="leaderboard-item">
+                    <span className="leaderboard-rank">{idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}</span>
+                    <span className="leaderboard-name">@{stat.githubUsername}</span>
+                    <span className="leaderboard-score">{stat.totalScore} pts</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <a href="#/analytics" className="analytics-view-more" onClick={() => setShowAnalyticsPopup(false)}>
+              View Full Analytics →
+            </a>
+          </div>
+        )}
         
         {/* Top buttons */}
         <div className="top-buttons">

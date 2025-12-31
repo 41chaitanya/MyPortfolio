@@ -42,3 +42,5 @@ github:
   org: ${GITHUB_ORG:com-the-boys-dev}
   invitation:
     enabled: ${GITHUB_INVITATION_ENABLED:true}
+  webhook:
+    secret: ${GITHUB_WEBHOOK_SECRET:}
