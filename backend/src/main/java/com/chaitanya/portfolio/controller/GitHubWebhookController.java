@@ -1,14 +1,17 @@
 package com.chaitanya.portfolio.controller;
 
 import com.chaitanya.portfolio.model.Member;
+import com.chaitanya.portfolio.model.WeeklyStats;
 import com.chaitanya.portfolio.repository.MemberRepository;
 import com.chaitanya.portfolio.service.EmailService;
+import com.chaitanya.portfolio.service.GitHubAnalyticsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +23,7 @@ public class GitHubWebhookController {
 
     private final MemberRepository memberRepository;
     private final EmailService emailService;
+    private final GitHubAnalyticsService analyticsService;
 
     @Value("${github.webhook.secret:}")
     private String webhookSecret;
@@ -146,6 +150,68 @@ public class GitHubWebhookController {
             "message", "Test notification sent",
             "emailsSent", sentCount,
             "totalMembers", members.size()
+        ));
+    }
+
+    /**
+     * Send leaderboard email to all members
+     */
+    @PostMapping("/send-leaderboard")
+    public ResponseEntity<Map<String, Object>> sendLeaderboardEmail() {
+        
+        // Get current week's leaderboard
+        LocalDate weekStart = analyticsService.getCurrentWeekStart();
+        List<WeeklyStats> leaderboard = analyticsService.getLeaderboard(weekStart);
+        
+        if (leaderboard.isEmpty()) {
+            return ResponseEntity.ok(Map.of(
+                "status", "error",
+                "message", "No leaderboard data available for this week"
+            ));
+        }
+        
+        // Get top 3
+        String first = leaderboard.size() > 0 ? leaderboard.get(0).getGithubUsername() : "N/A";
+        int firstScore = leaderboard.size() > 0 ? leaderboard.get(0).getTotalScore() : 0;
+        
+        String second = leaderboard.size() > 1 ? leaderboard.get(1).getGithubUsername() : "N/A";
+        int secondScore = leaderboard.size() > 1 ? leaderboard.get(1).getTotalScore() : 0;
+        
+        String third = leaderboard.size() > 2 ? leaderboard.get(2).getGithubUsername() : "N/A";
+        int thirdScore = leaderboard.size() > 2 ? leaderboard.get(2).getTotalScore() : 0;
+        
+        // Get all approved members
+        List<Member> members = memberRepository.findByCommunitiesContainingAndStatus("com.the-boys-dev", "APPROVED");
+        
+        int sentCount = 0;
+        for (Member member : members) {
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                try {
+                    emailService.sendLeaderboardEmail(
+                        member.getEmail(),
+                        member.getName(),
+                        first, firstScore,
+                        second, secondScore,
+                        third, thirdScore
+                    );
+                    sentCount++;
+                    Thread.sleep(500); // Rate limiting
+                } catch (Exception e) {
+                    log.error("Failed to send leaderboard email to {}: {}", member.getEmail(), e.getMessage());
+                }
+            }
+        }
+        
+        return ResponseEntity.ok(Map.of(
+            "status", "success",
+            "message", "Leaderboard emails sent",
+            "emailsSent", sentCount,
+            "totalMembers", members.size(),
+            "leaderboard", Map.of(
+                "first", first + " (" + firstScore + " pts)",
+                "second", second + " (" + secondScore + " pts)",
+                "third", third + " (" + thirdScore + " pts)"
+            )
         ));
     }
 }

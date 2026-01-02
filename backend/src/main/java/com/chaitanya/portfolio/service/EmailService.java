@@ -149,4 +149,60 @@ public class EmailService {
             log.error("Failed to send new project email to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendLeaderboardEmail(String toEmail, String memberName, 
+                                     String first, int firstScore,
+                                     String second, int secondScore,
+                                     String third, int thirdScore) {
+        log.info("Sending leaderboard notification to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Leaderboard email not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("🏆 Weekly Leaderboard Update | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "Here's the current leaderboard for com.the-boys-dev! 🔥\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🏆 WEEKLY LEADERBOARD\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🥇 1st Place: @" + first + " — " + firstScore + " points\n\n" +
+                "🥈 2nd Place: @" + second + " — " + secondScore + " points\n\n" +
+                "🥉 3rd Place: @" + third + " — " + thirdScore + " points\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "📊 Points are calculated based on:\n" +
+                "• Commits: 1 point each\n" +
+                "• PRs Merged: 3 points each\n" +
+                "• Issues Closed: 2 points each\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🎯 WHAT ARE YOU WAITING FOR?\n\n" +
+                "Start contributing now! Here's how:\n\n" +
+                "1️⃣ Check existing repos and pick an issue:\n" +
+                "   https://github.com/com-the-boys-dev\n\n" +
+                "2️⃣ Or start a NEW project in the organization!\n" +
+                "   Create a repo and we'll notify everyone.\n\n" +
+                "3️⃣ Every commit, PR, and issue counts towards your score!\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "The leaderboard resets every week. This is YOUR chance to climb to the top! 🚀\n\n" +
+                "Let's build something amazing together! 💪\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "📊 Analytics: https://41chaitanya.github.io/MyPortfolio/analytics\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Leaderboard email sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send leaderboard email to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }
