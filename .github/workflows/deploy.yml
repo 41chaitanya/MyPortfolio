@@ -33,7 +33,7 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
-          VITE_API_URL: https://harsh-nesta-41chaitanya-aeeafaef.koyeb.app
+          VITE_API_URL: https://portfolio-backend-yibr.onrender.com
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
