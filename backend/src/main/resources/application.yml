@@ -11,18 +11,18 @@ spring:
   # Email Configuration (Gmail SMTP)
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: ${SPRING_MAIL_USERNAME}
     password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
+          ssl:
             enable: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000
 
 # JWT Configuration
 jwt:
