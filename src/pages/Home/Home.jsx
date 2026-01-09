@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { TextRoll } from '../../components/TextRoll';
 import { AnimatedDock } from '../../components/AnimatedDock';
@@ -8,12 +8,107 @@ import { FaGithub, FaInstagram, FaTwitter, FaDownload, FaLinkedin, FaJava, FaDoc
 import { SiSpringboot, SiPostgresql, SiMongodb, SiRedis, SiApachekafka, SiKubernetes } from 'react-icons/si';
 import './Home.css';
 
+const GITHUB_USERNAME = '41chaitanya';
+
+// Language to tech stack mapping
+const languageToTech = {
+  'JavaScript': ['JavaScript', 'Node.js'],
+  'TypeScript': ['TypeScript', 'Node.js'],
+  'Java': ['Java', 'Spring Boot'],
+  'Python': ['Python'],
+  'HTML': ['HTML', 'CSS'],
+  'CSS': ['CSS'],
+  'C++': ['C++'],
+  'C': ['C'],
+  'Go': ['Go'],
+  'Kotlin': ['Kotlin'],
+  'Dart': ['Dart', 'Flutter'],
+};
+
 export default function Home() {
   const navigate = useNavigate();
   const [selectedHackathon, setSelectedHackathon] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [homeProjects, setHomeProjects] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFeaturedProjects();
+  }, []);
+
+  const fetchFeaturedProjects = async () => {
+    try {
+      setProjectsLoading(true);
+      const response = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=stars&per_page=30`
+      );
+      
+      if (!response.ok) throw new Error('Failed to fetch');
+      
+      const repos = await response.json();
+      
+      // Get top 2 non-forked repos by stars
+      const featured = repos
+        .filter(repo => !repo.fork)
+        .sort((a, b) => b.stargazers_count - a.stargazers_count)
+        .slice(0, 2)
+        .map(repo => ({
+          id: repo.id,
+          title: formatRepoName(repo.name),
+          description: repo.description || 'No description available',
+          image: `https://opengraph.githubassets.com/1/${GITHUB_USERNAME}/${repo.name}`,
+          tech: getTechStack(repo),
+          stars: repo.stargazers_count,
+          forks: repo.forks_count,
+          language: repo.language,
+          projectLinks: {
+            github: repo.html_url,
+            demo: repo.homepage || null
+          },
+          features: generateFeatures(repo)
+        }));
+      
+      setHomeProjects(featured);
+    } catch (err) {
+      console.error('Error fetching featured projects:', err);
+    } finally {
+      setProjectsLoading(false);
+    }
+  };
+
+  const formatRepoName = (name) => {
+    return name
+      .replace(/-/g, ' ')
+      .replace(/_/g, ' ')
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const getTechStack = (repo) => {
+    const tech = [];
+    if (repo.language && languageToTech[repo.language]) {
+      tech.push(...languageToTech[repo.language]);
+    } else if (repo.language) {
+      tech.push(repo.language);
+    }
+    const techTopics = (repo.topics || [])
+      .filter(topic => !['project', 'portfolio', 'personal'].includes(topic.toLowerCase()))
+      .slice(0, 3)
+      .map(topic => topic.charAt(0).toUpperCase() + topic.slice(1));
+    tech.push(...techTopics);
+    return [...new Set(tech)].slice(0, 5);
+  };
+
+  const generateFeatures = (repo) => {
+    const features = [];
+    if (repo.stargazers_count > 0) features.push(`⭐ ${repo.stargazers_count} stars`);
+    if (repo.forks_count > 0) features.push(`🍴 ${repo.forks_count} forks`);
+    if (repo.homepage) features.push('🌐 Live demo available');
+    return features;
+  };
 
   const handleHackathonClick = (hackathon) => {
     setSelectedHackathon(hackathon);
@@ -24,23 +119,6 @@ export default function Home() {
     setSelectedProject(project);
     setIsProjectModalOpen(true);
   };
-
-  const homeProjects = [
-    {
-      id: 1,
-      title: 'Campus Entity Resolution & Security Monitoring',
-      description: 'ML-powered security platform with 99.2% entity resolution accuracy and predictive analytics (94.3% location, 91.8% activity prediction) using Fellegi-Sunter algorithm, XGBoost, and LSTM.',
-      image: '/image/project1.jpg',
-      tech: ['Python', 'FastAPI', 'XGBoost', 'LSTM', 'Neo4j']
-    },
-    {
-      id: 2,
-      title: 'Online Banking Portal',
-      description: 'Full-stack banking platform with account management, fund transfers, bill payments, and real-time notifications with secure authentication.',
-      image: '/image/project2.jpg',
-      tech: ['Java', 'Spring Boot', 'PostgreSQL', 'Redis', 'Kafka']
-    }
-  ];
 
   const homeHackathons = [
     {
@@ -205,28 +283,49 @@ export default function Home() {
 
       <div style={{ marginTop: '60px', maxWidth: '800px' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '40px', marginTop: '40px', textAlign: 'left', position: 'relative', paddingBottom: '15px' }} className="home-section-title">Featured Projects</h2>
-        <div className="home-projects-grid">
-          {homeProjects.map((project) => (
-            <div 
-              key={project.id} 
-              className="home-project-card"
-              onClick={() => handleProjectClick(project)}
-            >
-              <div className="home-project-image-wrapper">
-                <img src={project.image} alt={project.title} className="home-project-image" />
-              </div>
-              <div className="home-project-content">
-                <h3 className="home-project-title">{project.title}</h3>
-                <p className="home-project-desc">{project.description}</p>
-                <div className="home-project-tech">
-                  {project.tech.map((tech, index) => (
-                    <span key={index} className="home-tech-tag">{tech}</span>
-                  ))}
+        {projectsLoading ? (
+          <div className="home-projects-loading">
+            <div className="home-loading-spinner"></div>
+            <p>Loading projects...</p>
+          </div>
+        ) : (
+          <div className="home-projects-grid">
+            {homeProjects.map((project) => (
+              <div 
+                key={project.id} 
+                className="home-project-card"
+                onClick={() => handleProjectClick(project)}
+              >
+                <div className="home-project-image-wrapper">
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    className="home-project-image"
+                    onError={(e) => {
+                      e.target.src = `https://via.placeholder.com/400x200/1a1a2e/ffffff?text=${encodeURIComponent(project.title.substring(0, 15))}`;
+                    }}
+                  />
+                  {project.language && (
+                    <span className="home-project-language-badge">{project.language}</span>
+                  )}
+                </div>
+                <div className="home-project-content">
+                  <h3 className="home-project-title">{project.title}</h3>
+                  <p className="home-project-desc">{project.description}</p>
+                  <div className="home-project-meta">
+                    {project.stars > 0 && <span className="home-meta-item">⭐ {project.stars}</span>}
+                    {project.forks > 0 && <span className="home-meta-item">🍴 {project.forks}</span>}
+                  </div>
+                  <div className="home-project-tech">
+                    {project.tech.map((tech, index) => (
+                      <span key={index} className="home-tech-tag">{tech}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
         <button className="see-all-projects-button" onClick={() => navigate('/projects')}>
           See All Projects
         </button>
