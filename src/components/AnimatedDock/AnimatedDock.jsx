@@ -17,8 +17,8 @@ const LargeDock = ({ items, className }) => {
     <motion.div
       onMouseMove={(e) => mouseXPosition.set(e.pageX)}
       onMouseLeave={() => mouseXPosition.set(Infinity)}
-      className={`mx-auto hidden h-28 items-end justify-center gap-6 md:flex ${className}`}
-      style={{ overflow: 'visible' }}
+      className={`mx-auto hidden h-32 items-end justify-center gap-5 md:flex ${className}`}
+      style={{ overflow: 'visible', paddingTop: '50px' }}
     >
       {items.map((item) => (
         <DockIcon mouseX={mouseXPosition} key={item.title} {...item} />
@@ -35,11 +35,11 @@ function DockIcon({ mouseX, title, icon }) {
     return val - bounds.x - bounds.width / 2;
   });
 
-  const widthTransform = useTransform(distanceFromMouse, [-150, 0, 150], [40, 80, 40]);
-  const heightTransform = useTransform(distanceFromMouse, [-150, 0, 150], [40, 80, 40]);
+  const widthTransform = useTransform(distanceFromMouse, [-150, 0, 150], [50, 90, 50]);
+  const heightTransform = useTransform(distanceFromMouse, [-150, 0, 150], [50, 90, 50]);
 
-  const iconWidthTransform = useTransform(distanceFromMouse, [-150, 0, 150], [20, 40, 20]);
-  const iconHeightTransform = useTransform(distanceFromMouse, [-150, 0, 150], [20, 40, 20]);
+  const iconWidthTransform = useTransform(distanceFromMouse, [-150, 0, 150], [24, 44, 24]);
+  const iconHeightTransform = useTransform(distanceFromMouse, [-150, 0, 150], [24, 44, 24]);
 
   const width = useSpring(widthTransform, { mass: 0.05, stiffness: 300, damping: 20 });
   const height = useSpring(heightTransform, { mass: 0.05, stiffness: 300, damping: 20 });
@@ -49,34 +49,52 @@ function DockIcon({ mouseX, title, icon }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ width, height }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative flex aspect-square items-center justify-center rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] text-[#fafafa] shadow-lg backdrop-blur-md border border-[#3f3f46] hover:border-[#52525b] transition-all cursor-pointer"
-    >
+    <div className="relative" style={{ overflow: 'visible' }}>
+      {/* Tooltip - rendered outside the icon container */}
       <AnimatePresence>
         {isHovered && (
           <motion.div
-            initial={{ opacity: 0, y: 10, x: '-50%' }}
-            animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: 2, x: '-50%' }}
-            style={{ zIndex: 9999 }}
-            className="absolute -top-12 left-1/2 w-fit -translate-x-1/2 whitespace-nowrap rounded-lg border border-[#52525b] bg-[#27272a] px-3 py-2 text-sm font-medium text-[#fafafa] shadow-xl pointer-events-none"
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap px-3 py-2 text-sm font-semibold text-white bg-black/90 rounded-lg shadow-xl pointer-events-none"
+            style={{ 
+              bottom: '100%', 
+              marginBottom: '12px',
+              zIndex: 99999 
+            }}
           >
             {title}
-            <div className="absolute left-1/2 -bottom-1 -translate-x-1/2 w-2 h-2 bg-[#27272a] border-r border-b border-[#52525b] rotate-45"></div>
+            {/* Arrow */}
+            <div 
+              className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+              style={{
+                bottom: '-6px',
+                borderLeft: '6px solid transparent',
+                borderRight: '6px solid transparent',
+                borderTop: '6px solid rgba(0,0,0,0.9)'
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Icon container */}
       <motion.div
-        style={{ width: iconWidth, height: iconHeight }}
-        className="flex items-center justify-center text-[#fafafa]"
+        ref={ref}
+        style={{ width, height, borderRadius: '50%' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="flex items-center justify-center bg-gradient-to-br from-[#27272a] to-[#18181b] text-[#fafafa] shadow-lg backdrop-blur-md border-2 border-[#3f3f46] hover:border-[#71717a] transition-all cursor-pointer hover:shadow-xl"
       >
-        {icon}
+        <motion.div
+          style={{ width: iconWidth, height: iconHeight }}
+          className="flex items-center justify-center text-[#fafafa]"
+        >
+          {icon}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 
