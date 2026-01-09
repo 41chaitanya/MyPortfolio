@@ -17,7 +17,8 @@ const LargeDock = ({ items, className }) => {
     <motion.div
       onMouseMove={(e) => mouseXPosition.set(e.pageX)}
       onMouseLeave={() => mouseXPosition.set(Infinity)}
-      className={`mx-auto hidden h-24 items-end justify-center gap-6 md:flex overflow-visible ${className}`}
+      className={`mx-auto hidden h-28 items-end justify-center gap-6 md:flex ${className}`}
+      style={{ overflow: 'visible' }}
     >
       {items.map((item) => (
         <DockIcon mouseX={mouseXPosition} key={item.title} {...item} />
@@ -53,7 +54,7 @@ function DockIcon({ mouseX, title, icon }) {
       style={{ width, height }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative flex aspect-square items-center justify-center rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] text-[#fafafa] shadow-lg backdrop-blur-md border border-[#3f3f46] hover:border-[#52525b] transition-all"
+      className="relative flex aspect-square items-center justify-center rounded-full bg-gradient-to-br from-[#27272a] to-[#18181b] text-[#fafafa] shadow-lg backdrop-blur-md border border-[#3f3f46] hover:border-[#52525b] transition-all cursor-pointer"
     >
       <AnimatePresence>
         {isHovered && (
@@ -61,9 +62,11 @@ function DockIcon({ mouseX, title, icon }) {
             initial={{ opacity: 0, y: 10, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: 2, x: '-50%' }}
-            className="absolute -top-10 left-1/2 w-fit -translate-x-1/2 whitespace-nowrap rounded-md border border-[#3f3f46] bg-[#18181b] px-3 py-1.5 text-xs text-[#fafafa] shadow-lg"
+            style={{ zIndex: 9999 }}
+            className="absolute -top-12 left-1/2 w-fit -translate-x-1/2 whitespace-nowrap rounded-lg border border-[#52525b] bg-[#27272a] px-3 py-2 text-sm font-medium text-[#fafafa] shadow-xl pointer-events-none"
           >
             {title}
+            <div className="absolute left-1/2 -bottom-1 -translate-x-1/2 w-2 h-2 bg-[#27272a] border-r border-b border-[#52525b] rotate-45"></div>
           </motion.div>
         )}
       </AnimatePresence>
