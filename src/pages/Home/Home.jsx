@@ -4,8 +4,8 @@ import { TextRoll } from '../../components/TextRoll';
 import { AnimatedDock } from '../../components/AnimatedDock';
 import HackathonDetailModal from '../../components/HackathonDetailModal';
 import ProjectDetailModal from '../../components/ProjectDetailModal';
-import { FaGithub, FaInstagram, FaTwitter, FaDownload, FaLinkedin, FaJava, FaDocker, FaUsers } from 'react-icons/fa';
-import { SiSpringboot, SiPostgresql, SiMongodb, SiRedis, SiApachekafka, SiKubernetes } from 'react-icons/si';
+import { FaGithub, FaInstagram, FaDownload, FaLinkedin, FaJava, FaDocker, FaUsers } from 'react-icons/fa';
+import { SiSpringboot, SiPostgresql, SiMongodb, SiRedis, SiApachekafka, SiKubernetes, SiX } from 'react-icons/si';
 import './Home.css';
 
 const GITHUB_USERNAME = '41chaitanya';
@@ -223,7 +223,7 @@ export default function Home() {
           </button>
 
           <a 
-            href="https://drive.google.com/file/d/1TMoFenhKBv-Y3QuLzQ-DS43wtlNSMI1G/view?usp=sharing" 
+            href="https://drive.google.com/file/d/1dAjf684zE_G5zwzJxOMZ2ynwt71455cZ/view?usp=sharing" 
             target="_blank" 
             rel="noopener noreferrer"
             className="cv-button"
@@ -245,11 +245,11 @@ export default function Home() {
             <a href="https://github.com/41chaitanya" target="_blank" rel="noopener noreferrer" className="social-icon" title="GitHub">
               <FaGithub />
             </a>
-            <a href="#" className="social-icon" title="Instagram">
+            <a href="https://www.instagram.com/chaitanya.sharrma/" target="_blank" rel="noopener noreferrer" className="social-icon" title="Instagram">
               <FaInstagram />
             </a>
-            <a href="#" className="social-icon" title="Twitter">
-              <FaTwitter />
+            <a href="https://x.com/41_chaitanya" target="_blank" rel="noopener noreferrer" className="social-icon" title="X">
+              <SiX />
             </a>
           </div>
         </div>
