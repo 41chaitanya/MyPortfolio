@@ -5,10 +5,6 @@ import './ThreeBackground.css';
 export default function ThreeBackground() {
   const containerRef = useRef(null);
   const rendererRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const particlesRef = useRef(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
   const frameRef = useRef(null);
 
   useEffect(() => {
@@ -16,7 +12,6 @@ export default function ThreeBackground() {
 
     // Scene setup
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
 
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
@@ -25,8 +20,7 @@ export default function ThreeBackground() {
       0.1,
       1000
     );
-    camera.position.z = 50;
-    cameraRef.current = camera;
+    camera.position.z = 5;
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ 
@@ -35,95 +29,67 @@ export default function ThreeBackground() {
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     // Create particles
-    const particleCount = 1500;
+    const particleCount = 2000;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const sizes = new Float32Array(particleCount);
 
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
-      
-      // Position - spread particles in a sphere
-      const radius = 50 + Math.random() * 50;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      
-      positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i3 + 2] = radius * Math.cos(phi) - 50;
-
-      // Colors - white/gray tones
-      const brightness = 0.5 + Math.random() * 0.5;
-      colors[i3] = brightness;
-      colors[i3 + 1] = brightness;
-      colors[i3 + 2] = brightness;
-
-      // Sizes
-      sizes[i] = Math.random() * 2 + 0.5;
+      // Spread particles in a large area
+      positions[i3] = (Math.random() - 0.5) * 100;     // x
+      positions[i3 + 1] = (Math.random() - 0.5) * 100; // y
+      positions[i3 + 2] = (Math.random() - 0.5) * 100; // z
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
     // Particle material
     const material = new THREE.PointsMaterial({
-      size: 1.5,
-      vertexColors: true,
+      color: 0xfafafa,
+      size: 0.15,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.8,
       sizeAttenuation: true,
-      blending: THREE.AdditiveBlending,
     });
 
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
-    particlesRef.current = particles;
 
-    // Add connecting lines
-    const lineGeometry = new THREE.BufferGeometry();
-    const linePositions = new Float32Array(300 * 6); // 300 lines, 2 points each
-    
-    for (let i = 0; i < 300; i++) {
-      const i6 = i * 6;
-      const radius1 = 30 + Math.random() * 40;
-      const radius2 = 30 + Math.random() * 40;
-      const theta1 = Math.random() * Math.PI * 2;
-      const theta2 = theta1 + (Math.random() - 0.5) * 0.5;
-      const phi1 = Math.acos(2 * Math.random() - 1);
-      const phi2 = phi1 + (Math.random() - 0.5) * 0.3;
+    // Second layer - smaller, dimmer particles
+    const geometry2 = new THREE.BufferGeometry();
+    const positions2 = new Float32Array(particleCount * 3);
 
-      linePositions[i6] = radius1 * Math.sin(phi1) * Math.cos(theta1);
-      linePositions[i6 + 1] = radius1 * Math.sin(phi1) * Math.sin(theta1);
-      linePositions[i6 + 2] = radius1 * Math.cos(phi1) - 50;
-      
-      linePositions[i6 + 3] = radius2 * Math.sin(phi2) * Math.cos(theta2);
-      linePositions[i6 + 4] = radius2 * Math.sin(phi2) * Math.sin(theta2);
-      linePositions[i6 + 5] = radius2 * Math.cos(phi2) - 50;
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      positions2[i3] = (Math.random() - 0.5) * 150;
+      positions2[i3 + 1] = (Math.random() - 0.5) * 150;
+      positions2[i3 + 2] = (Math.random() - 0.5) * 150;
     }
 
-    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-    
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0xfafafa,
+    geometry2.setAttribute('position', new THREE.BufferAttribute(positions2, 3));
+
+    const material2 = new THREE.PointsMaterial({
+      color: 0x71717a,
+      size: 0.08,
       transparent: true,
-      opacity: 0.08,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.5,
+      sizeAttenuation: true,
     });
 
-    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(lines);
+    const particles2 = new THREE.Points(geometry2, material2);
+    scene.add(particles2);
 
-    // Mouse move handler
+    // Mouse tracking
+    let mouseX = 0;
+    let mouseY = 0;
+
     const handleMouseMove = (event) => {
-      mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -138,24 +104,21 @@ export default function ThreeBackground() {
     window.addEventListener('resize', handleResize);
 
     // Animation loop
+    let time = 0;
     const animate = () => {
       frameRef.current = requestAnimationFrame(animate);
+      time += 0.001;
 
       // Rotate particles slowly
-      if (particlesRef.current) {
-        particlesRef.current.rotation.y += 0.0005;
-        particlesRef.current.rotation.x += 0.0002;
-        
-        // React to mouse
-        particlesRef.current.rotation.y += mouseRef.current.x * 0.0005;
-        particlesRef.current.rotation.x += mouseRef.current.y * 0.0005;
-      }
+      particles.rotation.y = time * 0.1;
+      particles.rotation.x = time * 0.05;
+      
+      particles2.rotation.y = time * 0.08;
+      particles2.rotation.x = time * 0.03;
 
-      // Rotate lines
-      lines.rotation.y += 0.0003;
-      lines.rotation.x += 0.0001;
-      lines.rotation.y += mouseRef.current.x * 0.0003;
-      lines.rotation.x += mouseRef.current.y * 0.0003;
+      // React to mouse
+      particles.rotation.y += mouseX * 0.01;
+      particles.rotation.x += mouseY * 0.01;
 
       renderer.render(scene, camera);
     };
@@ -177,8 +140,8 @@ export default function ThreeBackground() {
       
       geometry.dispose();
       material.dispose();
-      lineGeometry.dispose();
-      lineMaterial.dispose();
+      geometry2.dispose();
+      material2.dispose();
       renderer.dispose();
     };
   }, []);

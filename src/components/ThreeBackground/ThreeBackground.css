@@ -6,9 +6,11 @@
   height: 100%;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, #09090b 0%, #0a0a0f 50%, #09090b 100%);
+  background: #09090b;
 }
 
 .three-background canvas {
   display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
