@@ -7,6 +7,7 @@ import MusicPlayer from './components/MusicPlayer';
 import MusicTooltip from './components/MusicTooltip';
 import ScrollToTop from './components/ScrollToTop';
 import CustomCursor from './components/CustomCursor';
+import ThreeBackground from './components/ThreeBackground';
 import Loading from './pages/Loading';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -28,15 +29,15 @@ import './mobile-optimizations.css';
 // Base path for GitHub Pages
 const basename = import.meta.env.MODE === 'production' ? '/MyPortfolio' : '';
 
-// Wrapper component to conditionally render Footer
-function ConditionalFooter() {
+// Wrapper component to conditionally render Three.js background
+function ConditionalThreeBackground() {
   const location = useLocation();
-  const isCommunityDetailPage = location.pathname.startsWith('/community/');
+  const isCommunityDetailPage = location.pathname.startsWith('/community/') && location.pathname !== '/community';
   
   if (isCommunityDetailPage) {
     return null;
   }
-  return <Footer />;
+  return <ThreeBackground />;
 }
 
 function App() {
@@ -58,46 +59,42 @@ function App() {
       )}
       
       {!showLoading && (
-        <>
-          <video autoPlay muted loop className="background-video">
-            <source src="https://www.youtube.com/watch?v=aJOTlE1K90k&list=RDRgKAFK5djSk&index=5" type="video/mp4" />
-          </video>
-          <Router basename={basename}>
-            <ScrollToTop />
-            <CustomCursor />
-            <Navbar />
-            <MusicPlayer />
-            <MusicTooltip />
-            <FlowerMenu
-              menuItems={[
-                { icon: AiOutlineHome, href: '/' },
-                { icon: MdOutlineInfo, href: '/about' },
-                { icon: MdEmojiEvents, href: '/achievements' },
-                { icon: MdOutlineWorkspaces, href: '/projects' },
-                { icon: FaYoutube, href: '/courses' },
-                { icon: HiUserGroup, href: '/community' },
-                { icon: IoAnalytics, href: '/analytics' },
-                { icon: MdOutlineMailOutline, href: '/contact' },
-              ]}
-              backgroundColor="rgba(39, 39, 42, 0.95)"
-              iconColor="#fafafa"
-              animationDuration={350}
-              togglerSize={54}
-            />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/achievements" element={<Achievements />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/community/:slug" element={<CommunityDetail />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/courses" element={<Courses />} />
-            </Routes>
-            <Footer />
-          </Router>
-        </>
+        <Router basename={basename}>
+          <ConditionalThreeBackground />
+          <ScrollToTop />
+          <CustomCursor />
+          <Navbar />
+          <MusicPlayer />
+          <MusicTooltip />
+          <FlowerMenu
+            menuItems={[
+              { icon: AiOutlineHome, href: '/' },
+              { icon: MdOutlineInfo, href: '/about' },
+              { icon: MdEmojiEvents, href: '/achievements' },
+              { icon: MdOutlineWorkspaces, href: '/projects' },
+              { icon: FaYoutube, href: '/courses' },
+              { icon: HiUserGroup, href: '/community' },
+              { icon: IoAnalytics, href: '/analytics' },
+              { icon: MdOutlineMailOutline, href: '/contact' },
+            ]}
+            backgroundColor="rgba(39, 39, 42, 0.95)"
+            iconColor="#fafafa"
+            animationDuration={350}
+            togglerSize={54}
+          />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/achievements" element={<Achievements />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/community/:slug" element={<CommunityDetail />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/courses" element={<Courses />} />
+          </Routes>
+          <Footer />
+        </Router>
       )}
     </>
   );
