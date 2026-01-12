@@ -6,6 +6,7 @@ import { MdEmojiEvents } from 'react-icons/md';
 import { MdOutlineWorkspaces } from 'react-icons/md';
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { HiUserGroup } from 'react-icons/hi';
+import { FaYoutube } from 'react-icons/fa';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -22,6 +23,7 @@ export default function Navbar() {
     { path: '/about', icon: MdOutlineInfo, label: 'About' },
     { path: '/achievements', icon: MdEmojiEvents, label: 'Hackathons' },
     { path: '/projects', icon: MdOutlineWorkspaces, label: 'Projects' },
+    { path: '/courses', icon: FaYoutube, label: 'Courses' },
     { path: '/community', icon: HiUserGroup, label: 'My Community' },
     { path: '/contact', icon: MdOutlineMailOutline, label: 'Contact' },
   ];
