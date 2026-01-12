@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { FaYoutube, FaPlay, FaClock, FaUsers, FaStar } from 'react-icons/fa';
+import { FaPlay, FaClock, FaUsers, FaStar } from 'react-icons/fa';
 import CourseDetailModal from '../../components/CourseDetailModal';
 import './Courses.css';
+
+const PROFILE_IMAGE = 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg';
 
 const dummyCourses = [
   {
     id: 1,
     title: 'Computer Networks',
     description: 'Complete Computer Networks course covering OSI model, TCP/IP, routing protocols, network security, and practical networking concepts for students and professionals.',
-    thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=Computer+Networks&font=roboto',
     duration: '15+ hours',
     students: '1K+',
     rating: 4.8,
@@ -25,7 +26,6 @@ const dummyCourses = [
     id: 2,
     title: 'Operating System - Diploma',
     description: 'Operating System course designed for Diploma students. Covers process management, memory management, file systems, and OS fundamentals with easy explanations.',
-    thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=OS+Diploma&font=roboto',
     duration: '12+ hours',
     students: '800+',
     rating: 4.9,
@@ -39,9 +39,8 @@ const dummyCourses = [
   },
   {
     id: 3,
-    title: 'Operating System - RGPV University',
+    title: 'Operating System - RGPV',
     description: 'Complete Operating System course as per RGPV University syllabus. Covers all units with previous year questions and exam-oriented preparation.',
-    thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=OS+RGPV&font=roboto',
     duration: '18+ hours',
     students: '1.5K+',
     rating: 4.8,
@@ -56,9 +55,8 @@ const dummyCourses = [
   },
   {
     id: 4,
-    title: 'C Programming Language',
+    title: 'C Programming',
     description: 'Learn C programming from scratch. Covers basics to advanced concepts including pointers, structures, file handling, and data structures in C.',
-    thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=C+Programming&font=roboto',
     duration: '20+ hours',
     students: '2K+',
     rating: 4.9,
@@ -75,7 +73,6 @@ const dummyCourses = [
     id: 5,
     title: 'Computer Architecture',
     description: 'Complete Computer Architecture course covering CPU design, instruction sets, pipelining, memory hierarchy, and computer organization concepts.',
-    thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=Computer+Architecture&font=roboto',
     duration: '14+ hours',
     students: '900+',
     rating: 4.7,
@@ -102,10 +99,7 @@ export default function Courses() {
     <div className="page-container courses-page">
       <div className="courses-container">
         <div className="courses-header">
-          <div className="courses-title-wrapper">
-            <FaYoutube className="youtube-icon" />
-            <h1 className="courses-title">My Courses</h1>
-          </div>
+          <h1 className="courses-title">My Courses</h1>
           <p className="courses-subtitle">
             Free tutorials and courses I've created to help developers learn and grow
           </p>
@@ -118,12 +112,13 @@ export default function Courses() {
               className="course-card"
               onClick={() => handleCourseClick(course)}
             >
-              <div className="course-thumbnail-wrapper">
+              <div className="course-cover">
                 <img 
-                  src={course.thumbnail} 
-                  alt={course.title} 
-                  className="course-thumbnail"
+                  src={PROFILE_IMAGE} 
+                  alt="Chaitanya Sharma" 
+                  className="course-cover-image"
                 />
+                <h2 className="course-cover-title">{course.title}</h2>
                 <div className="course-play-overlay">
                   <FaPlay className="play-icon" />
                 </div>

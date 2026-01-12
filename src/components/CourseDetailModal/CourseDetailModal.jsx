@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaYoutube, FaPlay, FaClock, FaUsers, FaStar, FaBookOpen, FaQuoteLeft } from 'react-icons/fa';
 import './CourseDetailModal.css';
 
+const PROFILE_IMAGE = 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg';
+
 export default function CourseDetailModal({ isOpen, course, onClose }) {
   if (!course) return null;
 
@@ -42,14 +44,15 @@ export default function CourseDetailModal({ isOpen, course, onClose }) {
                 <FaTimes size={24} />
               </button>
 
-              {/* Header with Thumbnail */}
+              {/* Header with Custom Cover */}
               <div className="course-modal-header">
-                <div className="course-modal-thumbnail-wrapper">
+                <div className="course-modal-cover">
                   <img 
-                    src={course.thumbnail} 
-                    alt={course.title}
-                    className="course-modal-thumbnail"
+                    src={PROFILE_IMAGE} 
+                    alt="Chaitanya Sharma"
+                    className="course-modal-cover-image"
                   />
+                  <h2 className="course-modal-cover-title">{course.title}</h2>
                   <div className="course-modal-play-overlay">
                     <FaPlay className="modal-play-icon" />
                   </div>

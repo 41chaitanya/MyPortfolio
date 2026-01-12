@@ -43,7 +43,6 @@ export default function Home() {
       id: 1,
       title: 'Computer Networks',
       description: 'Complete Computer Networks course covering OSI model, TCP/IP, routing protocols, and networking concepts.',
-      thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=Computer+Networks&font=roboto',
       duration: '15+ hours',
       students: '1K+',
       rating: 4.8,
@@ -57,9 +56,8 @@ export default function Home() {
     },
     {
       id: 2,
-      title: 'C Programming Language',
+      title: 'C Programming',
       description: 'Learn C programming from scratch - basics to advanced including pointers, structures, and file handling.',
-      thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=C+Programming&font=roboto',
       duration: '20+ hours',
       students: '2K+',
       rating: 4.9,
@@ -377,7 +375,6 @@ export default function Home() {
       {/* Courses Section */}
       <div style={{ marginTop: '60px', maxWidth: '800px' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '40px', marginTop: '40px', textAlign: 'left', position: 'relative', paddingBottom: '15px' }} className="home-section-title">
-          <FaYoutube style={{ color: '#ff0000', marginRight: '10px' }} />
           My Courses
         </h2>
         <div className="home-courses-grid">
@@ -387,12 +384,13 @@ export default function Home() {
               className="home-course-card"
               onClick={() => handleCourseClick(course)}
             >
-              <div className="home-course-thumbnail-wrapper">
+              <div className="home-course-cover">
                 <img 
-                  src={course.thumbnail} 
-                  alt={course.title} 
-                  className="home-course-thumbnail"
+                  src="https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg" 
+                  alt="Chaitanya Sharma" 
+                  className="home-course-cover-image"
                 />
+                <h2 className="home-course-cover-title">{course.title}</h2>
                 <div className="home-course-play-overlay">
                   <FaPlay className="home-play-icon" />
                 </div>
@@ -416,7 +414,6 @@ export default function Home() {
           ))}
         </div>
         <button className="see-all-courses-button" onClick={() => navigate('/courses')}>
-          <FaYoutube style={{ marginRight: '8px' }} />
           See All Courses
         </button>
       </div>

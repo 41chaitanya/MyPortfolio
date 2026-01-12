@@ -10,23 +10,27 @@
 
 .course-modal-container {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 700px;
-  max-height: 90vh;
-  overflow-y: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 9999;
-  border-radius: 16px;
+  padding: 20px;
 }
 
 .course-modal-content {
-  background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-  border: 1px solid #ff0000;
+  background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+  border: 1.5px solid #3f3f46;
   border-radius: 16px;
   padding: 0;
   position: relative;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .course-modal-close {
@@ -44,7 +48,7 @@
 }
 
 .course-modal-close:hover {
-  background: #ff0000;
+  background: #3f3f46;
   transform: rotate(90deg);
 }
 
@@ -54,18 +58,50 @@
   width: 100%;
 }
 
-.course-modal-thumbnail-wrapper {
+/* Custom Course Cover */
+.course-modal-cover {
   position: relative;
   width: 100%;
   height: 250px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   border-radius: 16px 16px 0 0;
 }
 
-.course-modal-thumbnail {
-  width: 100%;
-  height: 100%;
+.course-modal-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+.course-modal-cover-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
   object-fit: cover;
+  object-position: center 20%;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.course-modal-cover-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fafafa;
+  margin-top: 15px;
+  text-align: center;
+  z-index: 1;
+  text-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
+  padding: 0 20px;
 }
 
 .course-modal-play-overlay {
@@ -75,22 +111,28 @@
   transform: translate(-50%, -50%);
   width: 80px;
   height: 80px;
-  background-color: rgba(255, 0, 0, 0.9);
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  opacity: 0;
+  z-index: 2;
+}
+
+.course-modal-cover:hover .course-modal-play-overlay {
+  opacity: 1;
 }
 
 .course-modal-play-overlay:hover {
   transform: translate(-50%, -50%) scale(1.1);
-  background-color: #ff0000;
+  background-color: #ffffff;
 }
 
 .modal-play-icon {
-  color: white;
+  color: #09090b;
   font-size: 2rem;
   margin-left: 5px;
 }
@@ -147,7 +189,7 @@
   content: '';
   width: 4px;
   height: 20px;
-  background: #ff0000;
+  background: linear-gradient(180deg, #fafafa, #71717a);
   border-radius: 2px;
 }
 
@@ -166,17 +208,18 @@
 
 .modal-topic-tag {
   padding: 8px 16px;
-  background: rgba(255, 0, 0, 0.1);
-  border: 1px solid rgba(255, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #52525b;
   border-radius: 20px;
   font-size: 0.9rem;
-  color: #ff6b6b;
+  color: #d4d4d8;
   transition: all 0.3s ease;
 }
 
 .modal-topic-tag:hover {
-  background: rgba(255, 0, 0, 0.2);
-  border-color: #ff0000;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #71717a;
+  color: #fafafa;
 }
 
 /* Comments */
@@ -187,8 +230,8 @@
 }
 
 .comment-card {
-  background: #18181b;
-  border: 1px solid #27272a;
+  background: #27272a;
+  border: 1px solid #3f3f46;
   border-radius: 12px;
   padding: 20px;
   position: relative;
@@ -198,7 +241,7 @@
   position: absolute;
   top: 15px;
   right: 15px;
-  color: rgba(255, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.15);
   font-size: 1.5rem;
 }
 
@@ -238,49 +281,64 @@
   gap: 12px;
   width: 100%;
   padding: 16px 30px;
-  background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+  background: #27272a;
   color: white;
-  border: none;
+  border: 2px solid #ffffff;
   border-radius: 12px;
   font-size: 1.1rem;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .youtube-cta-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
+  background: #3f3f46;
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
 .yt-icon {
   font-size: 1.5rem;
+  color: #ff0000;
 }
 
 /* Scrollbar */
-.course-modal-container::-webkit-scrollbar {
+.course-modal-content::-webkit-scrollbar {
   width: 8px;
 }
 
-.course-modal-container::-webkit-scrollbar-track {
-  background: #0d0d0d;
+.course-modal-content::-webkit-scrollbar-track {
+  background: #09090b;
 }
 
-.course-modal-container::-webkit-scrollbar-thumb {
-  background: #ff0000;
+.course-modal-content::-webkit-scrollbar-thumb {
+  background: #3f3f46;
   border-radius: 4px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .course-modal-container {
-    width: 95%;
+    padding: 10px;
+  }
+
+  .course-modal-content {
     max-height: 85vh;
   }
 
-  .course-modal-thumbnail-wrapper {
-    height: 180px;
+  .course-modal-cover {
+    height: 200px;
+  }
+
+  .course-modal-cover-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .course-modal-cover-title {
+    font-size: 1.2rem;
   }
 
   .course-modal-title-section,

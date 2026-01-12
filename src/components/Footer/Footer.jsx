@@ -1,4 +1,5 @@
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { SiX } from 'react-icons/si';
 import { MdEmail, MdPhone } from 'react-icons/md';
 import './Footer.css';
 
@@ -46,22 +47,31 @@ export default function Footer() {
               <FaGithub />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://x.com/41_chaitanya"
               target="_blank"
               rel="noopener noreferrer"
               className="social-link"
-              title="Twitter"
+              title="X"
             >
-              <FaTwitter />
+              <SiX />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/chaitanya.sharrma/"
               target="_blank"
               rel="noopener noreferrer"
               className="social-link"
               title="Instagram"
             >
               <FaInstagram />
+            </a>
+            <a
+              href="https://www.youtube.com/@chaitanyasharma4141"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-link"
+              title="YouTube"
+            >
+              <FaYoutube />
             </a>
           </div>
         </div>
@@ -73,6 +83,8 @@ export default function Footer() {
             <a href="/" className="quick-link">Home</a>
             <a href="/about" className="quick-link">About</a>
             <a href="/projects" className="quick-link">Projects</a>
+            <a href="/courses" className="quick-link">Courses</a>
+            <a href="/achievements" className="quick-link">Achievements</a>
             <a href="/contact" className="quick-link">Contact</a>
           </div>
         </div>
