@@ -4,8 +4,9 @@ import { TextRoll } from '../../components/TextRoll';
 import { AnimatedDock } from '../../components/AnimatedDock';
 import HackathonDetailModal from '../../components/HackathonDetailModal';
 import ProjectDetailModal from '../../components/ProjectDetailModal';
-import { FaGithub, FaInstagram, FaDownload, FaLinkedin, FaJava, FaDocker, FaUsers } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaDownload, FaLinkedin, FaJava, FaDocker, FaUsers, FaYoutube, FaPlay, FaClock, FaUsers as FaStudents, FaStar } from 'react-icons/fa';
 import { SiSpringboot, SiPostgresql, SiMongodb, SiRedis, SiApachekafka, SiKubernetes, SiX } from 'react-icons/si';
+import CourseDetailModal from '../../components/CourseDetailModal';
 import './Home.css';
 
 const GITHUB_USERNAME = '41chaitanya';
@@ -33,6 +34,48 @@ export default function Home() {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [homeProjects, setHomeProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
+
+  // Dummy courses for home page (top 2)
+  const homeCourses = [
+    {
+      id: 1,
+      title: 'Spring Boot Masterclass - Zero to Hero',
+      description: 'Complete Spring Boot course covering REST APIs, JPA, Security, and microservices architecture.',
+      thumbnail: 'https://via.placeholder.com/400x225/1a1a1a/ff0000?text=Spring+Boot+Masterclass',
+      duration: '12 hours',
+      students: '2.5K',
+      rating: 4.8,
+      lessons: 45,
+      youtubeLink: 'https://youtube.com/playlist?list=example1',
+      topics: ['Spring Boot', 'REST API', 'JPA', 'Security', 'Microservices'],
+      comments: [
+        { name: 'Rahul Kumar', text: 'Best Spring Boot course on YouTube!', avatar: '👨‍💻' },
+        { name: 'Priya Singh', text: 'Finally understood microservices!', avatar: '👩‍💻' },
+      ]
+    },
+    {
+      id: 2,
+      title: 'Java DSA Complete Course',
+      description: 'Master Data Structures and Algorithms in Java with problem-solving techniques.',
+      thumbnail: 'https://via.placeholder.com/400x225/1a1a1a/ff0000?text=Java+DSA+Course',
+      duration: '20 hours',
+      students: '5K',
+      rating: 4.9,
+      lessons: 80,
+      youtubeLink: 'https://youtube.com/playlist?list=example2',
+      topics: ['Arrays', 'LinkedList', 'Trees', 'Graphs', 'DP'],
+      comments: [
+        { name: 'Vikram Sharma', text: 'Cracked my Amazon interview!', avatar: '👨‍💻' },
+      ]
+    }
+  ];
+
+  const handleCourseClick = (course) => {
+    setSelectedCourse(course);
+    setIsCourseModalOpen(true);
+  };
 
   useEffect(() => {
     fetchFeaturedProjects();
@@ -331,6 +374,53 @@ export default function Home() {
         </button>
       </div>
 
+      {/* Courses Section */}
+      <div style={{ marginTop: '60px', maxWidth: '800px' }}>
+        <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '40px', marginTop: '40px', textAlign: 'left', position: 'relative', paddingBottom: '15px' }} className="home-section-title">
+          <FaYoutube style={{ color: '#ff0000', marginRight: '10px' }} />
+          My Courses
+        </h2>
+        <div className="home-courses-grid">
+          {homeCourses.map((course) => (
+            <div 
+              key={course.id} 
+              className="home-course-card"
+              onClick={() => handleCourseClick(course)}
+            >
+              <div className="home-course-thumbnail-wrapper">
+                <img 
+                  src={course.thumbnail} 
+                  alt={course.title} 
+                  className="home-course-thumbnail"
+                />
+                <div className="home-course-play-overlay">
+                  <FaPlay className="home-play-icon" />
+                </div>
+                <span className="home-course-duration">
+                  <FaClock /> {course.duration}
+                </span>
+              </div>
+              <div className="home-course-content">
+                <h3 className="home-course-title">{course.title}</h3>
+                <p className="home-course-desc">{course.description}</p>
+                <div className="home-course-stats">
+                  <span className="home-course-stat">
+                    <FaStudents /> {course.students}
+                  </span>
+                  <span className="home-course-stat">
+                    <FaStar style={{ color: '#fbbf24' }} /> {course.rating}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button className="see-all-courses-button" onClick={() => navigate('/courses')}>
+          <FaYoutube style={{ marginRight: '8px' }} />
+          See All Courses
+        </button>
+      </div>
+
       <div style={{ marginTop: '80px', maxWidth: '800px' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '40px', marginTop: '40px', textAlign: 'left', position: 'relative', paddingBottom: '15px' }} className="home-section-title">Tech Stack</h2>
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -359,6 +449,12 @@ export default function Home() {
         isOpen={isProjectModalOpen}
         project={selectedProject}
         onClose={() => setIsProjectModalOpen(false)}
+      />
+
+      <CourseDetailModal 
+        isOpen={isCourseModalOpen}
+        course={selectedCourse}
+        onClose={() => setIsCourseModalOpen(false)}
       />
     </div>
   );

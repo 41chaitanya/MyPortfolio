@@ -16,10 +16,12 @@ import Contact from './pages/Contact';
 import Community from './pages/Community';
 import CommunityDetail from './pages/CommunityDetail';
 import Analytics from './pages/Analytics';
+import Courses from './pages/Courses';
 import { AiOutlineHome } from 'react-icons/ai';
 import { MdOutlineInfo, MdEmojiEvents, MdOutlineWorkspaces, MdOutlineMailOutline } from 'react-icons/md';
 import { HiUserGroup } from 'react-icons/hi';
 import { IoAnalytics } from 'react-icons/io5';
+import { FaYoutube } from 'react-icons/fa';
 import './App.css';
 import './mobile-optimizations.css';
 
@@ -72,6 +74,7 @@ function App() {
                 { icon: MdOutlineInfo, href: '/about' },
                 { icon: MdEmojiEvents, href: '/achievements' },
                 { icon: MdOutlineWorkspaces, href: '/projects' },
+                { icon: FaYoutube, href: '/courses' },
                 { icon: HiUserGroup, href: '/community' },
                 { icon: IoAnalytics, href: '/analytics' },
                 { icon: MdOutlineMailOutline, href: '/contact' },
@@ -90,6 +93,7 @@ function App() {
               <Route path="/community" element={<Community />} />
               <Route path="/community/:slug" element={<CommunityDetail />} />
               <Route path="/analytics" element={<Analytics />} />
+              <Route path="/courses" element={<Courses />} />
             </Routes>
             <Footer />
           </Router>
