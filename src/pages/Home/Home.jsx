@@ -37,37 +37,37 @@ export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
 
-  // Dummy courses for home page (top 2)
+  // Courses for home page (top 2)
   const homeCourses = [
     {
       id: 1,
-      title: 'Spring Boot Masterclass - Zero to Hero',
-      description: 'Complete Spring Boot course covering REST APIs, JPA, Security, and microservices architecture.',
-      thumbnail: 'https://via.placeholder.com/400x225/1a1a1a/ff0000?text=Spring+Boot+Masterclass',
-      duration: '12 hours',
-      students: '2.5K',
+      title: 'Computer Networks',
+      description: 'Complete Computer Networks course covering OSI model, TCP/IP, routing protocols, and networking concepts.',
+      thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=Computer+Networks&font=roboto',
+      duration: '15+ hours',
+      students: '1K+',
       rating: 4.8,
-      lessons: 45,
-      youtubeLink: 'https://youtube.com/playlist?list=example1',
-      topics: ['Spring Boot', 'REST API', 'JPA', 'Security', 'Microservices'],
+      lessons: 50,
+      youtubeLink: 'https://www.youtube.com/playlist?list=PLg2LVpcRrOF5bXFuXpCKrKjIufHfikLAk',
+      topics: ['OSI Model', 'TCP/IP', 'Routing', 'Network Security', 'Protocols'],
       comments: [
-        { name: 'Rahul Kumar', text: 'Best Spring Boot course on YouTube!', avatar: '👨‍💻' },
-        { name: 'Priya Singh', text: 'Finally understood microservices!', avatar: '👩‍💻' },
+        { name: 'Rahul Kumar', text: 'Best CN course in Hindi!', avatar: '👨‍💻' },
+        { name: 'Priya Singh', text: 'Helped in my semester exams!', avatar: '👩‍💻' },
       ]
     },
     {
       id: 2,
-      title: 'Java DSA Complete Course',
-      description: 'Master Data Structures and Algorithms in Java with problem-solving techniques.',
-      thumbnail: 'https://via.placeholder.com/400x225/1a1a1a/ff0000?text=Java+DSA+Course',
-      duration: '20 hours',
-      students: '5K',
+      title: 'C Programming Language',
+      description: 'Learn C programming from scratch - basics to advanced including pointers, structures, and file handling.',
+      thumbnail: 'https://placehold.co/400x225/1a1a1a/ff0000?text=C+Programming&font=roboto',
+      duration: '20+ hours',
+      students: '2K+',
       rating: 4.9,
-      lessons: 80,
-      youtubeLink: 'https://youtube.com/playlist?list=example2',
-      topics: ['Arrays', 'LinkedList', 'Trees', 'Graphs', 'DP'],
+      lessons: 70,
+      youtubeLink: 'https://www.youtube.com/playlist?list=PLg2LVpcRrOF5o-OlUaSBST7-txwuCbZr9',
+      topics: ['Basics', 'Pointers', 'Structures', 'File Handling', 'DSA in C'],
       comments: [
-        { name: 'Vikram Sharma', text: 'Cracked my Amazon interview!', avatar: '👨‍💻' },
+        { name: 'Deepak Joshi', text: 'Now I can code confidently!', avatar: '👨‍💻' },
       ]
     }
   ];
