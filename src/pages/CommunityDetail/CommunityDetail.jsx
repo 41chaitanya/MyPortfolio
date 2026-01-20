@@ -604,7 +604,7 @@ export default function CommunityDetail() {
                       { firstName: 'Vansh', role: 'UI/UX & Animation Lead', icon: <FaPalette /> },
                       { firstName: 'Rishab', role: 'Backend Lead', icon: <FaServer /> },
                       { firstName: 'Nitin', role: 'AI & ML Lead', icon: <FaCogs /> },
-                      { firstName: 'Ujwal', role: 'Mobile Dev Lead', icon: <FaCode /> },
+                      { firstName: 'Ujjwal', role: 'Mobile Dev Lead', icon: <FaCode /> },
                       { firstName: 'Nikita', role: 'Java Dev Lead', icon: <FaCode /> }
                     ];
 
