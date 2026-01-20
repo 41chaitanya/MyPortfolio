@@ -193,4 +193,46 @@ public class MemberService {
         }
         return sentCount;
     }
+
+    public int sendMeetingInvitationToMembers(String communitySlug, String meetingLink, 
+                                              String agenda, String dateTime, String excludeGithubUsername) {
+        List<Member> approvedMembers = memberRepository.findByCommunitiesContainingAndStatus(communitySlug, "APPROVED");
+        int sentCount = 0;
+        
+        for (Member member : approvedMembers) {
+            // Skip if this member should be excluded
+            if (excludeGithubUsername != null && !excludeGithubUsername.isEmpty()) {
+                String memberGithubUsername = extractGithubUsername(member.getGithubUrl());
+                if (memberGithubUsername != null && memberGithubUsername.equalsIgnoreCase(excludeGithubUsername)) {
+                    log.info("Skipping meeting invitation for excluded member: {}", member.getName());
+                    continue;
+                }
+            }
+            
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                try {
+                    emailService.sendMeetingInvitation(member.getEmail(), member.getName(), 
+                                                      meetingLink, agenda, dateTime);
+                    sentCount++;
+                    log.info("Meeting invitation sent to: {}", member.getEmail());
+                    Thread.sleep(1000); // Rate limiting
+                } catch (Exception e) {
+                    log.error("Failed to send meeting invitation to {}: {}", member.getEmail(), e.getMessage());
+                }
+            }
+        }
+        return sentCount;
+    }
+
+    private String extractGithubUsername(String githubUrl) {
+        if (githubUrl == null || githubUrl.isEmpty()) {
+            return null;
+        }
+        // Extract username from GitHub URL (e.g., https://github.com/username)
+        String[] parts = githubUrl.split("/");
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
+        }
+        return null;
+    }
 }

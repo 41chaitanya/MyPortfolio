@@ -165,4 +165,19 @@ public class MemberController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Failed to send emails: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/send-meeting-invitation/{communitySlug}")
+    public ResponseEntity<ApiResponse> sendMeetingInvitation(
+            @PathVariable String communitySlug,
+            @RequestParam String meetingLink,
+            @RequestParam String agenda,
+            @RequestParam String dateTime,
+            @RequestParam(required = false) String excludeGithubUsername) {
+        try {
+            int count = memberService.sendMeetingInvitationToMembers(communitySlug, meetingLink, agenda, dateTime, excludeGithubUsername);
+            return ResponseEntity.ok(ApiResponse.success("Meeting invitations sent to " + count + " members"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to send invitations: " + e.getMessage()));
+        }
+    }
 }

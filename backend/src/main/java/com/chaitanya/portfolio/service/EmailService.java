@@ -205,4 +205,53 @@ public class EmailService {
             log.error("Failed to send leaderboard email to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendMeetingInvitation(String toEmail, String memberName, String meetingLink, 
+                                      String agenda, String dateTime) {
+        log.info("Sending meeting invitation to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Meeting invitation not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("📅 Community Meeting Invitation | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "You're invited to an important community meeting! 🎯\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "📅 MEETING DETAILS\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "📌 AGENDA:\n" + agenda + "\n\n" +
+                "🕐 DATE & TIME:\n" + dateTime + "\n\n" +
+                "🔗 MEETING LINK:\n" + meetingLink + "\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🎯 WHY THIS MEETING MATTERS:\n\n" +
+                "This is your chance to:\n" +
+                "• Get assigned important roles in the community\n" +
+                "• Take on leadership positions\n" +
+                "• Shape the future direction of our projects\n" +
+                "• Voice your ideas and suggestions\n\n" +
+                "Your presence and input are valuable to us! 💪\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "⚠️ IMPORTANT:\n" +
+                "Please try to attend on time. If you can't make it, let us know in advance.\n\n" +
+                "See you there! 🚀\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Meeting invitation sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send meeting invitation to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }
