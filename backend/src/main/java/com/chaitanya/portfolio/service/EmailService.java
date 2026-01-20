@@ -349,4 +349,56 @@ public class EmailService {
             log.error("Failed to send farewell email to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendApologyAndReaddEmail(String toEmail, String memberName, String role) {
+        log.info("Sending apology and re-add email to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Apology email not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("🙏 Our Sincere Apologies - Welcome Back! | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🙏 WE OWE YOU AN APOLOGY\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "We made a mistake. 😔\n\n" +
+                "You were mistakenly removed from com.the-boys-dev during our recent restructuring.\n\n" +
+                "This was completely our error, and we sincerely apologize for any confusion or inconvenience this may have caused.\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🎉 WELCOME BACK!\n\n" +
+                "You have been re-added to the community, and we're excited to have you back! 🚀\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🏆 YOUR NEW ROLE:\n\n" +
+                "We're pleased to announce that you've been assigned as:\n\n" +
+                "👉 " + role + "\n\n" +
+                "This is a leadership position, and we believe you're the perfect fit for it!\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🎯 WHAT'S NEXT:\n\n" +
+                "• Your profile is active again\n" +
+                "• You can login at: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "• Your leadership role is now visible on the community page\n" +
+                "• Start contributing and leading your team!\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "Once again, we deeply apologize for the confusion. We value your contributions and are thrilled to have you as part of our leadership team! 💪\n\n" +
+                "Let's build something amazing together! 🔥\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Apology and re-add email sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send apology email to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }

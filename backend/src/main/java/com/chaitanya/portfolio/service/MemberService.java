@@ -313,4 +313,28 @@ public class MemberService {
         }
         return null;
     }
+
+    public Member readdMemberWithApology(String email, String communitySlug, String role) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Member not found with email: " + email));
+        
+        // Add community back if not already present
+        if (!member.getCommunities().contains(communitySlug)) {
+            member.getCommunities().add(communitySlug);
+        }
+        
+        // Set status to APPROVED and update role
+        member.setStatus("APPROVED");
+        member.setRole(role);
+        member.setUpdatedAt(LocalDateTime.now());
+        
+        // Save member
+        Member saved = memberRepository.save(member);
+        
+        // Send apology email
+        emailService.sendApologyAndReaddEmail(member.getEmail(), member.getName(), role);
+        log.info("Member re-added with apology: {} as {}", member.getName(), role);
+        
+        return saved;
+    }
 }

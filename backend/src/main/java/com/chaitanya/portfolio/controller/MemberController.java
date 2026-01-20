@@ -203,4 +203,17 @@ public class MemberController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Failed to remove members: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/readd-member")
+    public ResponseEntity<ApiResponse> readdMemberWithApology(
+            @RequestParam String email,
+            @RequestParam String communitySlug,
+            @RequestParam String role) {
+        try {
+            Member member = memberService.readdMemberWithApology(email, communitySlug, role);
+            return ResponseEntity.ok(ApiResponse.success("Member re-added successfully with apology email sent", member));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to re-add member: " + e.getMessage()));
+        }
+    }
 }
