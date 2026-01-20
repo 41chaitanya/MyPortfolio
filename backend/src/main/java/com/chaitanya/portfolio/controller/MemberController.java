@@ -180,4 +180,17 @@ public class MemberController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Failed to send invitations: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/send-urgent-meeting-reminder/{communitySlug}")
+    public ResponseEntity<ApiResponse> sendUrgentMeetingReminder(
+            @PathVariable String communitySlug,
+            @RequestParam String meetingLink,
+            @RequestParam(required = false) String excludeGithubUsername) {
+        try {
+            int count = memberService.sendUrgentMeetingReminder(communitySlug, meetingLink, excludeGithubUsername);
+            return ResponseEntity.ok(ApiResponse.success("Urgent meeting reminders sent to " + count + " members"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to send reminders: " + e.getMessage()));
+        }
+    }
 }

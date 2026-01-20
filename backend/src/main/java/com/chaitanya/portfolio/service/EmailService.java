@@ -254,4 +254,53 @@ public class EmailService {
             log.error("Failed to send meeting invitation to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendUrgentMeetingReminder(String toEmail, String memberName, String meetingLink) {
+        log.info("Sending URGENT meeting reminder to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Urgent meeting reminder not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("🚨 URGENT: Last Call for Community Meeting - JOIN NOW! | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "🚨 🚨 🚨 URGENT REMINDER 🚨 🚨 🚨\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "⏰ MEETING IS HAPPENING NOW!\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🔴 LAST TIME TO JOIN: 10:25 PM TODAY\n\n" +
+                "🔗 JOIN IMMEDIATELY:\n" + meetingLink + "\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "⚠️ ⚠️ ⚠️ CRITICAL NOTICE ⚠️ ⚠️ ⚠️\n\n" +
+                "ONLY THOSE WHO ATTEND THIS MEETING WILL REMAIN IN THE COMMUNITY!\n\n" +
+                "If you haven't joined yet, JOIN NOW! This is your FINAL CHANCE.\n\n" +
+                "Members who do not attend will be removed from com.the-boys-dev.\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "📌 WHAT'S AT STAKE:\n" +
+                "• Your membership in the community\n" +
+                "• Role assignments and responsibilities\n" +
+                "• Leadership positions\n" +
+                "• Future opportunities\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🔗 CLICK HERE TO JOIN NOW:\n" + meetingLink + "\n\n" +
+                "Don't miss this! Your community needs you! 🚀\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Urgent meeting reminder sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send urgent meeting reminder to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }

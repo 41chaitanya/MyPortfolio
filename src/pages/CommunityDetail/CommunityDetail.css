@@ -333,6 +333,225 @@
   margin: 0 auto;
 }
 
+/* Leadership Section */
+.leadership-section {
+  margin: 40px 0 60px;
+  padding: 40px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border: 1.5px solid rgba(168, 85, 247, 0.2);
+  border-radius: 20px;
+}
+
+.leadership-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.leadership-icon {
+  font-size: 2rem;
+  color: #a855f7;
+}
+
+.leadership-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fafafa;
+  margin: 0;
+}
+
+.leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+.leadership-card {
+  background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+  border: 2px solid #a855f7;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.leadership-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(168, 85, 247, 0.3);
+}
+
+.founder-card {
+  border-color: #a855f7;
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
+}
+
+.cofounder-card {
+  border-color: #7c3aed;
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.2);
+}
+
+.leadership-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+  color: white;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cofounder-badge {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.leadership-image {
+  width: 120px;
+  height: 120px;
+  margin: 20px auto 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #a855f7;
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+.cofounder-card .leadership-image {
+  border-color: #7c3aed;
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+}
+
+.leadership-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.leadership-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fafafa;
+  margin: 15px 0 10px;
+}
+
+.leadership-links {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.leadership-links a {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.leadership-links a:hover {
+  background: #a855f7;
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* Department Leads */
+.leads-section {
+  margin-top: 40px;
+}
+
+.leads-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fafafa;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.leads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.lead-card {
+  background: #18181b;
+  border: 1.5px solid #3f3f46;
+  border-radius: 12px;
+  padding: 25px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.lead-card:hover {
+  border-color: #a855f7;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.15);
+}
+
+.lead-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+  font-size: 1.3rem;
+}
+
+.lead-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fafafa;
+  margin: 10px 0 5px;
+}
+
+.lead-role {
+  font-size: 0.9rem;
+  color: #a1a1a1;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .leadership-section {
+    padding: 25px 20px;
+  }
+
+  .leadership-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .leadership-title {
+    font-size: 1.5rem;
+  }
+
+  .leads-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .leads-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .members-section {
   margin-top: 20px;
 }

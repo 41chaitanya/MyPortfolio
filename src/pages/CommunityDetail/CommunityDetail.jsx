@@ -560,6 +560,69 @@ export default function CommunityDetail() {
         </div>
 
         <div className="community-detail-content">
+          {/* Leadership Section */}
+          {slug === 'com.the-boys-dev' && (
+            <div className="leadership-section">
+              <div className="leadership-header">
+                <FaCrown className="leadership-icon" />
+                <h2 className="leadership-title">Leadership Team</h2>
+              </div>
+              <div className="leadership-grid">
+                {/* Founder & CEO */}
+                <div className="leadership-card founder-card">
+                  <div className="leadership-badge">Founder & CEO</div>
+                  <div className="leadership-image">
+                    <img src="https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662010/portfolio-images/bvjgyzlgfkeixlutr5ga.jpg" alt="Chaitanya Sharma" />
+                  </div>
+                  <h3 className="leadership-name">Chaitanya Sharma</h3>
+                  <div className="leadership-links">
+                    <a href="https://github.com/41chaitanya" target="_blank" rel="noopener noreferrer"><FaGithub /></a>
+                    <a href="https://www.linkedin.com/in/chaitanya-sharma-799041301" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
+                  </div>
+                </div>
+
+                {/* Co-Founder */}
+                <div className="leadership-card cofounder-card">
+                  <div className="leadership-badge cofounder-badge">Co-Founder</div>
+                  <div className="leadership-image">
+                    <img src="https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662012/portfolio-images/rd8k4wmidqdfi16jxyei.jpg" alt="Harshawardhan Shrivastava" />
+                  </div>
+                  <h3 className="leadership-name">Harshawardhan Shrivastava</h3>
+                  <div className="leadership-links">
+                    <a href="https://www.linkedin.com/in/connect-harshawardhanshrivastava/" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Department Leads */}
+              <div className="leads-section">
+                <h3 className="leads-title">Department Leads</h3>
+                <div className="leads-grid">
+                  <div className="lead-card">
+                    <div className="lead-icon"><FaUser /></div>
+                    <h4 className="lead-name">Sakshi Pawar</h4>
+                    <p className="lead-role">Managing Director</p>
+                  </div>
+                  <div className="lead-card">
+                    <div className="lead-icon"><FaPalette /></div>
+                    <h4 className="lead-name">Vansh</h4>
+                    <p className="lead-role">UI/UX & Animation Lead</p>
+                  </div>
+                  <div className="lead-card">
+                    <div className="lead-icon"><FaServer /></div>
+                    <h4 className="lead-name">Rishab</h4>
+                    <p className="lead-role">Backend Lead</p>
+                  </div>
+                  <div className="lead-card">
+                    <div className="lead-icon"><FaCogs /></div>
+                    <h4 className="lead-name">Nitin Mishra</h4>
+                    <p className="lead-role">AI & ML Lead</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="members-section">
             <div className="members-header"><h2 className="members-title">Team Members</h2>{!membersLoading && hasMore && <button className="view-all-btn" onClick={() => setShowSidebar(true)}>View All ({members.length}) <FaChevronRight /></button>}</div>
             <div className="members-grid">

@@ -224,6 +224,34 @@ public class MemberService {
         return sentCount;
     }
 
+    public int sendUrgentMeetingReminder(String communitySlug, String meetingLink, String excludeGithubUsername) {
+        List<Member> approvedMembers = memberRepository.findByCommunitiesContainingAndStatus(communitySlug, "APPROVED");
+        int sentCount = 0;
+        
+        for (Member member : approvedMembers) {
+            // Skip if this member should be excluded
+            if (excludeGithubUsername != null && !excludeGithubUsername.isEmpty()) {
+                String memberGithubUsername = extractGithubUsername(member.getGithubUrl());
+                if (memberGithubUsername != null && memberGithubUsername.equalsIgnoreCase(excludeGithubUsername)) {
+                    log.info("Skipping urgent reminder for excluded member: {}", member.getName());
+                    continue;
+                }
+            }
+            
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                try {
+                    emailService.sendUrgentMeetingReminder(member.getEmail(), member.getName(), meetingLink);
+                    sentCount++;
+                    log.info("Urgent meeting reminder sent to: {}", member.getEmail());
+                    Thread.sleep(1000); // Rate limiting
+                } catch (Exception e) {
+                    log.error("Failed to send urgent reminder to {}: {}", member.getEmail(), e.getMessage());
+                }
+            }
+        }
+        return sentCount;
+    }
+
     private String extractGithubUsername(String githubUrl) {
         if (githubUrl == null || githubUrl.isEmpty()) {
             return null;
