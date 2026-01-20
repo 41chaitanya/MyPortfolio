@@ -401,4 +401,145 @@ public class EmailService {
             log.error("Failed to send apology email to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendNewJoinRequestNotification(String adminEmail, String adminName, 
+                                               String memberName, String memberEmail, 
+                                               String memberGithub, String memberLinkedin,
+                                               String memberContact, String teams, String techStack) {
+        log.info("Sending new join request notification to admin: {}", adminEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Join request notification not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(adminEmail);
+            message.setSubject("🔔 New Join Request - Action Required | com.the-boys-dev");
+            message.setText(
+                "Hey " + adminName + "! 👋\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🔔 NEW MEMBER JOIN REQUEST\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "A new developer wants to join com.the-boys-dev! 🚀\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "📋 APPLICANT DETAILS:\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "👤 Name: " + memberName + "\n" +
+                "📧 Email: " + memberEmail + "\n" +
+                "💻 GitHub: " + (memberGithub != null && !memberGithub.isEmpty() ? memberGithub : "Not provided") + "\n" +
+                "🔗 LinkedIn: " + (memberLinkedin != null && !memberLinkedin.isEmpty() ? memberLinkedin : "Not provided") + "\n" +
+                "📱 Contact: " + (memberContact != null && !memberContact.isEmpty() ? memberContact : "Not provided") + "\n\n" +
+                "🎯 Teams: " + (teams != null && !teams.isEmpty() ? teams : "Not specified") + "\n" +
+                "💡 Tech Stack: " + (techStack != null && !techStack.isEmpty() ? techStack : "Not specified") + "\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "⚡ ACTION REQUIRED:\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "Please review this application and take action:\n\n" +
+                "1️⃣ Login to the community page:\n" +
+                "   https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n\n" +
+                "2️⃣ Click on 'Admin' button (top right)\n\n" +
+                "3️⃣ Review the pending request\n\n" +
+                "4️⃣ APPROVE ✅ or REJECT ❌ the application\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "⏰ Please review this request at your earliest convenience.\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Join request notification sent to admin: {}", adminEmail);
+        } catch (Exception e) {
+            log.error("Failed to send join request notification to {}: {}", adminEmail, e.getMessage());
+        }
+    }
+
+    public void sendAdminRightsEmail(String toEmail, String memberName) {
+        log.info("Sending admin rights notification to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Admin rights email not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("🎉 You've Been Promoted to Admin! | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🎉 CONGRATULATIONS - YOU'RE NOW AN ADMIN!\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "We're excited to announce that you've been promoted to Admin of com.the-boys-dev! 🚀\n\n" +
+                "This is a significant responsibility, and we trust you to help manage and grow our community.\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🔑 YOUR NEW ADMIN RIGHTS:\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "As an Admin, you now have the following powers:\n\n" +
+                "✅ APPROVE NEW MEMBERS\n" +
+                "   • Review join requests from new developers\n" +
+                "   • Approve qualified candidates\n" +
+                "   • They'll receive welcome emails automatically\n\n" +
+                "❌ REJECT APPLICATIONS\n" +
+                "   • Decline applications that don't meet criteria\n" +
+                "   • Keep the community quality high\n\n" +
+                "✏️ EDIT MEMBER PROFILES\n" +
+                "   • Update member information\n" +
+                "   • Fix incorrect details\n" +
+                "   • Assign roles and teams\n\n" +
+                "🗑️ REMOVE MEMBERS\n" +
+                "   • Kick inactive or problematic members\n" +
+                "   • Maintain community standards\n\n" +
+                "📧 EMAIL NOTIFICATIONS\n" +
+                "   • You'll receive emails for every new join request\n" +
+                "   • Stay updated on community growth\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🎯 HOW TO USE YOUR ADMIN PANEL:\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "1️⃣ LOGIN:\n" +
+                "   Visit: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "   Click 'Login' and use your email to receive OTP\n\n" +
+                "2️⃣ ACCESS ADMIN PANEL:\n" +
+                "   After login, click the 'Admin' button (top right corner)\n\n" +
+                "3️⃣ REVIEW PENDING REQUESTS:\n" +
+                "   • See all pending join requests\n" +
+                "   • View applicant details (GitHub, LinkedIn, tech stack)\n" +
+                "   • Click ✅ to approve or ❌ to reject\n\n" +
+                "4️⃣ MANAGE EXISTING MEMBERS:\n" +
+                "   • View all community members\n" +
+                "   • Click 'Edit' to modify member details\n" +
+                "   • Click 'Kick' to remove members\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "⚠️ IMPORTANT GUIDELINES:\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "• Review applications carefully before approving\n" +
+                "• Check GitHub profiles for genuine contributions\n" +
+                "• Ensure applicants have relevant skills\n" +
+                "• Be fair and professional in all decisions\n" +
+                "• Communicate with the founder if unsure\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "We're counting on you to help build an amazing community! 💪\n\n" +
+                "If you have any questions or need help, feel free to reach out.\n\n" +
+                "Welcome to the leadership team! 🎉\n\n" +
+                "— Chaitanya Sharma\n" +
+                "Founder & CEO, com.the-boys-dev\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Community: https://41chaitanya.github.io/MyPortfolio/community/com.the-boys-dev\n" +
+                "💻 GitHub Org: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Admin rights email sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send admin rights email to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }

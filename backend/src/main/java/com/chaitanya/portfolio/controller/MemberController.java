@@ -216,4 +216,16 @@ public class MemberController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Failed to re-add member: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/promote-to-admin")
+    public ResponseEntity<ApiResponse> promoteToAdmin(
+            @RequestParam String email,
+            @RequestParam String communitySlug) {
+        try {
+            Member member = memberService.promoteToAdmin(email, communitySlug);
+            return ResponseEntity.ok(ApiResponse.success("Member promoted to Admin successfully", member));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to promote member: " + e.getMessage()));
+        }
+    }
 }

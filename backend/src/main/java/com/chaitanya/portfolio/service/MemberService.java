@@ -57,7 +57,48 @@ public class MemberService {
         
         Member saved = memberRepository.save(member);
         log.info("Member created: {}", saved.getId());
+        
+        // Send notification to all admins about new join request
+        notifyAdminsAboutNewJoinRequest(saved, request.getCommunityName());
+        
         return saved;
+    }
+
+    private void notifyAdminsAboutNewJoinRequest(Member newMember, String communitySlug) {
+        try {
+            // Get all admins (Owner and Admin roles)
+            List<Member> admins = memberRepository.findByCommunitiesContainingAndStatus(communitySlug, "APPROVED")
+                .stream()
+                .filter(m -> "Owner".equals(m.getRole()) || "Admin".equals(m.getRole()))
+                .toList();
+            
+            String teams = newMember.getTeams() != null ? String.join(", ", newMember.getTeams()) : "";
+            String techStack = newMember.getTechStack() != null ? String.join(", ", newMember.getTechStack()) : "";
+            
+            for (Member admin : admins) {
+                if (admin.getEmail() != null && !admin.getEmail().isEmpty()) {
+                    try {
+                        emailService.sendNewJoinRequestNotification(
+                            admin.getEmail(),
+                            admin.getName(),
+                            newMember.getName(),
+                            newMember.getEmail(),
+                            newMember.getGithubUrl(),
+                            newMember.getLinkedinUrl(),
+                            newMember.getContactNumber(),
+                            teams,
+                            techStack
+                        );
+                        log.info("Join request notification sent to admin: {}", admin.getName());
+                        Thread.sleep(1000); // Rate limiting
+                    } catch (Exception e) {
+                        log.error("Failed to send notification to admin {}: {}", admin.getName(), e.getMessage());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to notify admins about new join request: {}", e.getMessage());
+        }
     }
 
     public List<Member> getAllMembers() {
@@ -334,6 +375,34 @@ public class MemberService {
         // Send apology email
         emailService.sendApologyAndReaddEmail(member.getEmail(), member.getName(), role);
         log.info("Member re-added with apology: {} as {}", member.getName(), role);
+        
+        return saved;
+    }
+
+    public Member promoteToAdmin(String email, String communitySlug) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Member not found with email: " + email));
+        
+        // Check if member is in the community
+        if (!member.getCommunities().contains(communitySlug)) {
+            throw new RuntimeException("Member is not part of this community");
+        }
+        
+        // Check if already admin or owner
+        if ("Admin".equals(member.getRole()) || "Owner".equals(member.getRole())) {
+            throw new RuntimeException("Member is already an admin or owner");
+        }
+        
+        // Promote to Admin
+        member.setRole("Admin");
+        member.setUpdatedAt(LocalDateTime.now());
+        
+        // Save member
+        Member saved = memberRepository.save(member);
+        
+        // Send admin rights email
+        emailService.sendAdminRightsEmail(member.getEmail(), member.getName());
+        log.info("Member promoted to Admin: {} ({})", member.getName(), member.getEmail());
         
         return saved;
     }

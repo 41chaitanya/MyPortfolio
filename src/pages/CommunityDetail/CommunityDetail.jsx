@@ -152,7 +152,7 @@ export default function CommunityDetail() {
 
   // Refetch pending when admin panel opens
   useEffect(() => {
-    if (showAdminPanel && currentUser?.role === 'Owner') {
+    if (showAdminPanel && (currentUser?.role === 'Owner' || currentUser?.role === 'Admin')) {
       fetchPendingMembers();
     }
   }, [showAdminPanel]);
@@ -526,7 +526,7 @@ export default function CommunityDetail() {
         <div className="top-buttons">
           {currentUser ? (
             <>
-              {currentUser.role === 'Owner' && <button onClick={() => setShowAdminPanel(true)} className="admin-btn"><FaCrown /> Admin</button>}
+              {(currentUser.role === 'Owner' || currentUser.role === 'Admin') && <button onClick={() => setShowAdminPanel(true)} className="admin-btn"><FaCrown /> Admin</button>}
               <button onClick={openProfile} className="profile-btn">
                 <img src={currentUser.image || DEFAULT_MALE_IMAGE} alt="" className="profile-btn-img" />
                 <span>{currentUser.name?.split(' ')[0]}</span>
@@ -746,7 +746,7 @@ export default function CommunityDetail() {
         {/* Forgot Password Modal - Removed, using OTP now */}
 
         {/* Admin Panel */}
-        {showAdminPanel && currentUser?.role === 'Owner' && (
+        {showAdminPanel && (currentUser?.role === 'Owner' || currentUser?.role === 'Admin') && (
           <div className="modal-overlay" onClick={() => { setShowAdminPanel(false); setAdminEditMember(null); }}>
             <div className="admin-panel admin-panel-enhanced" onClick={e => e.stopPropagation()}>
               <button className="modal-close" onClick={() => { setShowAdminPanel(false); setAdminEditMember(null); }}><FaTimes /></button>
