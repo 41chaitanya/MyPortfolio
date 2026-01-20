@@ -598,26 +598,54 @@ export default function CommunityDetail() {
               <div className="leads-section">
                 <h3 className="leads-title">Department Leads</h3>
                 <div className="leads-grid">
-                  <div className="lead-card">
-                    <div className="lead-icon"><FaUser /></div>
-                    <h4 className="lead-name">Sakshi Pawar</h4>
-                    <p className="lead-role">Managing Director</p>
-                  </div>
-                  <div className="lead-card">
-                    <div className="lead-icon"><FaPalette /></div>
-                    <h4 className="lead-name">Vansh</h4>
-                    <p className="lead-role">UI/UX & Animation Lead</p>
-                  </div>
-                  <div className="lead-card">
-                    <div className="lead-icon"><FaServer /></div>
-                    <h4 className="lead-name">Rishab</h4>
-                    <p className="lead-role">Backend Lead</p>
-                  </div>
-                  <div className="lead-card">
-                    <div className="lead-icon"><FaCogs /></div>
-                    <h4 className="lead-name">Nitin Mishra</h4>
-                    <p className="lead-role">AI & ML Lead</p>
-                  </div>
+                  {(() => {
+                    const leadRoles = [
+                      { firstName: 'Sakshi', role: 'Managing Director', icon: <FaUser /> },
+                      { firstName: 'Vansh', role: 'UI/UX & Animation Lead', icon: <FaPalette /> },
+                      { firstName: 'Rishab', role: 'Backend Lead', icon: <FaServer /> },
+                      { firstName: 'Nitin', role: 'AI & ML Lead', icon: <FaCogs /> },
+                      { firstName: 'Ujwal', role: 'Mobile Dev Lead', icon: <FaCode /> },
+                      { firstName: 'Nikita', role: 'Java Dev Lead', icon: <FaCode /> }
+                    ];
+
+                    return leadRoles.map((lead, index) => {
+                      const member = members.find(m => 
+                        m.name.toLowerCase().includes(lead.firstName.toLowerCase())
+                      );
+                      
+                      const defaultImage = lead.firstName === 'Sakshi' || lead.firstName === 'Nikita' 
+                        ? 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png'
+                        : 'https://res.cloudinary.com/dtpstgz1j/image/upload/v1765662078/portfolio-images/eho4pzjierpfh0t6ulol.png';
+
+                      return (
+                        <div key={index} className="lead-card" onClick={() => member && setSelectedMember(member)}>
+                          <div className="lead-image-wrapper">
+                            <img 
+                              src={member?.image || defaultImage} 
+                              alt={member?.name || lead.firstName}
+                              className="lead-profile-image"
+                            />
+                          </div>
+                          <h4 className="lead-name">{member?.name || lead.firstName}</h4>
+                          <p className="lead-role">{lead.role}</p>
+                          {member && (
+                            <div className="lead-links">
+                              {member.githubUrl && (
+                                <a href={member.githubUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                                  <FaGithub />
+                                </a>
+                              )}
+                              {member.linkedinUrl && (
+                                <a href={member.linkedinUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                                  <FaLinkedin />
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             </div>

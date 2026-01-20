@@ -493,12 +493,29 @@
   padding: 25px 20px;
   text-align: center;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .lead-card:hover {
   border-color: #a855f7;
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(168, 85, 247, 0.15);
+}
+
+.lead-image-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #a855f7;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+}
+
+.lead-profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .lead-icon {
@@ -525,6 +542,34 @@
   font-size: 0.9rem;
   color: #a1a1a1;
   font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.lead-links {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.lead-links a {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.lead-links a:hover {
+  background: #a855f7;
+  color: white;
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
