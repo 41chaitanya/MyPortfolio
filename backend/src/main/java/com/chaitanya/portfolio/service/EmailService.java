@@ -303,4 +303,50 @@ public class EmailService {
             log.error("Failed to send urgent meeting reminder to {}: {}", toEmail, e.getMessage());
         }
     }
+
+    public void sendFarewellEmail(String toEmail, String memberName) {
+        log.info("Sending farewell email to: {}", toEmail);
+        
+        if (!emailEnabled) {
+            log.warn("Email sending is disabled. Farewell email not sent.");
+            return;
+        }
+        
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("Thank You & Best Wishes | com.the-boys-dev");
+            message.setText(
+                "Hey " + memberName + "! 👋\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "💙 THANK YOU FOR BEING PART OF OUR JOURNEY\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "It was truly wonderful having you as part of com.the-boys-dev. 🌟\n\n" +
+                "We appreciate the time you spent with us and the energy you brought to the community.\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "🎯 MOVING FORWARD:\n\n" +
+                "As we restructure and focus on our core team, we're making some changes to our community roster.\n\n" +
+                "While you won't be continuing with us, we want you to know that this doesn't diminish the value you brought.\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "✨ BEST WISHES:\n\n" +
+                "We wish you all the best for your future endeavors! 🚀\n\n" +
+                "May you find amazing opportunities and continue to grow as a developer.\n\n" +
+                "Keep building, keep learning, and keep pushing boundaries! 💪\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+                "If our paths cross again in the future, we'd be happy to collaborate.\n\n" +
+                "Until then, stay awesome and keep coding! 💻\n\n" +
+                "— com.the-boys-dev Team\n\n" +
+                "\"We're not here to save the world. We're here to build it.\"\n\n" +
+                "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                "🌐 Portfolio: https://41chaitanya.github.io/MyPortfolio/\n" +
+                "💻 GitHub: https://github.com/com-the-boys-dev"
+            );
+            
+            mailSender.send(message);
+            log.info("Farewell email sent to: {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send farewell email to {}: {}", toEmail, e.getMessage());
+        }
+    }
 }

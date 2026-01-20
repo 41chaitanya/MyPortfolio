@@ -252,6 +252,56 @@ public class MemberService {
         return sentCount;
     }
 
+    public int removeNonLeadershipMembers(String communitySlug) {
+        List<Member> approvedMembers = memberRepository.findByCommunitiesContainingAndStatus(communitySlug, "APPROVED");
+        int removedCount = 0;
+        int emailsSent = 0;
+        
+        // Leadership team first names to keep
+        List<String> leadershipNames = List.of(
+            "chaitanya", "harshawardhan", "shrey", 
+            "sakshi", "vansh", "rishab", "nitin", "ujwal", "nikita"
+        );
+        
+        // Exclude from email (but still remove)
+        String excludeFromEmail = "dhruv";
+        
+        for (Member member : approvedMembers) {
+            String firstName = member.getName().toLowerCase().split(" ")[0];
+            
+            // Check if member is in leadership
+            boolean isLeadership = leadershipNames.stream()
+                .anyMatch(name -> firstName.contains(name) || name.contains(firstName));
+            
+            if (!isLeadership) {
+                // Send farewell email (except to Dhruv)
+                if (!firstName.contains(excludeFromEmail) && 
+                    member.getEmail() != null && !member.getEmail().isEmpty()) {
+                    try {
+                        emailService.sendFarewellEmail(member.getEmail(), member.getName());
+                        emailsSent++;
+                        log.info("Farewell email sent to: {}", member.getName());
+                        Thread.sleep(1000); // Rate limiting
+                    } catch (Exception e) {
+                        log.error("Failed to send farewell email to {}: {}", member.getName(), e.getMessage());
+                    }
+                }
+                
+                // Remove member from community
+                member.getCommunities().remove(communitySlug);
+                if (member.getCommunities().isEmpty()) {
+                    member.setStatus("REMOVED");
+                }
+                memberRepository.save(member);
+                removedCount++;
+                log.info("Removed member from community: {}", member.getName());
+            }
+        }
+        
+        log.info("Removed {} members, sent {} farewell emails", removedCount, emailsSent);
+        return removedCount;
+    }
+
     private String extractGithubUsername(String githubUrl) {
         if (githubUrl == null || githubUrl.isEmpty()) {
             return null;

@@ -193,4 +193,14 @@ public class MemberController {
             return ResponseEntity.badRequest().body(ApiResponse.error("Failed to send reminders: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/remove-non-leadership/{communitySlug}")
+    public ResponseEntity<ApiResponse> removeNonLeadershipMembers(@PathVariable String communitySlug) {
+        try {
+            int count = memberService.removeNonLeadershipMembers(communitySlug);
+            return ResponseEntity.ok(ApiResponse.success("Removed " + count + " non-leadership members from community"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error("Failed to remove members: " + e.getMessage()));
+        }
+    }
 }
